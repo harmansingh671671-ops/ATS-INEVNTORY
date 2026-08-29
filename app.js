@@ -1159,12 +1159,32 @@ const Actions = {
 
   async submitBorrowRequest(itemId, qty, durationDays, purpose) {
     try {
+      // --------------------------------------------------------------
+      // 1️⃣  Verify that enough units are available before calling RPC
+      // --------------------------------------------------------------
+      const item = State.items.find(i => i.id === itemId);
+      if (!item) {
+        toast('Item not found', 'error');
+        return;
+      }
+
+      // Use the most reliable source for stock – `available_quantity`
+      const available = item.available_quantity ?? item.total_quantity ?? 0;
+      if (qty > available) {
+        toast(`Not enough units available (requested ${qty}, only ${available} in stock).`, 'error');
+        return;
+      }
+
+      // --------------------------------------------------------------
+      // 2️⃣  Call the RPC to create the borrow request
+      // --------------------------------------------------------------
       const res = await supabaseClient.rpc('request_item', {
         p_item_id: itemId,
         p_quantity: qty,
         p_duration_days: durationDays,
         p_purpose: purpose
       });
+
       if (res.error) {
         // 23505 = unique_violation – most likely “already have a pending request for this item”
         if (res.error.code === '23505') {
@@ -1173,6 +1193,7 @@ const Actions = {
         }
         throw new Error(res.error);
       }
+
       toast('Borrow request submitted!', 'success');
       await App.loadMemberData();
       Router.go('member-dashboard');
