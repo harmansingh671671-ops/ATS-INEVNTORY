@@ -1,4 +1,4 @@
-﻿/* =====================================================================================
+/* =====================================================================================
    ATS CLUB — INVENTORY MANAGEMENT SYSTEM (FULL STACK SUPABASE)
    ===================================================================================== */
 
@@ -75,6 +75,25 @@ function toast(msg, type = 'info') {
   div.innerHTML = `<span>${h(msg)}</span><button onclick="this.parentElement.remove()" class="ml-sm font-bold">&times;</button>`;
   c.appendChild(div);
   setTimeout(() => div.remove(), 4000);
+}
+
+// --- MODAL LOGIC ---
+function openModal(contentHTML) {
+  const modal = $('#modal-container');
+  if (!modal) return;
+  modal.innerHTML = `
+    <div class="bg-surface-container-lowest p-lg rounded-xl w-full max-w-md relative">
+      ${contentHTML}
+      <button class="absolute top-2 right-2 text-xl text-on-surface-variant hover:text-primary" onclick="closeModal()">&times;</button>
+    </div>
+  `;
+  modal.classList.remove('hidden');
+}
+function closeModal() {
+  const modal = $('#modal-container');
+  if (!modal) return;
+  modal.classList.add('hidden');
+  modal.innerHTML = '';
 }
 
 // --- AUTH ---
@@ -581,6 +600,7 @@ const Views = {
       </div>
     `;
   },
+
   adminEditItem(itemId) {
     const item = State.items.find(i => i.id === itemId);
     if (!item) return `<div class="p-lg">Item not found</div>`;
@@ -1073,14 +1093,34 @@ const Actions = {
   },
 
   requestItemModal(itemId, itemName) {
-    const qty = prompt(`Request quantity for "${itemName}":`, "1");
-    if (!qty) return;
-    const days = prompt(`Request borrow duration for "${itemName}" (in days):`, "7");
-    if (!days) return;
-    const purpose = prompt(`Purpose for borrowing "${itemName}":`, "Standard Borrow");
-    if (!purpose) return;
-
-    this.submitBorrowRequest(itemId, parseInt(qty, 10), parseInt(days, 10), purpose);
+    const content = `
+      <h2 class="font-display-md text-display-md text-primary mb-sm">Request "${h(itemName)}"</h2>
+      <form onsubmit="event.preventDefault(); 
+        const qty = parseInt(this.qty.value,10);
+        const days = parseInt(this.days.value,10);
+        const purpose = this.purpose.value.trim();
+        if (isNaN(qty)||isNaN(days)||!purpose){ toast('Please fill all fields', 'error'); return; }
+        Actions.submitBorrowRequest('${itemId}', qty, days, purpose);
+        closeModal();">
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Quantity</label>
+          <input type="number" name="qty" min="1" value="1" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+        </div>
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Duration (days)</label>
+          <input type="number" name="days" min="1" value="7" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+        </div>
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Purpose</label>
+          <input type="text" name="purpose" placeholder="e.g. Project work" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+        </div>
+        <div class="flex justify-end space-x-sm">
+          <button type="button" onclick="closeModal()" class="px-md py-sm bg-surface-container text-on-surface rounded">Cancel</button>
+          <button type="submit" class="px-md py-sm bg-secondary text-on-secondary rounded">Submit Request</button>
+        </div>
+      </form>
+    `;
+    openModal(content);
   },
 
   async submitBorrowRequest(itemId, qty, durationDays, purpose) {
@@ -1101,13 +1141,39 @@ const Actions = {
   },
 
   showAddItemModal() {
-    const name = prompt("Item Name:");
-    if (!name) return;
-    const tag = prompt("Asset Tag (e.g. AST-1001):", "AST-" + Math.floor(1000 + Math.random()*9000));
-    const cat = prompt("Category (Electronics, Cameras, Audio, Accessories):", "Electronics");
-    const stock = prompt("Total Quantity Stock:", "5");
-
-    this.addItem({ name, asset_tag: tag, category: cat, total_quantity: parseInt(stock, 10) || 1, available_quantity: parseInt(stock, 10) || 1 });
+    const content = `
+      <h2 class="font-display-md text-display-md text-primary mb-sm">Add New Equipment</h2>
+      <form onsubmit="event.preventDefault(); 
+        const name = this.name.value.trim();
+        const tag = this.tag.value.trim();
+        const cat = this.cat.value.trim();
+        const stock = parseInt(this.stock.value,10);
+        if (!name||!tag||!cat||isNaN(stock)||stock<1){ toast('Please fill all fields correctly', 'error'); return; }
+        Actions.addItem({ name, asset_tag: tag, category: cat, total_quantity: stock, available_quantity: stock });
+        closeModal();">
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Item Name</label>
+          <input type="text" name="name" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+        </div>
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Asset Tag</label>
+          <input type="text" name="tag" placeholder="AST-1001" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+        </div>
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Category</label>
+          <input type="text" name="cat" placeholder="Electronics" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+        </div>
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Total Quantity</label>
+          <input type="number" name="stock" min="1" value="1" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+        </div>
+        <div class="flex justify-end space-x-sm">
+          <button type="button" onclick="closeModal()" class="px-md py-sm bg-surface-container text-on-surface rounded">Cancel</button>
+          <button type="submit" class="px-md py-sm bg-secondary text-on-secondary rounded">Add Item</button>
+        </div>
+      </form>
+    `;
+    openModal(content);
   },
 
   async addItem(itemData) {
