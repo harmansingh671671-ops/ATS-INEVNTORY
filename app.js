@@ -562,12 +562,9 @@ const Views = {
           <td class="px-md py-sm text-on-surface-variant text-xs">
             ${lended > 0 ? `<span class="px-xs py-[2px] bg-amber-100 text-amber-900 rounded font-bold">${lended} lended out</span>` : '<span class="text-on-surface-variant opacity-70">In stock</span>'}
           </td>
-          <td class="px-md py-sm text-right space-x-sm">
+          <td class="px-md py-sm text-right">
             <button onclick="Router.go('admin-edit-item-${item.id}')" class="bg-secondary/10 text-secondary hover:bg-secondary/20 px-sm py-xs rounded text-xs font-bold transition-colors">
               Details & Logs
-            </button>
-            <button onclick="Actions.deleteItem('${item.id}')" class="text-error hover:underline text-xs font-bold">
-              Delete
             </button>
           </td>
         </tr>
@@ -662,6 +659,12 @@ const Views = {
                 <span class="material-symbols-outlined text-[16px]">edit_note</span> Apply Stock Update
               </button>
             </form>
+            <!-- Red‑themed Delete Item button (admin only) -->
+            <button type="button"
+                    onclick="Actions.deleteItem('${item.id}')"
+                    class="bg-error text-white px-md py-sm rounded-lg mt-md font-bold hover:bg-error/80">
+              Delete Item
+            </button>
           </div>
           
           <div class="space-y-lg">
@@ -705,8 +708,16 @@ const Views = {
         </td>
         <td class="px-md py-sm text-right space-x-xs">
           ${req.status === 'pending' ? `
-            <button onclick="Actions.approveRequest('${req.id}')" class="bg-emerald-600 text-white px-xs py-1 rounded text-xs hover:bg-emerald-700">Approve</button>
-            <button onclick="Actions.rejectRequest('${req.id}')" class="bg-error text-white px-xs py-1 rounded text-xs hover:bg-error-container">Reject</button>
+            ${req.purpose === 'Return'
+              ? `
+                <button onclick="Actions.confirmReturn('${req.id}')" class="bg-emerald-600 text-white px-xs py-1 rounded text-xs hover:bg-emerald-700">Confirm Return</button>
+                <button onclick="Actions.rejectReturn('${req.id}')" class="bg-error text-white px-xs py-1 rounded text-xs hover:bg-error-container">Reject</button>
+              `
+              : `
+                <button onclick="Actions.approveRequest('${req.id}')" class="bg-emerald-600 text-white px-xs py-1 rounded text-xs hover:bg-emerald-700">Approve</button>
+                <button onclick="Actions.rejectRequest('${req.id}')" class="bg-error text-white px-xs py-1 rounded text-xs hover:bg-error-container">Reject</button>
+              `
+            }
           ` : '<span class="text-xs text-on-surface-variant">Processed</span>'}
         </td>
       </tr>
@@ -839,7 +850,7 @@ const Views = {
         </td>
         <td class="px-md py-sm text-right">
           ${loan.status === 'active' ? `
-            <button onclick="Actions.returnItem('${loan.id}')" class="text-secondary font-bold text-xs hover:underline">Return Item</button>
+            <button onclick="Actions.requestReturn('${loan.id}')" class="text-secondary font-bold text-xs hover:underline">Return Item</button>
           ` : '<span class="text-xs text-on-surface-variant">Returned</span>'}
         </td>
       </tr>
@@ -910,7 +921,7 @@ const Views = {
         <td class="px-md py-sm text-on-surface-variant">${fmtDate(l.borrowed_at)}</td>
         <td class="px-md py-sm text-on-surface-variant">${fmtDate(l.due_date)}</td>
         <td class="px-md py-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${l.status === 'returned' ? 'bg-surface-container text-on-surface-variant' : new Date(l.due_date) < new Date() ? 'bg-error-container text-error' : 'bg-emerald-100 text-emerald-800'}">${l.status === 'returned' ? 'Returned' : new Date(l.due_date) < new Date() ? 'Overdue' : 'Active'}</span></td>
-        <td class="px-md py-sm text-right">${l.status === 'active' ? `<button onclick="Actions.returnItem('${l.id}')" class="text-secondary font-bold text-xs hover:underline">Return</button>` : '<span class="text-xs text-on-surface-variant">Returned</span>'}</td>
+        <td class="px-md py-sm text-right">${l.status === 'active' ? `<button onclick="Actions.requestReturn('${l.id}')" class="text-secondary font-bold text-xs hover:underline">Return</button>` : '<span class="text-xs text-on-surface-variant">Returned</span>'}</td>
       </tr>
     `).join('');
 
@@ -1009,7 +1020,8 @@ const Actions = {
         const qty = req.quantity || 1;
         const itemName = req.items?.name || 'Equipment';
         const memberName = req.profiles?.full_name || req.profiles?.email || 'Member';
-        const noteText = `${qty} ${itemName} is lended to ${memberName}`;
+        const adminName = State.profile?.full_name || State.user?.email || 'Admin';
+        const noteText = `${qty} ${itemName} ${qty === 1 ? 'is' : 'are'} lended to ${memberName}, approved by ${adminName}`;
 
         // Record inventory log (awaited to catch errors properly)
         try {
@@ -1057,7 +1069,8 @@ const Actions = {
         const qty = loan.quantity || 1;
         const itemName = loan.items?.name || 'Equipment';
         const memberName = loan.profiles?.full_name || loan.profiles?.email || 'Member';
-        const noteText = `${qty} of ${itemName} is returned by ${memberName}`;
+        const adminName = State.profile?.full_name || State.user?.email || 'Admin';
+        const noteText = `${qty} ${itemName} ${qty === 1 ? 'is' : 'are'} returned by ${memberName}, confirmed by ${adminName}`;
 
         try {
           await supabaseClient.from('inventory_log').insert([{
@@ -1210,12 +1223,13 @@ const Actions = {
       if (error) throw error;
 
       if (data && data.id) {
+        const adminName = State.profile?.full_name || State.user?.email || 'Admin';
         await supabaseClient.from('inventory_log').insert([{
           item_id: data.id,
           admin_id: State.user.id,
           action: 'Item Added',
           change: itemData.total_quantity || 1,
-          notes: 'Initial inventory addition'
+          notes: `${itemData.total_quantity || 1} ${itemData.name || 'Item'} added to inventory by ${adminName}`
         }]);
       }
 
@@ -1266,12 +1280,16 @@ const Actions = {
 
       if (itemErr) throw itemErr;
 
+      const adminName = State.profile?.full_name || State.user?.email || 'Admin';
+      const actionVerb = change < 0 ? 'removed from' : 'added to';
+      const noteText = `${Math.abs(change)} ${item.name} ${actionVerb} inventory by ${adminName}`;
+
       const { error: logErr } = await supabaseClient.from('inventory_log').insert([{
         item_id: itemId,
         admin_id: State.user.id,
         action: change < 0 ? 'Quantity Reduced' : 'Quantity Added',
         change: change,
-        notes: reason
+        notes: noteText
       }]);
 
       if (logErr) throw logErr;
@@ -1282,8 +1300,136 @@ const Actions = {
     } catch (err) {
       toast(err.message || 'Error updating inventory', 'error');
     }
-  }
+  },
 
+  // --------------------------------------------------------------
+  // 1️⃣ Member initiates a return → creates a “return request”
+  // --------------------------------------------------------------
+  async requestReturn(loanId) {
+    try {
+      const loan = State.loans.find(l => l.id === loanId);
+      if (!loan) throw new Error('Loan not found');
+
+      // Insert a request with purpose “Return” and status “pending”
+      const { error } = await supabaseClient.from('requests').insert([{
+        item_id: loan.item_id,
+        user_id: State.user.id,
+        quantity: loan.quantity,
+        duration_days: 0,
+        purpose: 'Return',
+        status: 'pending'
+      }]);
+      if (error) throw error;
+
+      toast('Return request submitted for admin approval', 'success');
+      await App.loadMemberData();
+    } catch (err) {
+      toast(err.message || 'Error creating return request', 'error');
+    }
+  },
+
+  // --------------------------------------------------------------
+  // 2️⃣ Admin confirms a return request → shows a modal first
+  // --------------------------------------------------------------
+  async confirmReturn(requestId) {
+    const req = State.requests.find(r => r.id === requestId);
+    if (!req) return toast('Request not found', 'error');
+
+    const qty = req.quantity || 1;
+    const itemName = req.items?.name || 'Equipment';
+    const memberName = req.profiles?.full_name || req.profiles?.email || 'Member';
+
+    const content = `
+      <h2 class="font-display-md text-display-md text-primary mb-sm">Confirm Return</h2>
+      <p>Are you sure <strong>${qty} ${itemName}</strong> returned by <strong>${memberName}</strong>?</p>
+      <div class="flex justify-end space-x-sm mt-md">
+        <button class="px-md py-sm bg-surface-container text-on-surface rounded" onclick="closeModal()">Cancel</button>
+        <button class="px-md py-sm bg-secondary text-on-secondary rounded" onclick="Actions._processReturn('${requestId}')">Confirm</button>
+      </div>
+    `;
+    openModal(content);
+  },
+
+  // --------------------------------------------------------------
+  // 3️⃣ Internal helper – actually process the return after admin OK
+  // --------------------------------------------------------------
+  async _processReturn(requestId) {
+    closeModal(); // hide the modal
+    try {
+      const req = State.requests.find(r => r.id === requestId);
+      if (!req) throw new Error('Request not found');
+
+      // Find the active loan that matches this request (by item & user)
+      const loan = State.loans.find(l =>
+        l.item_id === req.item_id &&
+        l.user_id === req.user_id &&
+        l.status === 'active'
+      );
+      if (!loan) throw new Error('Active loan not found for this return');
+
+      // 1️⃣ Mark the loan as returned (use your existing RPC)
+      const res = await supabaseClient.rpc('return_item', { p_loan_id: loan.id });
+      if (res.error) throw res.error;
+
+      // 2️⃣ Update the original return request status to “approved”
+      const { error: updReqErr } = await supabaseClient
+        .from('requests')
+        .update({ status: 'approved' })
+        .eq('id', requestId);
+      if (updReqErr) throw updReqErr;
+
+      // 3️⃣ Log the return action with admin name
+      const adminName = State.profile?.full_name || State.user?.email || 'Admin';
+      const noteText = `${req.quantity} ${req.items?.name || 'Item'} ${req.quantity === 1 ? 'is' : 'are'} returned by ${req.profiles?.full_name || req.profiles?.email || 'Member'}, confirmed by ${adminName}`;
+      await supabaseClient.from('inventory_log').insert([{
+        item_id: req.item_id,
+        admin_id: State.user.id,
+        action: 'return',
+        change: req.quantity,
+        notes: noteText
+      }]);
+
+      toast('Return confirmed and inventory updated', 'success');
+      // Refresh data for both admin and member views
+      await App.loadAdminData();
+      await App.loadMemberData();
+      Router.go('admin-requests');
+    } catch (err) {
+      toast(err.message || 'Error confirming return', 'error');
+    }
+  },
+
+  // --------------------------------------------------------------
+  // 4️⃣ Admin can reject a return request (admin only)
+  // --------------------------------------------------------------
+  async rejectReturn(requestId) {
+    // Re‑use the generic rejectRequest – it will set status to “rejected”
+    return this.rejectRequest(requestId);
+  },
+
+  async submitBorrowRequest(itemId, qty, durationDays, purpose) {
+    // (Existing method retained for completeness)
+    try {
+      const res = await supabaseClient.rpc('request_item', {
+        p_item_id: itemId,
+        p_quantity: qty,
+        p_duration_days: durationDays,
+        p_purpose: purpose
+      });
+      if (res.error) {
+        if (res.error.code === '23505') {
+          toast('You already have a pending request for this item.', 'error');
+          return;
+        }
+        throw new Error(res.error);
+      }
+      toast('Borrow request submitted!', 'success');
+      await App.loadMemberData();
+      Router.go('member-dashboard');
+    } catch (err) {
+      toast(err.message || 'Error submitting request', 'error');
+    }
+  }
 };
 
 // Initialize on page load
