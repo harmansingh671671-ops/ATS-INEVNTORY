@@ -69,10 +69,17 @@ function fmtDate(d) {
 function toast(msg, type = 'info') {
   const c = $('#toast-container');
   if (!c) return;
+  
+  // Extract message if msg is an error object
+  let displayMsg = msg;
+  if (typeof msg === 'object' && msg !== null) {
+      displayMsg = msg.message || msg.error || JSON.stringify(msg);
+  }
+  
   const div = document.createElement('div');
   const bg = type === 'error' ? 'bg-error text-on-error' : type === 'success' ? 'bg-emerald-600 text-white' : 'bg-primary-container text-on-primary-container';
   div.className = `${bg} px-md py-sm rounded-lg shadow-lg text-sm font-medium transition-all duration-300 flex items-center justify-between min-w-[240px]`;
-  div.innerHTML = `<span>${h(msg)}</span><button onclick="this.parentElement.remove()" class="ml-sm font-bold">&times;</button>`;
+  div.innerHTML = `<span>${h(displayMsg)}</span><button onclick="this.parentElement.remove()" class="ml-sm font-bold">&times;</button>`;
   c.appendChild(div);
   setTimeout(() => div.remove(), 4000);
 }
