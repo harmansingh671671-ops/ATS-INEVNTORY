@@ -1000,14 +1000,18 @@ const Actions = {
         const memberName = req.profiles?.full_name || req.profiles?.email || 'Member';
         const noteText = `${qty} ${itemName} is lended to ${memberName}`;
 
-        // Ensure inventory log is recorded if RPC did not log it
-        await supabaseClient.from('inventory_logs').insert([{
-          item_id: req.item_id,
-          admin_id: State.user.id,
-          action: 'lend',
-          change: -qty,
-          notes: noteText
-        }]).catch(() => {});
+        // Record inventory log (awaited to catch errors properly)
+        try {
+          await supabaseClient.from('inventory_logs').insert([{
+            item_id: req.item_id,
+            admin_id: State.user.id,
+            action: 'lend',
+            change: -qty,
+            notes: noteText
+          }]);
+        } catch (logErr) {
+          console.warn('Failed to record inventory log for approval:', logErr);
+        }
       }
 
       toast('Request approved and item checked out!', 'success');
@@ -1020,8 +1024,10 @@ const Actions = {
 
   async rejectRequest(reqId) {
     try {
-      const res = await supabaseClient.rpc('reject_request', { p_request_id: reqId });
-      if (res.error) throw new Error(res.error);
+      // Directly update the request status to 'rejected' without invoking any RPC that might create a loan
+      const { error } = await supabaseClient.from('requests').update({ status: 'rejected' }).eq('id', reqId);
+      if (error) throw error;
+
       toast('Request rejected', 'info');
       await App.loadAdminData();
       Router.go('admin-requests');
@@ -1042,13 +1048,17 @@ const Actions = {
         const memberName = loan.profiles?.full_name || loan.profiles?.email || 'Member';
         const noteText = `${qty} of ${itemName} is returned by ${memberName}`;
 
-        await supabaseClient.from('inventory_logs').insert([{
-          item_id: loan.item_id,
-          admin_id: State.user?.id || null,
-          action: 'return',
-          change: qty,
-          notes: noteText
-        }]).catch(() => {});
+        try {
+          await supabaseClient.from('inventory_logs').insert([{
+            item_id: loan.item_id,
+            admin_id: State.user?.id || null,
+            action: 'return',
+            change: qty,
+            notes: noteText
+          }]);
+        } catch (logErr) {
+          console.warn('Failed to record inventory log for return:', logErr);
+        }
       }
 
       toast('Item returned successfully!', 'success');
