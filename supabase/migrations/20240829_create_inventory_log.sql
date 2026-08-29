@@ -1,39 +1,39 @@
 -- ------------------------------------------------------------
 -- 1️⃣  Create the inventory_log table
 -- ------------------------------------------------------------
-create table if not exists public.inventory_log (
-  id            uuid      primary key default uuid_generate_v4(),
-  item_id       uuid      not null references public.items (id) on delete cascade,
-  admin_id      uuid      not null references public.profiles (id) on delete set null,
-  action        text      not null,                     -- e.g. 'lend', 'return', 'Quantity Added', …
-  change        integer   not null,                     -- positive for additions, negative for removals
-  notes         text,                                 -- human‑readable description (the code builds this)
-  created_at    timestamp with time zone default now()
+CREATE TABLE IF NOT EXISTS public.inventory_log (
+  id            UUID      PRIMARY KEY DEFAULT uuid_generate_v4(),
+  item_id       UUID      NOT NULL REFERENCES public.items (id) ON DELETE CASCADE,
+  admin_id      UUID      NOT NULL REFERENCES public.profiles (id) ON DELETE SET NULL,
+  action        TEXT      NOT NULL,                     -- e.g. 'lend', 'return', 'Quantity Added', …
+  change        INTEGER   NOT NULL,                     -- positive for additions, negative for removals
+  notes         TEXT,                                 -- human‑readable description (the code builds this)
+  created_at    TIMESTAMPTZ DEFAULT now()
 );
 
 -- ------------------------------------------------------------
 -- 2️⃣  Enable Row‑Level Security (RLS) – required for all tables
 -- ------------------------------------------------------------
-alter table public.inventory_log enable row level security;
+ALTER TABLE public.inventory_log ENABLE ROW LEVEL SECURITY;
 
 -- ------------------------------------------------------------
 -- 3️⃣  Default policies (you can tighten them later)
 -- ------------------------------------------------------------
 -- a) Anyone who is authenticated can read logs
-create policy "allow read for authenticated users"
-  on public.inventory_log
-  for select
-  using (auth.role() = 'authenticated');
+CREATE POLICY "allow read for authenticated users"
+  ON public.inventory_log
+  FOR SELECT
+  USING (auth.role() = 'authenticated');
 
 -- b) Only admins (or the admin who created the entry) can insert / update / delete
-create policy "allow write for admins"
-  on public.inventory_log
-  for insert with check (
-    auth.role() = 'authenticated' and
-    (select role from public.profiles where id = auth.uid()) = 'admin'
+CREATE POLICY "allow write for admins"
+  ON public.inventory_log
+  FOR INSERT WITH CHECK (
+    auth.role() = 'authenticated' AND
+    (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin'
   );
 
-create policy "allow update/delete for admins"
-  on public.inventory_log
-  for update, delete
-  using ((select role from public.profiles where id = auth.uid()) = 'admin');
+CREATE POLICY "allow update/delete for admins"
+  ON public.inventory_log
+  FOR UPDATE, DELETE
+  USING ((SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin');
