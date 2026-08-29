@@ -1,0 +1,365 @@
+<!DOCTYPE html><html class="h-full" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ATS CLUB - Admin Request Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#2d3133",
+                        "tertiary-container": "#0b1c30",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-container": "#7c839b",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#d3e4fe",
+                        "primary-container": "#131b2e",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f7f9fb",
+                        "surface-container-high": "#e6e8ea",
+                        "outline": "#76777d",
+                        "inverse-primary": "#bec6e0",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#2170e4",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary": "#0058be",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "primary": "#000000",
+                        "on-secondary-container": "#fefcff",
+                        "on-surface-variant": "#45464d",
+                        "surface-bright": "#f7f9fb",
+                        "surface-dim": "#d8dadc",
+                        "on-surface": "#191c1e",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "tertiary": "#000000",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-background": "#191c1e",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-primary-fixed": "#131b2e",
+                        "on-tertiary-container": "#75859d",
+                        "on-secondary-fixed": "#001a42",
+                        "on-secondary-fixed-variant": "#004395",
+                        "outline-variant": "#c6c6cd",
+                        "surface-variant": "#e0e3e5",
+                        "background": "#f7f9fb",
+                        "surface-tint": "#565e74"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "xl": "48px",
+                        "gutter": "20px",
+                        "lg": "24px",
+                        "base": "4px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "table-data": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "table-data": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="h-full bg-background text-on-background flex font-body-md antialiased overflow-hidden">
+<!-- SideNavBar -->
+<nav class="hidden lg:flex flex-col border-r border-outline-variant dark:border-outline p-lg gap-lg bg-surface-container-lowest dark:bg-surface-container-low text-secondary dark:text-secondary-fixed shadow-md dark:shadow-none fixed left-0 top-0 h-full w-[280px] z-50">
+<!-- Header -->
+<div class="flex items-center gap-md pb-md border-b border-outline-variant">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">
+                ATS
+            </div>
+<div>
+<h1 class="font-display-md text-display-md font-bold text-primary dark:text-primary-fixed">ATS CLUB</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Inventory System</p>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col gap-sm">
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                        Inventory
+                    </a>
+</li>
+<li class="">
+<a class="flex items-center gap-md bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-md py-sm font-bold transition-all duration-200 active:scale-98 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined icon-fill" data-icon="sync_alt">sync_alt</span>
+                        Requests
+                    </a>
+</li>
+
+</ul>
+</div>
+<!-- CTA & Footer -->
+<div class="flex flex-col gap-md pt-md border-t border-outline-variant">
+<button class="w-full bg-secondary text-on-secondary rounded-full py-sm font-label-sm text-label-sm font-bold hover:bg-on-secondary-fixed-variant transition-colors">
+                Quick Request
+            </button>
+<ul class="flex flex-col gap-sm">
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                        Settings
+                    </a>
+</li>
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                        Support
+                    </a>
+</li>
+</ul>
+<div class="flex items-center gap-md p-2 mt-sm border-t border-outline-variant pt-md">
+    <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold">
+        AD
+    </div>
+    <div class="flex-1 overflow-hidden">
+        <p class="text-sm font-bold text-on-surface truncate">Admin User</p>
+        <p class="text-xs text-on-surface-variant truncate">admin@atsclub.com</p>
+    </div>
+    <button class="p-1 hover:bg-surface-container rounded-full transition-colors">
+        <span class="material-symbols-outlined text-on-surface-variant">logout</span>
+    </button>
+</div></div>
+</nav>
+<!-- TopNavBar (Mobile Only) -->
+<nav class="lg:hidden fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 bg-surface-container-lowest shadow-sm">
+<h1 class="font-display-md text-display-md font-bold text-primary">ATS CLUB</h1>
+<button class="text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-[280px] pt-16 lg:pt-0 h-full overflow-y-auto bg-surface p-lg">
+<div class="max-w-container-max mx-auto space-y-lg">
+<!-- Page Header -->
+<header class="flex flex-col sm:flex-row sm:items-center justify-between gap-md mb-lg">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-surface">Manage Requests</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Review and process incoming item borrow requests.</p>
+</div>
+<!-- Filters/Search -->
+<div class="flex items-center gap-sm">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container rounded-lg border border-outline-variant focus:border-secondary focus:ring-1 focus:ring-secondary outline-none font-body-md text-body-md w-full sm:w-64" placeholder="Search requests..." type="text">
+</div>
+<button class="p-2 bg-surface-container rounded-lg border border-outline-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+</button>
+</div>
+</header>
+<!-- Dashboard Stats (Bento Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-lg">
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-outline-variant flex flex-col justify-between">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Pending Requests</span>
+<span class="material-symbols-outlined text-secondary">pending_actions</span>
+</div>
+<div class="font-display-lg text-display-lg">24</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-outline-variant flex flex-col justify-between">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Approved Today</span>
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+</div>
+<div class="font-display-lg text-display-lg">12</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-outline-variant flex flex-col justify-between">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Urgent Actions</span>
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div class="font-display-lg text-display-lg">3</div>
+</div>
+</div>
+<!-- Request Data Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-outline-variant overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#F1F5F9] border-b border-outline-variant">
+<th class="py-3 px-md font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">User</th>
+<th class="py-3 px-md font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Item Requested</th>
+<th class="py-3 px-md font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Date Needed</th>
+<th class="py-3 px-md font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Duration</th>
+<th class="py-3 px-md font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Status</th>
+<th class="py-3 px-md font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-table-data text-table-data">
+<!-- Row 1: Pending -->
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors group">
+<td class="py-3 px-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs">JD</div>
+<div>
+<div class="font-semibold text-on-surface">John Doe</div>
+<div class="text-on-surface-variant text-xs">Engineering</div>
+</div>
+</div>
+</td>
+<td class="py-3 px-md">
+<div class="font-semibold">MacBook Pro 16"</div>
+<div class="text-on-surface-variant text-xs">SKU: MAC-16-001</div>
+</td>
+<td class="py-3 px-md">Oct 24, 2023</td>
+<td class="py-3 px-md">5 Days</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-tertiary-fixed text-on-tertiary-fixed">
+                                        Pending
+                                    </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary hover:text-on-secondary flex items-center justify-center transition-colors" title="Approve">
+<span class="material-symbols-outlined text-sm">check</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error flex items-center justify-center transition-colors" title="Reject">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container-highest text-on-surface-variant flex items-center justify-center transition-colors" title="More Options">
+<span class="material-symbols-outlined text-sm">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Pending Urgent -->
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors group bg-error-container/10">
+<td class="py-3 px-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold text-xs">AS</div>
+<div>
+<div class="font-semibold text-on-surface">Alice Smith</div>
+<div class="text-on-surface-variant text-xs">Design</div>
+</div>
+</div>
+</td>
+<td class="py-3 px-md">
+<div class="font-semibold">Wacom Cintiq Pro</div>
+<div class="text-on-surface-variant text-xs">SKU: WAC-002</div>
+</td>
+<td class="py-3 px-md text-error font-semibold">Today</td>
+<td class="py-3 px-md">2 Weeks</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-error-container text-on-error-container">
+                                        Urgent Pending
+                                    </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed hover:bg-secondary hover:text-on-secondary flex items-center justify-center transition-colors" title="Approve">
+<span class="material-symbols-outlined text-sm">check</span>
+</button>
+<button class="w-8 h-8 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error flex items-center justify-center transition-colors" title="Reject">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container-highest text-on-surface-variant flex items-center justify-center transition-colors" title="More Options">
+<span class="material-symbols-outlined text-sm">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3: Approved -->
+<tr class="border-b border-outline-variant hover:bg-surface-container transition-colors group">
+<td class="py-3 px-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-bold text-xs">RJ</div>
+<div>
+<div class="font-semibold text-on-surface">Robert Jones</div>
+<div class="text-on-surface-variant text-xs">Marketing</div>
+</div>
+</div>
+</td>
+<td class="py-3 px-md">
+<div class="font-semibold">Sony A7III Camera</div>
+<div class="text-on-surface-variant text-xs">SKU: CAM-SON-01</div>
+</td>
+<td class="py-3 px-md">Oct 26, 2023</td>
+<td class="py-3 px-md">3 Days</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-secondary/10 text-secondary">
+                                        Approved
+                                    </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 rounded-full hover:bg-surface-container-highest text-on-surface-variant flex items-center justify-center transition-colors" title="More Options">
+<span class="material-symbols-outlined text-sm">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-md border-t border-outline-variant flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span class="">Showing 1-3 of 24 requests</span>
+<div class="flex gap-sm">
+<button class="p-1 rounded hover:bg-surface-container transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 rounded hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+
+</body></html>

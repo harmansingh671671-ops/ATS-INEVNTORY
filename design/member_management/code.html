@@ -1,0 +1,364 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ATS CLUB - Member Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "inverse-surface": "#2d3133",
+                      "tertiary-container": "#0b1c30",
+                      "surface-container-low": "#f2f4f6",
+                      "on-primary-container": "#7c839b",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#d3e4fe",
+                      "primary-container": "#131b2e",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#f7f9fb",
+                      "surface-container-high": "#e6e8ea",
+                      "outline": "#76777d",
+                      "inverse-primary": "#bec6e0",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#2170e4",
+                      "surface-container-highest": "#e0e3e5",
+                      "secondary": "#0058be",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "primary": "#000000",
+                      "on-secondary-container": "#fefcff",
+                      "on-surface-variant": "#45464d",
+                      "surface-bright": "#f7f9fb",
+                      "surface-dim": "#d8dadc",
+                      "on-surface": "#191c1e",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "tertiary": "#000000",
+                      "primary-fixed": "#dae2fd",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#eceef0",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-background": "#191c1e",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-primary-fixed": "#131b2e",
+                      "on-tertiary-container": "#75859d",
+                      "on-secondary-fixed": "#001a42",
+                      "on-secondary-fixed-variant": "#004395",
+                      "outline-variant": "#c6c6cd",
+                      "surface-variant": "#e0e3e5",
+                      "background": "#f7f9fb",
+                      "surface-tint": "#565e74"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "xl": "48px",
+                      "gutter": "20px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "table-data": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "table-data": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .shadow-elevation {
+            box-shadow: 0px 4px 12px rgba(15, 23, 42, 0.05);
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md">
+<!-- SideNavBar (from JSON) -->
+<nav class="hidden lg:flex flex-col border-r border-outline-variant dark:border-outline p-lg gap-lg fixed left-0 top-0 h-full w-[280px] bg-surface-container-lowest dark:bg-surface-container-low shadow-md dark:shadow-none z-40">
+<!-- Header -->
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center overflow-hidden">
+<img alt="ATS CLUB Logo" class="object-cover w-full h-full" data-alt="A minimalist, geometric logo for a corporate inventory system featuring subtle blue accents and clean white space, conveying precision and control." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD5LtD3-B_mGff8m0a2ZKjwc7cozyXb7lAKgl69U2uwHhkIKoS95mUKhlYHtCwDo2I1pxKfbrTtMqB8pwo0ZJIQ2tQ98rQFg8KLytcCFWfUiNenRB1C8em-vlJxNCYdxLCCZNuNm2650GOKJWc_iWWiW8gRsn4D_hSLaSePk9Q1KPOI2wy0BIczr2luIcT0GPbQnUSkYuFxfcVt52F4yXgZVrA2DMvaM5uBsqWLlXvPfgVD2NiZ0vQmRg">
+</div>
+<div>
+<h1 class="font-display-md text-display-md font-bold text-primary dark:text-primary-fixed">ATS CLUB</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Inventory System</p>
+</div>
+</div>
+<!-- Main Navigation -->
+<ul class="flex flex-col gap-sm flex-1 mt-md">
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined">sync_alt</span>
+<span class="font-label-sm text-label-sm">Requests</span>
+</a>
+</li>
+<!-- Active State -->
+
+</ul>
+<!-- CTA -->
+<button class="w-full bg-secondary text-on-secondary font-label-sm text-label-sm rounded-full py-sm flex items-center justify-center gap-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            Quick Request
+        </button>
+<!-- Footer Navigation -->
+<ul class="flex flex-col gap-sm mt-md pt-md border-t border-outline-variant">
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+</li>
+<li class="">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-all duration-200 active:scale-98" href="#">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img alt="User Avatar" class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF4TDrO6TE_5e5-JRpYMpLraekeDaO0GvL-uX7PvnXZGt-VN1EG_3cHLAvb22zU82rUn0k1snH97NP1sxmpQJ0z14X8prrlg3QW45mt_E1EnsJIc-cStR_MGdpLW9xiPqqSXgBkUdUzlafYVclp4cDuXsTufpmo7bfXzlrvaFUqpDXWwXnzBk8sCxR85uMNvRR7ZnygFvmNwzBX7ntC7IDc9hfI8pdqgahduIek63faAs9-todkQ4blA">
+</div>
+<span class="font-label-sm text-label-sm">Account</span>
+</a>
+</li></ul>
+</nav>
+<!-- Main Content Canvas -->
+<main class="lg:ml-[280px] p-md lg:p-lg pt-24 lg:pt-lg min-h-screen flex flex-col gap-lg">
+<!-- Mobile Top Nav (Simplified fallback for small screens) -->
+<div class="lg:hidden fixed top-0 left-0 w-full h-16 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between px-md z-30">
+<h1 class="font-display-md text-display-md font-bold text-primary">ATS CLUB</h1>
+<button class="text-on-surface"><span class="material-symbols-outlined">menu</span></button>
+</div>
+<!-- Page Header -->
+<header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-background">Member Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage club members, assign roles, and monitor account status.</p>
+</div>
+<div class="flex items-center gap-sm w-full sm:w-auto">
+<div class="relative flex-1 sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all shadow-sm" placeholder="Search members..." type="text">
+</div>
+<button class="bg-secondary text-on-secondary px-md py-2 rounded-full font-label-sm text-label-sm flex items-center gap-sm hover:opacity-90 transition-opacity whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]">person_add</span>
+                    Invite Member
+                </button>
+</div>
+</header>
+<!-- Data Table Container (Surface Layer) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-elevation overflow-hidden border border-surface-variant">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<!-- Table Header -->
+<thead class="bg-[#F1F5F9] border-b border-surface-variant">
+<tr>
+<th class="py-sm px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Member</th>
+<th class="py-sm px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Contact</th>
+<th class="py-sm px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Role</th>
+<th class="py-sm px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Status</th>
+<th class="py-sm px-md font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<!-- Table Body -->
+<tbody class="font-table-data text-table-data text-on-background divide-y divide-surface-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold text-xs uppercase overflow-hidden">
+<img alt="Sarah Jenkins" class="object-cover w-full h-full" data-alt="A professional headshot of a confident corporate executive in modern, bright office lighting, wearing a minimalist dark blazer." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF4TDrO6TE_5e5-JRpYMpLraekeDaO0GvL-uX7PvnXZGt-VN1EG_3cHLAvb22zU82rUn0k1snH97NP1sxmpQJ0z14X8prrlg3QW45mt_E1EnsJIc-cStR_MGdpLW9xiPqqSXgBkUdUzlafYVclp4cDuXsTufpmo7bfXzlrvaFUqpDXWwXnzBk8sCxR85uMNvRR7ZnygFvmNwzBX7ntC7IDc9hfI8pdqgahduIek63faAs9-todkQ4blA">
+</div>
+<div>
+<p class="font-semibold text-on-surface">Sarah Jenkins</p>
+<p class="text-on-surface-variant text-[11px] mt-0.5">Joined Oct 2023</p>
+</div>
+</div>
+</td>
+<td class="py-3 px-md">
+<p class="text-on-surface">sarah.j@atsclub.com</p>
+</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center gap-1 bg-secondary-container text-on-secondary-container px-2 py-1 rounded-md font-label-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                                    Admin
+                                </span>
+</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full font-label-sm text-[11px] bg-[#E6F4EA] text-[#137333]">
+                                    Active
+                                </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="More options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="py-3 px-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs uppercase overflow-hidden">
+                                        MC
+                                    </div>
+<div>
+<p class="font-semibold text-on-surface">Marcus Chen</p>
+<p class="text-on-surface-variant text-[11px] mt-0.5">Joined Nov 2023</p>
+</div>
+</div>
+</td>
+<td class="py-3 px-md">
+<p class="text-on-surface">m.chen@atsclub.com</p>
+</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center gap-1 bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded-md font-label-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px]">person</span>
+                                    Member
+                                </span>
+</td>
+<td class="py-3 px-md">
+<span class="inline-flex items-center px-2 py-1 rounded-full font-label-sm text-[11px] bg-[#E6F4EA] text-[#137333]">
+                                    Active
+                                </span>
+</td>
+<td class="py-3 px-md text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container text-on-surface-variant transition-colors" title="More options">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="bg-surface-container-lowest border-t border-surface-variant px-md py-3 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Showing 1 to 2 of 45 entries</span>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-md border border-outline-variant text-on-surface-variant disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-md bg-secondary text-on-secondary font-label-sm text-label-sm">
+                        1
+                    </button>
+<button class="w-8 h-8 flex items-center justify-center rounded-md border border-outline-variant hover:bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                        2
+                    </button>
+<button class="w-8 h-8 flex items-center justify-center rounded-md border border-outline-variant text-on-surface-variant hover:bg-surface-container">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+
+
+</body></html>

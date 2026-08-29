@@ -1,0 +1,284 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Member Dashboard - ATS CLUB</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#75859d",
+                        "error-container": "#ffdad6",
+                        "background": "#f7f9fb",
+                        "on-secondary-fixed": "#001a42",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-surface": "#191c1e",
+                        "primary-fixed-dim": "#bec6e0",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-fixed": "#dae2fd",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "outline": "#76777d",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f7f9fb",
+                        "inverse-on-surface": "#eff1f3",
+                        "primary-container": "#131b2e",
+                        "on-secondary-container": "#fefcff",
+                        "on-background": "#191c1e",
+                        "on-primary-container": "#7c839b",
+                        "tertiary-container": "#0b1c30",
+                        "secondary-container": "#2170e4",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#131b2e",
+                        "on-surface-variant": "#45464d",
+                        "tertiary-fixed": "#d3e4fe",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e0e3e5",
+                        "inverse-surface": "#2d3133",
+                        "inverse-primary": "#bec6e0",
+                        "tertiary": "#000000",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "secondary": "#0058be",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-bright": "#f7f9fb",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "primary": "#000000"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter": "20px",
+                        "container-max": "1440px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "xl": "48px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "table-data": ["Inter"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "table-data": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased min-h-screen pt-16">
+<!-- TopNavBar Component -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-lg h-16 max-w-container-max mx-auto bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-xl h-full">
+<a class="font-display-md text-display-md font-bold text-primary" href="#">ATS CLUB</a>
+<nav class="hidden md:flex items-center gap-lg h-full pt-1">
+<a class="text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-all duration-200 ease-in-out active:scale-95 px-md py-sm rounded-xl" href="#">Browse Inventory</a>
+<a class="text-secondary border-b-2 border-secondary pb-1 font-bold px-md py-sm transition-all duration-200 ease-in-out active:scale-95" href="#">My Dashboard</a>
+<a class="text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-all duration-200 ease-in-out active:scale-95 px-md py-sm rounded-xl" href="#">Admin Dashboard</a>
+<a class="text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-all duration-200 ease-in-out active:scale-95 px-md py-sm rounded-xl" href="#">Inventory Management</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant focus:outline-none focus:ring-2 focus:ring-secondary transition-all duration-200 active:scale-95">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A clean, professional headshot of a corporate employee on a plain white background, smiling slightly. The photo is well-lit and formal, suitable for an enterprise software avatar. The style is modern corporate minimalist, ensuring it blends seamlessly into a clean UI dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-EkFPh4Jd5eFkuVn0JFGsVa8X2zeHbG8b4fJ355j9kn6YRX5RROcn5tD0sl5SWcmZO68_V6KHO-HEcGcag9E7IcFKs2baTmh0l6D76-M2J6rNusHpqlh-BPaeWPxp29aHjS1e53NzWCQADHMWwoBD4za-OdmfjOhxXMoMeWaYSRWgfAk70Dgm58Jwgd09NbVDB_bHMua8oCuZAqZRBJRNE9vghHRNW16VW7slxvEKc5J2Fkl_Gs5DFg">
+</button>
+<button class="text-on-surface-variant hover:text-secondary font-label-sm text-label-sm font-medium transition-colors">Logout</button>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-md md:px-lg py-xl space-y-xl">
+<!-- Welcome Section -->
+<section class="flex flex-col md:flex-row md:items-center justify-between gap-md border-b border-surface-variant pb-lg">
+<div>
+<h1 class="font-display-lg text-display-lg text-primary">Welcome back, Alex.</h1>
+<p class="text-on-surface-variant mt-xs font-body-lg text-body-lg">Here is your current inventory status.</p>
+</div>
+<div class="flex gap-sm">
+<button class="flex items-center gap-sm px-md py-sm rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[18px]">search</span>
+                    Browse Inventory
+                </button>
+<button class="flex items-center gap-sm px-md py-sm rounded-lg bg-secondary text-on-secondary hover:bg-secondary-fixed-dim transition-colors font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    New Request
+                </button>
+</div>
+</section>
+<!-- Summary Cards (Bento style) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Active Borrows -->
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-surface-container-low hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+<div class="flex items-start justify-between mb-md">
+<div class="w-10 h-10 rounded-full bg-secondary-container text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+</div>
+<div class="space-y-1">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Borrows</p>
+<p class="font-display-lg text-display-lg text-primary">3</p>
+</div>
+<div class="mt-md pt-md border-t border-surface-variant">
+<a class="text-secondary font-label-sm text-label-sm hover:underline flex items-center gap-xs" href="#">View all items <span class="material-symbols-outlined text-[14px]">arrow_forward</span></a>
+</div>
+</div>
+<!-- Pending Requests -->
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-surface-container-low hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+<div class="flex items-start justify-between mb-md">
+<div class="w-10 h-10 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined">hourglass_empty</span>
+</div>
+</div>
+<div class="space-y-1">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Pending Requests</p>
+<p class="font-display-lg text-display-lg text-primary">2</p>
+</div>
+<div class="mt-md pt-md border-t border-surface-variant">
+<span class="text-on-surface-variant font-body-md text-body-md text-sm">Awaiting admin approval</span>
+</div>
+</div>
+<!-- Overdue Items -->
+<div class="bg-surface-container-lowest p-lg rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-error-container relative overflow-hidden hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+<div class="absolute top-0 right-0 w-24 h-24 bg-error-container opacity-20 rounded-bl-full pointer-events-none"></div>
+<div class="flex items-start justify-between mb-md relative z-10">
+<div class="w-10 h-10 rounded-full bg-error-container text-error flex items-center justify-center">
+<span class="material-symbols-outlined">warning</span>
+</div>
+</div>
+<div class="space-y-1 relative z-10">
+<p class="font-label-sm text-label-sm text-error uppercase tracking-wider font-bold">Overdue Items</p>
+<p class="font-display-lg text-display-lg text-error">1</p>
+</div>
+<div class="mt-md pt-md border-t border-error-container relative z-10 flex justify-between items-center">
+<span class="text-error font-body-md text-body-md text-sm font-medium">Requires immediate action</span>
+<button class="text-error hover:bg-error-container px-sm py-xs rounded transition-colors text-sm">Resolve</button>
+</div>
+</div>
+</section>
+<!-- Recent Activity Table -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-surface-container-low overflow-hidden">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center bg-surface-bright">
+<h2 class="font-display-md text-display-md text-primary">Recent Activity</h2>
+<button class="p-sm text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-[#F1F5F9] font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
+<tr>
+<th class="py-md px-lg font-medium">Item Name</th>
+<th class="py-md px-lg font-medium">Asset Tag</th>
+<th class="py-md px-lg font-medium">Request Date</th>
+<th class="py-md px-lg font-medium">Status</th>
+<th class="py-md px-lg font-medium text-right">Action</th>
+</tr>
+</thead>
+<tbody class="font-table-data text-table-data text-on-surface">
+<!-- Row 1 -->
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-lg flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">laptop_mac</span>
+</div>
+<span class="font-medium">MacBook Pro 16"</span>
+</td>
+<td class="py-3 px-lg text-on-surface-variant">AST-1042</td>
+<td class="py-3 px-lg text-on-surface-variant">Oct 24, 2023</td>
+<td class="py-3 px-lg">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#ecfdf5] text-[#065f46]">
+                                    Active
+                                </span>
+</td>
+<td class="py-3 px-lg text-right">
+<button class="text-secondary hover:underline font-medium">Return</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-lg flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">videocam</span>
+</div>
+<span class="font-medium">Sony A7IV Camera Kit</span>
+</td>
+<td class="py-3 px-lg text-on-surface-variant">AST-2099</td>
+<td class="py-3 px-lg text-on-surface-variant">Oct 26, 2023</td>
+<td class="py-3 px-lg">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[#fef3c7] text-[#92400e]">
+                                    Pending
+                                </span>
+</td>
+<td class="py-3 px-lg text-right">
+<button class="text-on-surface-variant hover:text-error transition-colors" title="Cancel Request">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-lg flex items-center gap-md">
+<div class="w-10 h-10 rounded bg-surface-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">headset_mic</span>
+</div>
+<span class="font-medium text-error">Shure SM7B Microphone</span>
+</td>
+<td class="py-3 px-lg text-on-surface-variant">AST-0841</td>
+<td class="py-3 px-lg text-on-surface-variant">Sep 15, 2023</td>
+<td class="py-3 px-lg">
+<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-error-container text-error">
+                                    Overdue
+                                </span>
+</td>
+<td class="py-3 px-lg text-right">
+<button class="text-secondary hover:underline font-medium">Return Now</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md border-t border-surface-variant bg-surface-bright flex justify-center">
+<button class="text-on-surface-variant hover:text-primary font-label-sm text-label-sm font-medium transition-colors">View Full History</button>
+</div>
+</section>
+</main>
+</body></html>

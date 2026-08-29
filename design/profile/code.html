@@ -1,0 +1,334 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>User Profile - ATS CLUB</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "inverse-surface": "#2d3133",
+                      "tertiary-container": "#0b1c30",
+                      "surface-container-low": "#f2f4f6",
+                      "on-primary-container": "#7c839b",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#d3e4fe",
+                      "primary-container": "#131b2e",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#f7f9fb",
+                      "surface-container-high": "#e6e8ea",
+                      "outline": "#76777d",
+                      "inverse-primary": "#bec6e0",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#2170e4",
+                      "surface-container-highest": "#e0e3e5",
+                      "secondary": "#0058be",
+                      "on-tertiary-fixed": "#0b1c30",
+                      "primary": "#000000",
+                      "on-secondary-container": "#fefcff",
+                      "on-surface-variant": "#45464d",
+                      "surface-bright": "#f7f9fb",
+                      "surface-dim": "#d8dadc",
+                      "on-surface": "#191c1e",
+                      "tertiary-fixed-dim": "#b7c8e1",
+                      "tertiary": "#000000",
+                      "primary-fixed": "#dae2fd",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#eceef0",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-tertiary-fixed-variant": "#38485d",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-background": "#191c1e",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-primary-fixed": "#131b2e",
+                      "on-tertiary-container": "#75859d",
+                      "on-secondary-fixed": "#001a42",
+                      "on-secondary-fixed-variant": "#004395",
+                      "outline-variant": "#c6c6cd",
+                      "surface-variant": "#e0e3e5",
+                      "background": "#f7f9fb",
+                      "surface-tint": "#565e74"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "xs": "4px",
+                      "md": "16px",
+                      "sm": "8px",
+                      "xl": "48px",
+                      "gutter": "20px",
+                      "lg": "24px",
+                      "base": "4px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "table-data": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-md": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "table-data": [
+                              "13px",
+                              {
+                                      "lineHeight": "18px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+      </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="hidden lg:flex flex-col border-r border-outline-variant p-lg gap-lg fixed left-0 top-0 h-full w-[280px] bg-surface-container-lowest shadow-md z-40">
+<div class="flex items-center gap-md">
+<img alt="ATS CLUB Logo" class="w-10 h-10 rounded-lg object-cover" data-alt="A minimalist, corporate-style logo for ATS CLUB, featuring sharp geometric lines in deep blue and black, representing precision and inventory control." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPpWEEzInqh8C0DjXae3pLJhF6ffxBzWdm2xmWCZEUUGb8-CG-uIlYwKtIA3l4IqUTb878QQcW9rkbVnYUVcaWFLtMAe1_0I0fWukBiHtTc72zfVL6FNCeG1MGDeYuYGnNn7ZdOnfkmwEGK0m4aPM-Mq3_meqfSihIhhpSqDe60tjT_jN9j_GudIUYZbrS25to6wForfBchA3HxCc52xia-8ogc6tqng0uLnWrfxPPTkCKEuWcNx1eew">
+<div>
+<h1 class="font-display-md text-display-md font-bold text-primary">ATS CLUB</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Inventory System</p>
+</div>
+</div>
+<button class="bg-secondary text-on-secondary font-label-sm text-label-sm rounded-lg px-md py-sm flex items-center justify-center gap-sm hover:bg-secondary-fixed-dim transition-colors mt-md">
+<span class="material-symbols-outlined text-[18px]">add</span>
+            Quick Request
+        </button>
+<div class="flex-grow flex flex-col gap-sm mt-md">
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+<span class="font-label-sm text-label-sm">Requests</span>
+</a>
+
+</div>
+<div class="mt-auto flex flex-col gap-sm">
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 lg:ml-[280px] p-md lg:p-lg lg:px-lg lg:py-lg max-w-container-max mx-auto w-full">
+<header class="mb-xl flex items-center justify-between">
+<h2 class="font-display-lg text-display-lg text-primary">User Profile</h2>
+<button class="flex items-center gap-sm hover:bg-surface-container p-xs rounded-full transition-colors" title="Account Settings">
+  <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJo9-Gx9jR8XHCzayhG5w4F_ex0E-GG-VYxeZlJcciR1K_MekWrpxrABIOdtM8EsdO5y6AZh8eDKHp123A54Th8Rmw0UIdGbXguJmE6_SqcHL9X5xvHpx_3avJKWl83NtTgbwL7noexf9CNhtM5RipIBZ4x7CTyHhGjlKjpDA-CwUE2sfh_OqFcS8TNf7L0wnJpqPVqnumqVhpl8Mph7l9fmqchfDms3eR1AqZd0sDh3F87udDWDX0Dg" alt="User Avatar" class="w-8 h-8 rounded-full object-cover border border-outline-variant">
+  <span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</button></header>
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-lg">
+<!-- Profile Info Card (Bento Style) -->
+<div class="xl:col-span-4 bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(15,23,42,0.05)] p-lg flex flex-col items-center text-center">
+<div class="relative mb-md">
+<img alt="User Avatar" class="w-32 h-32 rounded-full object-cover border-4 border-surface shadow-sm" data-alt="A professional headshot of a person with a neutral expression, well-lit against a clean, minimal light grey background, wearing modern corporate attire suitable for an administrative role." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJo9-Gx9jR8XHCzayhG5w4F_ex0E-GG-VYxeZlJcciR1K_MekWrpxrABIOdtM8EsdO5y6AZh8eDKHp123A54Th8Rmw0UIdGbXguJmE6_SqcHL9X5xvHpx_3avJKWl83NtTgbwL7noexf9CNhtM5RipIBZ4x7CTyHhGjlKjpDA-CwUE2sfh_OqFcS8TNf7L0wnJpqPVqnumqVhpl8Mph7l9fmqchfDms3eR1AqZd0sDh3F87udDWDX0Dg">
+<button class="absolute bottom-0 right-0 bg-surface text-on-surface border border-outline-variant rounded-full p-xs hover:bg-surface-container transition-colors" title="Edit Avatar">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+</div>
+<h3 class="font-display-md text-display-md text-primary mb-xs">Eleanor Vance</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-sm">eleanor.vance@atsclub.inc</p>
+<div class="inline-flex items-center gap-xs px-sm py-[2px] rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm mb-lg">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+                    Senior Administrator
+                </div>
+<div class="w-full border-t border-outline-variant pt-lg mt-auto text-left">
+<div class="flex justify-between items-center mb-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Department</span>
+<span class="font-body-md text-body-md text-on-surface">Operations</span>
+</div>
+<div class="flex justify-between items-center mb-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Joined</span>
+<span class="font-body-md text-body-md text-on-surface">Oct 2021</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Status</span>
+<span class="font-body-md text-body-md text-[#15803d] flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-[#15803d]"></span>
+                            Active
+                        </span>
+</div>
+</div>
+</div>
+<div class="xl:col-span-8 flex flex-col gap-lg">
+<!-- Edit Personal Information -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(15,23,42,0.05)] p-lg">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-display-md text-display-md text-primary">Personal Information</h3>
+<button class="text-secondary font-label-sm text-label-sm hover:underline flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">edit</span> Edit
+                        </button>
+</div>
+<form class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">Full Name</label>
+<input class="w-full bg-surface border border-tertiary px-sm py-xs rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:border-2 disabled:opacity-70 disabled:bg-surface-container" disabled="" type="text" value="Eleanor Vance">
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">Email Address</label>
+<input class="w-full bg-surface border border-tertiary px-sm py-xs rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:border-2 disabled:opacity-70 disabled:bg-surface-container" disabled="" type="email" value="eleanor.vance@atsclub.inc">
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">Phone Number</label>
+<input class="w-full bg-surface border border-tertiary px-sm py-xs rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:border-2 disabled:opacity-70 disabled:bg-surface-container" disabled="" type="tel" value="+1 (555) 019-2834">
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">Location</label>
+<input class="w-full bg-surface border border-tertiary px-sm py-xs rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:border-2 disabled:opacity-70 disabled:bg-surface-container" disabled="" type="text" value="Headquarters - NY">
+</div>
+</form>
+</div>
+<!-- My Active Borrows -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(15,23,42,0.05)] p-lg flex-1">
+<h3 class="font-display-md text-display-md text-primary mb-lg">My Active Borrows</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#F1F5F9] font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
+<th class="p-sm rounded-tl-lg">Item</th>
+<th class="p-sm">ID</th>
+<th class="p-sm">Borrowed On</th>
+<th class="p-sm">Due Date</th>
+<th class="p-sm rounded-tr-lg text-right">Status</th>
+</tr>
+</thead>
+<tbody class="font-table-data text-table-data text-on-surface">
+<tr class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container transition-colors">
+<td class="p-sm py-[12px] flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">laptop_mac</span>
+</div>
+                                        MacBook Pro 16"
+                                    </td>
+<td class="p-sm py-[12px] text-on-surface-variant">#ITM-4092</td>
+<td class="p-sm py-[12px]">Oct 12, 2023</td>
+<td class="p-sm py-[12px]">Nov 12, 2023</td>
+<td class="p-sm py-[12px] text-right">
+<span class="inline-block px-sm py-[2px] rounded-full bg-[#ecfdf5] text-[#065f46] font-label-sm text-[10px]">IN GOOD STANDING</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container transition-colors">
+<td class="p-sm py-[12px] flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">videocam</span>
+</div>
+                                        Sony A7S III Kit
+                                    </td>
+<td class="p-sm py-[12px] text-on-surface-variant">#ITM-2184</td>
+<td class="p-sm py-[12px]">Oct 28, 2023</td>
+<td class="p-sm py-[12px] font-bold text-[#b45309]">Nov 02, 2023</td>
+<td class="p-sm py-[12px] text-right">
+<span class="inline-block px-sm py-[2px] rounded-full bg-[#fffbeb] text-[#b45309] font-label-sm text-[10px]">DUE SOON</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container transition-colors">
+<td class="p-sm py-[12px] flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">router</span>
+</div>
+                                        Portable 5G Hotspot
+                                    </td>
+<td class="p-sm py-[12px] text-on-surface-variant">#ITM-0056</td>
+<td class="p-sm py-[12px]">Sep 01, 2023</td>
+<td class="p-sm py-[12px]">Oct 01, 2023</td>
+<td class="p-sm py-[12px] text-right">
+<span class="inline-block px-sm py-[2px] rounded-full bg-error-container text-on-error-container font-label-sm text-[10px]">OVERDUE</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+
+</body></html>

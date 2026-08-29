@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Item Usage Detail - ATS CLUB</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#2170e4",
+                        "surface-dim": "#d8dadc",
+                        "surface-bright": "#f7f9fb",
+                        "on-secondary-container": "#fefcff",
+                        "outline": "#76777d",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-background": "#191c1e",
+                        "surface": "#f7f9fb",
+                        "primary": "#000000",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#001a42",
+                        "outline-variant": "#c6c6cd",
+                        "inverse-on-surface": "#eff1f3",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "secondary-fixed": "#d8e2ff",
+                        "primary-container": "#131b2e",
+                        "surface-variant": "#e0e3e5",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "tertiary-container": "#0b1c30",
+                        "tertiary-fixed": "#d3e4fe",
+                        "tertiary": "#000000",
+                        "surface-container": "#eceef0",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "inverse-primary": "#bec6e0",
+                        "on-surface-variant": "#45464d",
+                        "primary-fixed": "#dae2fd",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-surface": "#191c1e",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary": "#0058be",
+                        "on-primary-container": "#7c839b",
+                        "on-primary-fixed": "#131b2e",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-low": "#f2f4f6",
+                        "on-tertiary-container": "#75859d",
+                        "background": "#f7f9fb",
+                        "surface-tint": "#565e74",
+                        "surface-container-high": "#e6e8ea"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "base": "4px",
+                        "xs": "4px",
+                        "xl": "48px",
+                        "container-max": "1440px",
+                        "sm": "8px",
+                        "gutter": "20px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-md": ["Inter"],
+                        "table-data": ["Inter"],
+                        "label-sm": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "table-data": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased overflow-x-hidden min-h-screen flex">
+<!-- Hide TopNav/BottomNav since this is a sub-page with a "Back" action -->
+<!-- Main Canvas -->
+<main class="flex-1 p-lg md:p-xl max-w-container-max mx-auto w-full">
+<!-- Back Navigation -->
+<div class="mb-lg">
+<button class="flex items-center text-secondary font-body-md hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined mr-sm text-[20px]" data-icon="arrow_back">arrow_back</span>
+                Back to Inventory
+            </button>
+</div>
+<!-- Header Section (Bento Style) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter mb-xl">
+<!-- Main Info Card -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_12px_rgba(15,23,42,0.05)] lg:col-span-2 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-sm mb-xs">
+<span class="font-label-sm text-label-sm text-outline px-sm py-xs bg-surface-container-low rounded-DEFAULT uppercase tracking-wider">SKU #MAC-16-001</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary mb-sm">MacBook Pro 16"</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Apple M2 Max chip with 12‑core CPU, 38‑core GPU, and 16‑core Neural Engine. 32GB unified memory.</p>
+</div>
+</div>
+<!-- Stats Card -->
+<div class="bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_12px_rgba(15,23,42,0.05)] flex flex-col justify-center">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-md">Availability</h3>
+<div class="flex justify-between items-end mb-sm">
+<div>
+<p class="font-display-md text-display-md text-primary">12</p>
+<p class="font-body-md text-body-md text-on-surface-variant">In Stock</p>
+</div>
+<div class="text-right">
+<p class="font-display-md text-display-md text-secondary">38</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Currently Borrowed</p>
+</div>
+</div>
+<div class="w-full bg-surface-container-low h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 76%"></div>
+</div>
+<p class="font-label-sm text-label-sm text-outline mt-sm text-right">Total: 50 units</p>
+</div>
+</div>
+<!-- Current Holders Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] overflow-hidden">
+<div class="p-lg border-b border-surface-variant flex justify-between items-center">
+<h2 class="font-display-md text-display-md text-primary">Current Holders</h2>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="search">search</span>
+<input class="pl-[36px] pr-sm py-[6px] rounded-lg border border-outline-variant focus:border-secondary focus:ring-0 font-body-md text-body-md w-[250px] bg-surface-bright" placeholder="Search holders..." type="text"/>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse min-w-[800px]">
+<thead>
+<tr class="bg-[#F1F5F9] border-b border-surface-variant">
+<th class="font-label-sm text-label-sm text-on-surface-variant uppercase px-md py-sm w-[300px]">User</th>
+<th class="font-label-sm text-label-sm text-on-surface-variant uppercase px-md py-sm w-[150px]">Department</th>
+<th class="font-label-sm text-label-sm text-on-surface-variant uppercase px-md py-sm w-[100px] text-right">Qty</th>
+<th class="font-label-sm text-label-sm text-on-surface-variant uppercase px-md py-sm w-[150px]">Date Borrowed</th>
+<th class="font-label-sm text-label-sm text-on-surface-variant uppercase px-md py-sm w-[150px]">Due Date</th>
+<th class="font-label-sm text-label-sm text-on-surface-variant uppercase px-md py-sm w-[120px]">Status</th>
+</tr>
+</thead>
+<tbody class="font-table-data text-table-data text-on-surface">
+<!-- Row 1: Overdue -->
+<tr class="border-b border-surface-variant hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-low shrink-0">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a young woman in a brightly lit modern office. High quality, clear, minimalist corporate style, wearing smart casual attire. The lighting is soft and natural." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeEm9ypzJ1a8Wv-8z2iWn48p8uB0ltkp6_p4UepR4kHGGKeBfSnCjXRTI4gujozkESNbJUIkZo1fY0YIecg3OnPoXkuHo60HAyzsj2kO8U6pKN8QBv-73z60JsnivvTPGjzIiifQ1JAAbioFBZnANbxRcLxkXIyj6uMgibOoLyDxusKTtviV35mfd25CADAS3LwEYIoqqcQLFHoMR1srBoJD0lZiPkv1VDmwLwEugvbPEaKwoL9BLRww"/>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-primary">Sarah Jenkins</p>
+<p class="text-on-surface-variant text-[12px]">s.jenkins@atsclub.com</p>
+</div>
+</div>
+</td>
+<td class="px-md py-[12px]">Design</td>
+<td class="px-md py-[12px] text-right">1</td>
+<td class="px-md py-[12px]">Oct 12, 2023</td>
+<td class="px-md py-[12px]">Oct 26, 2023</td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center px-sm py-[2px] rounded-full text-error bg-error/10 font-label-sm text-label-sm">
+                                    Overdue
+                                </span>
+</td>
+</tr>
+<!-- Row 2: In Use -->
+<tr class="border-b border-surface-variant hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-low shrink-0">
+<img class="w-full h-full object-cover" data-alt="Professional headshot of a middle-aged man in a modern office environment. High quality, clear, minimalist corporate style, wearing a navy blue shirt. Soft studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMsQefPhIL7Dcz8QuePyDoFFKmnPfLaotQZJyI6a-uf0uxU0HtGIkWSv79TMe3H-uJ15Sk20hj1oeEuhnZJOZLJXe0r4mF4q83lwvxNIpXrsQ4g3QkW9dpxD02tklDLeULfF0AbQq6DthNpjMeTRMyKiJV7oUDMjvENTGdAEB4D0oIcDyMlnTbWWsfNwtPIIH-gDLezy8zwlRZt1Lnl-uCs0Y0jwk5aC8JCpZ2ylOyVx6F5O84SChGgg"/>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-primary">David Chen</p>
+<p class="text-on-surface-variant text-[12px]">d.chen@atsclub.com</p>
+</div>
+</div>
+</td>
+<td class="px-md py-[12px]">Engineering</td>
+<td class="px-md py-[12px] text-right">1</td>
+<td class="px-md py-[12px]">Oct 15, 2023</td>
+<td class="px-md py-[12px]">Nov 15, 2023</td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center px-sm py-[2px] rounded-full text-secondary bg-secondary/10 font-label-sm text-label-sm">
+                                    In Use
+                                </span>
+</td>
+</tr>
+<!-- Row 3: Returning Today -->
+<tr class="border-b border-surface-variant hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-[12px]">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-low shrink-0">
+<span class="material-symbols-outlined text-outline w-full h-full flex items-center justify-center bg-surface-variant text-[20px]" data-icon="person">person</span>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-primary">Michael Rodriguez</p>
+<p class="text-on-surface-variant text-[12px]">m.rodriguez@atsclub.com</p>
+</div>
+</div>
+</td>
+<td class="px-md py-[12px]">Marketing</td>
+<td class="px-md py-[12px] text-right">1</td>
+<td class="px-md py-[12px]">Sep 28, 2023</td>
+<td class="px-md py-[12px]">Oct 28, 2023</td>
+<td class="px-md py-[12px]">
+<span class="inline-flex items-center px-sm py-[2px] rounded-full text-[#b45309] bg-[#fef3c7] font-label-sm text-label-sm">
+                                    Returning Today
+                                </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination (Placeholder) -->
+<div class="p-md flex justify-between items-center border-t border-surface-variant text-on-surface-variant">
+<span class="font-body-md text-body-md">Showing 1-3 of 38 holders</span>
+<div class="flex gap-xs">
+<button class="p-xs rounded hover:bg-surface-container-highest transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="p-xs rounded hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>
