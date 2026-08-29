@@ -6,10 +6,10 @@ let SUPABASE_URL = '';
 let SUPABASE_ANON_KEY = '';
 
 async function loadEnvConfig() {
-  let env = {
-    SUPABASE_URL: '',
-    SUPABASE_ANON_KEY: ''
-  };
+  // If we already have a client, skip re‑creating it – this stops the “Multiple GoTrueClient instances” warning.
+  if (supabaseClient) return;
+
+  let env = { SUPABASE_URL: '', SUPABASE_ANON_KEY: '' };
 
   try {
     const response = await fetch('.env');
@@ -171,7 +171,11 @@ const App = {
     State.user = session.user;
 
     // Fetch Profile
-    let { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', State.user.id).single();
+    let { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('id,email,full_name,role')
+      .eq('id', State.user.id)
+      .single();
     if (!profile) {
       // Create default profile if not present
       const metaName = State.user.user_metadata?.full_name || State.user.email.split('@')[0];
@@ -308,7 +312,7 @@ const App = {
         supabaseClient.from('requests').select('*, items(name, asset_tag), profiles!user_id(full_name, email)').order('requested_at', { ascending: false }),
         supabaseClient.from('loans').select('*, items(name, asset_tag), profiles!user_id(full_name, email)').order('borrowed_at', { ascending: false }),
         supabaseClient.from('profiles').select('*').order('joined_at', { ascending: false }),
-        supabaseClient.from('inventory_logs').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
+        supabaseClient.from('inventory_log').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
       ]);
 
       if (reqsRes.error) console.error('Error fetching requests:', reqsRes.error);
@@ -339,7 +343,7 @@ const App = {
         supabaseClient.from('items').select('*').order('name'),
         supabaseClient.from('requests').select('*, items(name, asset_tag, icon_name)').eq('user_id', State.user.id).order('requested_at', { ascending: false }),
         supabaseClient.from('loans').select('*, items(name, asset_tag, icon_name)').eq('user_id', State.user.id).order('borrowed_at', { ascending: false }),
-        supabaseClient.from('inventory_logs').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
+        supabaseClient.from('inventory_log').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
       ]);
 
       if (reqsRes.error) console.error('Error fetching member requests:', reqsRes.error);
@@ -1002,7 +1006,7 @@ const Actions = {
 
         // Record inventory log (awaited to catch errors properly)
         try {
-          await supabaseClient.from('inventory_logs').insert([{
+          await supabaseClient.from('inventory_log').insert([{
             item_id: req.item_id,
             admin_id: State.user.id,
             action: 'lend',
@@ -1049,7 +1053,7 @@ const Actions = {
         const noteText = `${qty} of ${itemName} is returned by ${memberName}`;
 
         try {
-          await supabaseClient.from('inventory_logs').insert([{
+          await supabaseClient.from('inventory_log').insert([{
             item_id: loan.item_id,
             admin_id: State.user?.id || null,
             action: 'return',
@@ -1141,7 +1145,14 @@ const Actions = {
         p_duration_days: durationDays,
         p_purpose: purpose
       });
-      if (res.error) throw new Error(res.error);
+      if (res.error) {
+        // 23505 = unique_violation – most likely “already have a pending request for this item”
+        if (res.error.code === '23505') {
+          toast('You already have a pending request for this item.', 'error');
+          return;
+        }
+        throw new Error(res.error);
+      }
       toast('Borrow request submitted!', 'success');
       await App.loadMemberData();
       Router.go('member-dashboard');
@@ -1192,7 +1203,7 @@ const Actions = {
       if (error) throw error;
 
       if (data && data.id) {
-        await supabaseClient.from('inventory_logs').insert([{
+        await supabaseClient.from('inventory_log').insert([{
           item_id: data.id,
           admin_id: State.user.id,
           action: 'Item Added',
@@ -1248,7 +1259,7 @@ const Actions = {
 
       if (itemErr) throw itemErr;
 
-      const { error: logErr } = await supabaseClient.from('inventory_logs').insert([{
+      const { error: logErr } = await supabaseClient.from('inventory_log').insert([{
         item_id: itemId,
         admin_id: State.user.id,
         action: change < 0 ? 'Quantity Reduced' : 'Quantity Added',
@@ -1270,4 +1281,3 @@ const Actions = {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => App.init());
-
