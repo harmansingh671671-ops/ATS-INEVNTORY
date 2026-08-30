@@ -1336,7 +1336,7 @@ const Actions = {
         item_id: loan.item_id,
         user_id: State.user.id,
         quantity: loan.quantity,
-        duration_days: 0,
+        duration_days: 1,
         purpose: 'Return',
         status: 'pending'
       }]);
