@@ -178,6 +178,9 @@ const Auth = {
 
 // --- APP CORE ---
 const App = {
+  refreshTimer: null,
+  realtimeChannel: null,
+
   async init() {
     await loadEnvConfig();
     Auth.switchTab('login');
@@ -190,6 +193,7 @@ const App = {
       }
       $('#app-view').classList.add('hidden');
       $('#auth-view').classList.remove('hidden');
+      $('#auth-view').classList.add('flex');
       return;
     }
 
@@ -197,6 +201,7 @@ const App = {
     if (!session) {
       $('#app-view').classList.add('hidden');
       $('#auth-view').classList.remove('hidden');
+      $('#auth-view').classList.add('flex');
       return;
     }
 
@@ -218,6 +223,7 @@ const App = {
     State.profile = profile;
 
     $('#auth-view').classList.add('hidden');
+    $('#auth-view').classList.remove('flex');
     $('#app-view').classList.remove('hidden');
 
     if (State.profile.role === 'admin') {
@@ -229,6 +235,55 @@ const App = {
       await this.loadMemberData();
       Router.go('member-browse');
     }
+
+    this.startBackgroundSync();
+  },
+
+  async refreshCurrentView() {
+    if (!State.user) return;
+
+    try {
+      if (State.profile?.role === 'admin') {
+        await this.loadAdminData();
+        if (!State.activeRoute || State.activeRoute.startsWith('admin')) {
+          Router.go(State.activeRoute || 'admin-dashboard');
+        }
+      } else {
+        await this.loadMemberData();
+        if (!State.activeRoute || State.activeRoute.startsWith('member')) {
+          Router.go(State.activeRoute || 'member-browse');
+        }
+      }
+    } catch (err) {
+      console.error('refreshCurrentView error:', err);
+    }
+  },
+
+  startBackgroundSync() {
+    if (this.realtimeChannel) return;
+
+    this.realtimeChannel = supabaseClient.channel('inventory-live-updates');
+
+    ['items', 'requests', 'loans', 'inventory_log', 'profiles'].forEach(table => {
+      this.realtimeChannel.on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table
+      }, () => {
+        if (document.visibilityState === 'visible') {
+          this.refreshCurrentView();
+        }
+      });
+    });
+
+    this.realtimeChannel.subscribe();
+
+    if (this.refreshTimer) clearInterval(this.refreshTimer);
+    this.refreshTimer = setInterval(() => {
+      if (document.visibilityState === 'visible' && State.user) {
+        this.refreshCurrentView();
+      }
+    }, 10000);
   },
 
   // --- RENDER ADMIN WINDOW ---
@@ -444,7 +499,9 @@ const Views = {
     const pendingReqs = pendingList.length;
     const overdueCount = State.loans.filter(l => l.status === 'active' && new Date(l.due_date) < new Date()).length;
 
-    const pendingRows = pendingList.map(req => `
+    const pendingRows = pendingList.map(req => {
+      const isReturnRequest = req.purpose === 'Return';
+      return `
       <tr class="border-b border-surface-variant hover:bg-surface-container-low">
         <td class="px-md py-sm font-medium">${h(req.items?.name || 'Equipment')}</td>
         <td class="px-md py-sm text-on-surface-variant">
@@ -455,11 +512,17 @@ const Views = {
         <td class="px-md py-sm text-on-surface-variant text-xs">${req.duration_days || 7} Days</td>
         <td class="px-md py-sm text-on-surface-variant text-xs">${h(req.purpose || 'Standard Borrow')}</td>
         <td class="px-md py-sm text-right space-x-xs">
-          <button onclick="Actions.approveRequest('${req.id}')" class="bg-emerald-700 text-white px-sm py-xs rounded text-xs font-bold hover:bg-emerald-800">Approve</button>
-          <button onclick="Actions.rejectRequest('${req.id}')" class="bg-error text-white px-sm py-xs rounded text-xs font-bold hover:bg-error/80">Reject</button>
+          ${isReturnRequest ? `
+            <button onclick="Actions.confirmReturn('${req.id}')" class="bg-emerald-700 text-white px-sm py-xs rounded text-xs font-bold hover:bg-emerald-800">Confirm Return</button>
+            <button onclick="Actions.rejectReturn('${req.id}')" class="bg-error text-white px-sm py-xs rounded text-xs font-bold hover:bg-error/80">Reject</button>
+          ` : `
+            <button onclick="Actions.approveRequest('${req.id}')" class="bg-emerald-700 text-white px-sm py-xs rounded text-xs font-bold hover:bg-emerald-800">Approve</button>
+            <button onclick="Actions.rejectRequest('${req.id}')" class="bg-error text-white px-sm py-xs rounded text-xs font-bold hover:bg-error/80">Reject</button>
+          `}
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
 
     const alertRows = State.loans.filter(l => l.status === 'active').map(l => {
       const isOverdue = new Date(l.due_date) < new Date();
@@ -1047,6 +1110,14 @@ const Actions = {
   async approveRequest(reqId) {
     try {
       const req = State.requests.find(r => r.id === reqId);
+      if (!req) throw new Error('Request not found');
+
+      // Return requests are not borrow approvals. They must go through the confirmation flow.
+      if (req.purpose === 'Return') {
+        await this.confirmReturn(reqId);
+        return;
+      }
+
       const res = await supabaseClient.rpc('approve_request', { p_request_id: reqId });
       if (res.error) throw new Error(res.error);
 
@@ -1460,30 +1531,6 @@ const Actions = {
   async rejectReturn(requestId) {
     // Re‑use the generic rejectRequest – it will set status to “rejected”
     return this.rejectRequest(requestId);
-  },
-
-  async submitBorrowRequest(itemId, qty, durationDays, purpose) {
-    // (Existing method retained for completeness)
-    try {
-      const res = await supabaseClient.rpc('request_item', {
-        p_item_id: itemId,
-        p_quantity: qty,
-        p_duration_days: durationDays,
-        p_purpose: purpose
-      });
-      if (res.error) {
-        if (res.error.code === '23505') {
-          toast('You already have a pending request for this item.', 'error');
-          return;
-        }
-        throw new Error(res.error);
-      }
-      toast('Borrow request submitted!', 'success');
-      await App.loadMemberData();
-      Router.go('member-dashboard');
-    } catch (err) {
-      toast(err.message || 'Error submitting request', 'error');
-    }
   }
 };
 
