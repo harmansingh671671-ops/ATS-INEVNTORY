@@ -197,11 +197,11 @@ const App = {
 
     if (State.profile.role === 'admin') {
       this.renderAdminWindow();
-      this.loadAdminData();
+      await this.loadAdminData();
       Router.go('admin-dashboard');
     } else {
       this.renderMemberWindow();
-      this.loadMemberData();
+      await this.loadMemberData();
       Router.go('member-browse');
     }
   },
@@ -321,6 +321,9 @@ const App = {
         supabaseClient.from('profiles').select('*').order('joined_at', { ascending: false }),
         supabaseClient.from('inventory_log').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
       ]);
+
+      console.log('loadAdminData - items:', State.items.length);
+      console.log('loadAdminData - requests:', State.requests.length);
 
       if (reqsRes.error) console.error('Error fetching requests:', reqsRes.error);
       if (loansRes.error) console.error('Error fetching loans:', loansRes.error);

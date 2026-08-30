@@ -1,20 +1,11 @@
 {
-  "name": "my-project",
+  "name": "ats-club-inventory",
+  "private": true,
   "version": "1.0.0",
-  "description": "A placeholder package.json for the project. Please update fields as needed.",
-  "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "build": "echo \"No build step defined\""
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    // Add runtime dependencies here, e.g., "express": "^4.18.2"
+    "start": "npx serve ."
   },
   "devDependencies": {
-    // Add development dependencies here, e.g., "nodemon": "^3.0.1"
+    "serve": "^14.2.1"
   }
 }

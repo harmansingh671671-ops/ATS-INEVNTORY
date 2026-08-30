@@ -121,9 +121,9 @@ create index if not exists idx_requests_user on public.requests (user_id);
 -- =====================================================================================
 
 -- =====================================================================================
--- 4.5. INVENTORY LOGS (tracking item quantity changes, damages, etc.)
+-- 4.5. INVENTORY LOG (tracking item quantity changes, damages, etc.)
 -- =====================================================================================
-create table if not exists public.inventory_logs (
+create table if not exists public.inventory_log (
     id            uuid primary key default gen_random_uuid(),
     item_id       uuid not null references public.items (id) on delete cascade,
     admin_id      uuid references public.profiles (id),
@@ -133,8 +133,8 @@ create table if not exists public.inventory_logs (
     created_at    timestamptz default now()
 );
 
-create index if not exists idx_inventory_logs_item on public.inventory_logs (item_id);
-alter table public.inventory_logs enable row level security;
+create index if not exists idx_inventory_log_item on public.inventory_log (item_id);
+alter table public.inventory_log enable row level security;
 
 -- 5. SUPPORT TICKETS
 -- =====================================================================================
@@ -156,7 +156,7 @@ alter table public.items           enable row level security;
 alter table public.requests        enable row level security;
 alter table public.loans           enable row level security;
 alter table public.support_tickets enable row level security;
-alter table public.inventory_logs    enable row level security;
+alter table public.inventory_log     enable row level security;
 
 
 -- Helper function: check if currently authenticated user is admin
@@ -246,15 +246,15 @@ create policy "tickets_admin_update"
     on public.support_tickets for update
     using (public.is_admin());
 
--- ----- INVENTORY LOGS --------------------------------------------------------
-drop policy if exists "inventory_logs_select" on public.inventory_logs;
-create policy "inventory_logs_select"
-    on public.inventory_logs for select
+-- ----- INVENTORY LOG --------------------------------------------------------
+drop policy if exists "inventory_log_select" on public.inventory_log;
+create policy "inventory_log_select"
+    on public.inventory_log for select
     using (true);
 
-drop policy if exists "inventory_logs_insert" on public.inventory_logs;
-create policy "inventory_logs_insert"
-    on public.inventory_logs for insert
+drop policy if exists "inventory_log_insert" on public.inventory_log;
+create policy "inventory_log_insert"
+    on public.inventory_log for insert
     with check (public.is_admin());
 
 
