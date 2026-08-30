@@ -319,7 +319,7 @@ const App = {
         supabaseClient.from('requests').select('*, items(name, asset_tag), profiles!user_id(full_name, email)').order('requested_at', { ascending: false }),
         supabaseClient.from('loans').select('*, items(name, asset_tag), profiles!user_id(full_name, email)').order('borrowed_at', { ascending: false }),
         supabaseClient.from('profiles').select('*').order('joined_at', { ascending: false }),
-        supabaseClient.from('inventory_log').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
+        supabaseClient.from('inventory_logs').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
       ]);
 
       if (reqsRes.error) console.error('Error fetching requests:', reqsRes.error);
@@ -350,7 +350,7 @@ const App = {
         supabaseClient.from('items').select('*').order('name'),
         supabaseClient.from('requests').select('*, items(name, asset_tag, icon_name)').eq('user_id', State.user.id).order('requested_at', { ascending: false }),
         supabaseClient.from('loans').select('*, items(name, asset_tag, icon_name)').eq('user_id', State.user.id).order('borrowed_at', { ascending: false }),
-        supabaseClient.from('inventory_log').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
+        supabaseClient.from('inventory_logs').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
       ]);
 
       if (reqsRes.error) console.error('Error fetching member requests:', reqsRes.error);
@@ -419,7 +419,10 @@ const Views = {
     const pendingRows = pendingList.map(req => `
       <tr class="border-b border-surface-variant hover:bg-surface-container-low">
         <td class="px-md py-sm font-medium">${h(req.items?.name || 'Equipment')}</td>
-        <td class="px-md py-sm text-on-surface-variant">${h(req.profiles?.full_name || req.profiles?.email || 'Member')}</td>
+        <td class="px-md py-sm text-on-surface-variant">
+          <div class="font-medium">${h(req.profiles?.full_name || 'Member')}</div>
+          <div class="text-xs text-on-surface-variant opacity-80">${h(req.profiles?.email || '')}</div>
+        </td>
         <td class="px-md py-sm text-on-surface-variant text-xs font-bold">${req.quantity || 1}</td>
         <td class="px-md py-sm text-on-surface-variant text-xs">${req.duration_days || 7} Days</td>
         <td class="px-md py-sm text-on-surface-variant text-xs">${h(req.purpose || 'Standard Borrow')}</td>
@@ -697,7 +700,10 @@ const Views = {
     const rows = State.requests.map(req => `
       <tr class="border-b border-surface-variant hover:bg-surface-container-low">
         <td class="px-md py-sm font-medium">${h(req.items?.name || 'Item')}</td>
-        <td class="px-md py-sm text-on-surface-variant">${h(req.profiles?.full_name || req.profiles?.email || 'Member')}</td>
+        <td class="px-md py-sm text-on-surface-variant">
+          <div class="font-medium">${h(req.profiles?.full_name || 'Member')}</div>
+          <div class="text-xs text-on-surface-variant opacity-80">${h(req.profiles?.email || '')}</div>
+        </td>
         <td class="px-md py-sm text-on-surface-variant">${req.quantity || 1}</td>
         <td class="px-md py-sm text-on-surface-variant">${req.duration_days || 7} Days</td>
         <td class="px-md py-sm text-on-surface-variant">${h(req.purpose || 'Standard Borrow')}</td>
@@ -1025,7 +1031,7 @@ const Actions = {
 
         // Record inventory log (awaited to catch errors properly)
         try {
-          await supabaseClient.from('inventory_log').insert([{
+          await supabaseClient.from('inventory_logs').insert([{
             item_id: req.item_id,
             admin_id: State.user.id,
             action: 'lend',
@@ -1073,7 +1079,7 @@ const Actions = {
         const noteText = `${qty} ${itemName} ${qty === 1 ? 'is' : 'are'} returned by ${memberName}, confirmed by ${adminName}`;
 
         try {
-          await supabaseClient.from('inventory_log').insert([{
+          await supabaseClient.from('inventory_logs').insert([{
             item_id: loan.item_id,
             admin_id: State.user?.id || null,
             action: 'return',
@@ -1245,7 +1251,7 @@ const Actions = {
 
       if (data && data.id) {
         const adminName = State.profile?.full_name || State.user?.email || 'Admin';
-        await supabaseClient.from('inventory_log').insert([{
+        await supabaseClient.from('inventory_logs').insert([{
           item_id: data.id,
           admin_id: State.user.id,
           action: 'Item Added',
@@ -1305,7 +1311,7 @@ const Actions = {
       const actionVerb = change < 0 ? 'removed from' : 'added to';
       const noteText = `${Math.abs(change)} ${item.name} ${actionVerb} inventory by ${adminName}`;
 
-      const { error: logErr } = await supabaseClient.from('inventory_log').insert([{
+      const { error: logErr } = await supabaseClient.from('inventory_logs').insert([{
         item_id: itemId,
         admin_id: State.user.id,
         action: change < 0 ? 'Quantity Reduced' : 'Quantity Added',
@@ -1402,7 +1408,7 @@ const Actions = {
       // 3️⃣ Log the return action with admin name
       const adminName = State.profile?.full_name || State.user?.email || 'Admin';
       const noteText = `${req.quantity} ${req.items?.name || 'Item'} ${req.quantity === 1 ? 'is' : 'are'} returned by ${req.profiles?.full_name || req.profiles?.email || 'Member'}, confirmed by ${adminName}`;
-      await supabaseClient.from('inventory_log').insert([{
+      await supabaseClient.from('inventory_logs').insert([{
         item_id: req.item_id,
         admin_id: State.user.id,
         action: 'return',
