@@ -1143,8 +1143,13 @@ const Actions = {
       }
 
       toast('Request approved and item checked out!', 'success');
-      await App.loadAdminData();
-      Router.go('admin-requests');
+      // Update local state immediately for instant UI refresh
+      const idx = State.requests.findIndex(r => r.id === reqId);
+      if (idx !== -1) {
+        State.requests[idx].status = 'approved';
+        const content = Views.adminRequests();
+        $('#main-content').innerHTML = content;
+      }
     } catch (err) {
       toast(err.message || 'Error approving request', 'error');
     }
@@ -1157,8 +1162,13 @@ const Actions = {
       if (error) throw error;
 
       toast('Request rejected', 'info');
-      await App.loadAdminData();
-      Router.go('admin-requests');
+      // Update local state immediately for instant UI refresh
+      const idx = State.requests.findIndex(r => r.id === reqId);
+      if (idx !== -1) {
+        State.requests[idx].status = 'rejected';
+        const content = Views.adminRequests();
+        $('#main-content').innerHTML = content;
+      }
     } catch (err) {
       toast(err.message || 'Error rejecting request', 'error');
     }
@@ -1516,10 +1526,15 @@ const Actions = {
       }]);
 
       toast('Return confirmed and inventory updated', 'success');
-      // Refresh data for both admin and member views
-      await App.loadAdminData();
-      await App.loadMemberData();
-      Router.go('admin-requests');
+      // Update local state immediately for instant UI refresh without page navigation
+      const idx = State.requests.findIndex(r => r.id === requestId);
+      if (idx !== -1) {
+        State.requests[idx].status = 'approved';
+        const content = Views.adminRequests();
+        $('#main-content').innerHTML = content;
+      }
+      // Trigger background sync to pull fresh data
+      setTimeout(() => App.refreshCurrentView(), 500);
     } catch (err) {
       toast(err.message || 'Error confirming return', 'error');
     }
