@@ -34,11 +34,19 @@ async function loadEnvConfig() {
     console.error('Error loading .env file', err);
   }
 
-  SUPABASE_URL = window.ENV?.SUPABASE_URL || env.SUPABASE_URL;
-  SUPABASE_ANON_KEY = window.ENV?.SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY;
+  const runtimeEnv = window.ENV || {};
+  SUPABASE_URL = runtimeEnv.SUPABASE_URL || env.SUPABASE_URL;
+  SUPABASE_ANON_KEY = runtimeEnv.SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY;
 
-  if (window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY) {
+  if (!window.supabase) {
+    console.error('Supabase JS SDK failed to load. Check the script include order.');
+    return;
+  }
+
+  if (SUPABASE_URL && SUPABASE_ANON_KEY) {
     supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } else {
+    console.error('Supabase config is missing. Set window.ENV.SUPABASE_URL and window.ENV.SUPABASE_ANON_KEY before loading app.js.');
   }
 }
 
@@ -129,6 +137,12 @@ const Auth = {
     const alertEl = $('#auth-alert');
     alertEl.classList.add('hidden');
 
+    if (!supabaseClient) {
+      alertEl.textContent = 'Supabase is not configured. Add SUPABASE_URL and SUPABASE_ANON_KEY in the deployed app configuration.';
+      alertEl.classList.remove('hidden');
+      return;
+    }
+
     try {
       if (this.mode === 'login') {
         const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -167,6 +181,17 @@ const App = {
   async init() {
     await loadEnvConfig();
     Auth.switchTab('login');
+
+    if (!supabaseClient) {
+      const alertEl = $('#auth-alert');
+      if (alertEl) {
+        alertEl.textContent = 'Supabase is not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY before deployment.';
+        alertEl.classList.remove('hidden');
+      }
+      $('#app-view').classList.add('hidden');
+      $('#auth-view').classList.remove('hidden');
+      return;
+    }
 
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) {
