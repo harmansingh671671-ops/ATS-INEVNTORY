@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ATS CLUB - Item Usage Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary-fixed": "#001a42",
+                        "primary": "#000000",
+                        "tertiary": "#000000",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-container": "#fefcff",
+                        "secondary-fixed": "#d8e2ff",
+                        "outline": "#76777d",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "surface": "#f7f9fb",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-background": "#191c1e",
+                        "surface-tint": "#565e74",
+                        "inverse-primary": "#bec6e0",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "secondary": "#0058be",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "on-surface": "#191c1e",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#45464d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "tertiary-container": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#75859d",
+                        "outline-variant": "#c6c6cd",
+                        "secondary-container": "#2170e4",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-error": "#ffffff",
+                        "primary-container": "#131b2e",
+                        "background": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "20px",
+                        "lg": "24px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "48px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono", "monospace"],
+                        "display-md": ["Inter", "sans-serif"],
+                        "table-data": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "display-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "display-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "table-data": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased h-screen flex flex-col overflow-hidden">
+<!-- Top App Bar (Mobile Sub-page variant, no main nav) -->
+<header class="bg-surface-container-lowest border-b border-surface-variant flex-shrink-0 z-10 px-md py-sm flex items-center shadow-[0px_4px_12px_rgba(15,23,42,0.05)]">
+<button class="p-2 -ml-2 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant" onclick="window.history.back()">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="ml-sm flex-1">
+<h1 class="font-body-lg text-body-lg text-on-surface font-semibold truncate">MacBook Pro 16"</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto pb-xl md:pb-lg">
+<!-- Header / Summary Section -->
+<section class="bg-surface-container-lowest px-md py-lg mb-sm shadow-[0px_4px_12px_rgba(15,23,42,0.05)]">
+<div class="flex gap-md items-start">
+<div class="w-24 h-24 rounded-lg bg-surface-container overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Item Image" class="w-full h-full object-cover" data-alt="A sleek, professional close-up of a silver modern laptop on a clean white desk, brightly lit in a minimal corporate environment. High contrast, sharp details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJz0CqIhGUTpm7qQBUHAK-lz9kDSNppoB7cranMo-yG9Wyd8WjFLLPVhj918dJbGIwSoJZTBdMKFxD_UE45Tpk8MdP1qYskt5Z_XxXHwM_9_Jv8sn2-afWUux7miLnxOe6pyfkeBFth68zEE9VnawrTOc-5iVC8o1eWJj5OTTRaMyb1uswRV9mAoeyyq1XJbGbHFz21rCqLJyTppyNIrRlVCQOuniIsNPh_ub9diiJ-FN65ckIOE-IHQ"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant px-2 py-1 bg-surface-container-high rounded-full uppercase tracking-wider">Laptop</span>
+<span class="font-label-sm text-label-sm text-primary px-2 py-1 bg-primary-fixed rounded-full">ID: MBP-2023-04</span>
+</div>
+<h2 class="font-display-md text-display-md text-on-surface truncate">MacBook Pro 16"</h2>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2 mt-1">M2 Max, 32GB RAM, 1TB SSD. Standard issue for design and engineering teams.</p>
+</div>
+</div>
+<!-- Availability Stats -->
+<div class="grid grid-cols-3 gap-sm mt-lg">
+<div class="bg-surface-container p-sm rounded-lg flex flex-col items-center justify-center border border-surface-variant">
+<span class="font-display-md text-display-md text-on-surface">45</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-1">Total</span>
+</div>
+<div class="bg-surface-container p-sm rounded-lg flex flex-col items-center justify-center border border-surface-variant">
+<span class="font-display-md text-display-md text-secondary">32</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-1">In Use</span>
+</div>
+<div class="bg-surface-container p-sm rounded-lg flex flex-col items-center justify-center border border-surface-variant">
+<span class="font-display-md text-display-md text-on-primary-fixed-variant">13</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase mt-1">Available</span>
+</div>
+</div>
+</section>
+<!-- Usage List -->
+<section class="px-md py-sm">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-sm px-2 tracking-wider">Current Usage</h3>
+<div class="flex flex-col gap-sm">
+<!-- Usage Card 1 -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-surface-variant active:scale-[0.98] transition-transform">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface font-body-lg font-semibold border border-outline-variant">JD</div>
+<div>
+<h4 class="font-body-lg text-body-lg text-on-surface font-semibold">Jane Doe</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Engineering</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 rounded bg-[#e6f4ea] text-[#137333]">Active</span>
+</div>
+<div class="grid grid-cols-2 gap-sm mt-md pt-sm border-t border-surface-variant">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Issued Date</p>
+<p class="font-body-md text-body-md text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="calendar_today">calendar_today</span>
+                                Oct 12, 2023
+                            </p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Return Due</p>
+<p class="font-body-md text-body-md text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="event">event</span>
+                                Oct 12, 2026
+                            </p>
+</div>
+</div>
+</div>
+<!-- Usage Card 2 -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-surface-variant active:scale-[0.98] transition-transform">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface font-body-lg font-semibold border border-outline-variant">JS</div>
+<div>
+<h4 class="font-body-lg text-body-lg text-on-surface font-semibold">John Smith</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Design</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 rounded bg-[#fce8e6] text-[#c5221f]">Overdue</span>
+</div>
+<div class="grid grid-cols-2 gap-sm mt-md pt-sm border-t border-surface-variant">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Issued Date</p>
+<p class="font-body-md text-body-md text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="calendar_today">calendar_today</span>
+                                Jan 05, 2021
+                            </p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-[#c5221f] mb-xs font-semibold">Return Due</p>
+<p class="font-body-md text-body-md text-[#c5221f] flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[16px]" data-icon="warning">warning</span>
+                                Jan 05, 2024
+                            </p>
+</div>
+</div>
+</div>
+<!-- Usage Card 3 -->
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-surface-variant active:scale-[0.98] transition-transform">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface font-body-lg font-semibold border border-outline-variant">AW</div>
+<div>
+<h4 class="font-body-lg text-body-lg text-on-surface font-semibold">Alice Wong</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Marketing</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm px-2 py-1 rounded bg-[#fef7e0] text-[#b06000]">Pending Return</span>
+</div>
+<div class="grid grid-cols-2 gap-sm mt-md pt-sm border-t border-surface-variant">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Issued Date</p>
+<p class="font-body-md text-body-md text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="calendar_today">calendar_today</span>
+                                May 20, 2022
+                            </p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Return Due</p>
+<p class="font-body-md text-body-md text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant" data-icon="event">event</span>
+                                Tomorrow
+                            </p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-md text-center">
+<button class="font-label-sm text-label-sm text-secondary px-4 py-2 rounded-full hover:bg-surface-container transition-colors border border-transparent hover:border-surface-variant">
+                    Load More (29)
+                </button>
+</div>
+</section>
+</main>
+<!-- Floating Action Button for Assignment -->
+<div class="fixed bottom-lg right-lg z-50">
+<button class="bg-secondary text-on-secondary w-14 h-14 rounded-full shadow-[0px_4px_12px_rgba(0,88,190,0.4)] flex items-center justify-center hover:bg-on-secondary-fixed-variant transition-colors active:scale-95">
+<span class="material-symbols-outlined filled-icon text-[28px]" data-icon="add">add</span>
+</button>
+</div>
+</body></html>

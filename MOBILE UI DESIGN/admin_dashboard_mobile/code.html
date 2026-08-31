@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ATS CLUB Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary-fixed": "#001a42",
+                        "primary": "#000000",
+                        "tertiary": "#000000",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-container": "#fefcff",
+                        "secondary-fixed": "#d8e2ff",
+                        "outline": "#76777d",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "surface": "#f7f9fb",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-background": "#191c1e",
+                        "surface-tint": "#565e74",
+                        "inverse-primary": "#bec6e0",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "secondary": "#0058be",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "on-surface": "#191c1e",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#45464d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "tertiary-container": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#75859d",
+                        "outline-variant": "#c6c6cd",
+                        "secondary-container": "#2170e4",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-error": "#ffffff",
+                        "primary-container": "#131b2e",
+                        "background": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "20px",
+                        "lg": "24px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "48px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "display-md": ["Inter"],
+                        "table-data": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "display-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "table-data": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col pt-[72px] pb-[80px] md:pt-[72px] md:pb-0 md:pl-[280px]">
+<!-- Web Top Nav (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed top-0 left-0 w-full z-50 justify-between items-center px-lg h-16 max-w-container-max mx-auto bg-surface-container-lowest dark:bg-surface-container-low shadow-sm dark:shadow-none transition-all duration-200 ease-in-out">
+<div class="flex items-center gap-lg">
+<span class="font-display-md text-display-md font-bold text-primary dark:text-primary-fixed">ATS CLUB</span>
+<div class="flex gap-md">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high rounded-xl px-3 py-2 font-body-md text-body-md" href="#">Browse Inventory</a>
+<a class="text-secondary dark:text-secondary-fixed border-b-2 border-secondary dark:border-secondary-fixed pb-1 font-bold px-3 py-2 font-body-md text-body-md" href="#">My Dashboard</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high rounded-xl px-3 py-2 font-body-md text-body-md" href="#">Admin Dashboard</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high rounded-xl px-3 py-2 font-body-md text-body-md" href="#">Inventory Management</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-2"><span class="material-symbols-outlined">search</span></button>
+<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-2"><span class="material-symbols-outlined">logout</span></button>
+</div>
+</nav>
+<!-- Web Side Nav (Hidden on Mobile) -->
+<aside class="hidden md:flex fixed left-0 top-0 h-full w-[280px] bg-surface-container-lowest dark:bg-surface-container-low shadow-md dark:shadow-none border-r border-outline-variant dark:border-outline p-lg gap-lg flex-col pt-24 z-40">
+<div class="flex flex-col gap-sm mb-lg">
+<span class="font-display-md text-display-md font-bold text-primary dark:text-primary-fixed">ATS CLUB</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Inventory System</span>
+</div>
+<button class="bg-secondary text-on-secondary hover:bg-secondary-container hover:text-on-secondary-container w-full py-2 rounded-lg font-label-sm text-label-sm uppercase transition-colors mb-lg">Quick Request</button>
+<nav class="flex flex-col gap-2 flex-1">
+<a class="flex items-center gap-md bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-md py-sm font-bold transition-all duration-200 active:scale-98" href="#"><span class="material-symbols-outlined icon-fill">dashboard</span><span class="font-label-sm text-label-sm uppercase">Dashboard</span></a>
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#"><span class="material-symbols-outlined">inventory_2</span><span class="font-label-sm text-label-sm uppercase">Inventory</span></a>
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#"><span class="material-symbols-outlined">sync_alt</span><span class="font-label-sm text-label-sm uppercase">Requests</span></a>
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#"><span class="material-symbols-outlined">group</span><span class="font-label-sm text-label-sm uppercase">Members</span></a>
+</nav>
+<div class="mt-auto flex flex-col gap-2">
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#"><span class="material-symbols-outlined">settings</span><span class="font-label-sm text-label-sm uppercase">Settings</span></a>
+<a class="flex items-center gap-md text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high rounded-full px-md py-sm transition-colors duration-200 active:scale-98" href="#"><span class="material-symbols-outlined">help</span><span class="font-label-sm text-label-sm uppercase">Support</span></a>
+</div>
+</aside>
+<!-- Mobile Top App Bar -->
+<header class="md:hidden fixed top-0 w-full bg-surface-container-lowest z-50 px-md h-16 flex items-center justify-between shadow-sm">
+<span class="font-display-md text-display-md font-bold text-primary">ATS CLUB</span>
+<button class="p-2 text-on-surface-variant"><span class="material-symbols-outlined">search</span></button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 p-3 md:p-lg w-full max-w-container-max mx-auto overflow-y-auto">
+<!-- Header -->
+<div class="mb-lg">
+<h1 class="font-display-lg text-display-lg text-on-background">Admin Dashboard</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Overview of pending tasks and recent activity.</p>
+</div>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-md mb-lg">
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(15,23,42,0.05)] border border-surface-container-high hover:shadow-[0_8px_16px_rgba(15,23,42,0.08)] transition-all">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Pending</span>
+<span class="material-symbols-outlined text-secondary">pending_actions</span>
+</div>
+<div class="font-display-lg text-display-lg text-primary mb-xs">24</div>
+<div class="font-label-sm text-label-sm text-secondary">+3 since yesterday</div>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(15,23,42,0.05)] border border-surface-container-high hover:shadow-[0_8px_16px_rgba(15,23,42,0.08)] transition-all">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Overdue</span>
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div class="font-display-lg text-display-lg text-error mb-xs">7</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Needs attention</div>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-[0_4px_12px_rgba(15,23,42,0.05)] border border-surface-container-high hover:shadow-[0_8px_16px_rgba(15,23,42,0.08)] transition-all col-span-2 md:col-span-2 relative overflow-hidden flex flex-col justify-end">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-20" data-alt="A clean, modern server rack or tech storage area in a well-lit, minimalist corporate environment. Soft white lighting, subtle blue accents. Represents efficient inventory management." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFmr94wcEHtr3xh5UoxhCj2L4LR5rp3W3ZoXxX82tkEC8T1LEw5_5O1XullJ6QpTOdGp1SexNU25P2VIW51RnA6JixVv6CESDxQyz_HeJFAaj6bo8VLoKCATWTnPgzoSmUS5--iVBQlKsdq2o9dXH8vjb_C0WEJTIAcPVqnc0-3Rf--95aLblyvDo2_WPVeBr1x3fawCaoiWQ02bCQ4YZh4Z_bI9YFQBWVW77NtiH8P15hwnYfWrQyJQ"/>
+</div>
+<div class="relative z-10">
+<h3 class="font-display-md text-display-md text-primary mb-sm">System Health</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">All primary inventory systems are operating normally.</p>
+</div>
+</div>
+</div>
+<!-- Recent Activity List -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_4px_12px_rgba(15,23,42,0.05)] border border-surface-container-high overflow-hidden">
+<div class="p-md bg-surface-container-low border-b border-surface-container-high flex justify-between items-center">
+<h2 class="font-label-sm text-label-sm uppercase text-on-surface-variant">Recent Activity</h2>
+<button class="font-label-sm text-label-sm text-secondary hover:underline">View All</button>
+</div>
+<div class="divide-y divide-surface-container-high">
+<!-- Activity Item 1 -->
+<div class="p-md flex items-start gap-md hover:bg-surface-bright transition-colors">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container shrink-0">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md text-primary truncate"><span class="font-bold">John Doe</span> requested <span class="font-bold">MacBook Pro M2</span></p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">10 mins ago</p>
+</div>
+<div class="shrink-0 flex gap-sm">
+<button class="bg-secondary text-on-secondary px-3 py-1.5 rounded-lg font-label-sm text-label-sm hover:bg-opacity-90">Approve</button>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="p-md flex items-start gap-md hover:bg-surface-bright transition-colors">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined">inventory</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md text-primary truncate">Inventory restocked: <span class="font-bold">Monitors (10)</span></p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">2 hours ago</p>
+</div>
+<div class="shrink-0">
+<span class="px-2 py-1 rounded bg-secondary-container/20 text-secondary font-label-sm text-label-sm uppercase">System</span>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="p-md flex items-start gap-md hover:bg-surface-bright transition-colors">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-on-error-container shrink-0">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="font-body-md text-body-md text-primary truncate"><span class="font-bold">Sarah Smith</span> overdue return: <span class="font-bold">iPad Pro</span></p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">5 hours ago</p>
+</div>
+<div class="shrink-0">
+<button class="border border-tertiary text-primary px-3 py-1.5 rounded-lg font-label-sm text-label-sm hover:bg-surface-container">Remind</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Nav Bar -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface-container-lowest border-t border-surface-container-high h-[80px] flex justify-around items-center px-2 z-50 shadow-[0_-4px_12px_rgba(15,23,42,0.05)]">
+<a class="flex flex-col items-center gap-1 p-2 w-16 text-secondary active:scale-95 transition-transform" href="#">
+<div class="bg-secondary-container px-4 py-1 rounded-full"><span class="material-symbols-outlined icon-fill">dashboard</span></div>
+<span class="font-label-sm text-label-sm font-bold">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 w-16 text-on-surface-variant hover:text-secondary active:scale-95 transition-transform" href="#">
+<div class="px-4 py-1 rounded-full"><span class="material-symbols-outlined">inventory_2</span></div>
+<span class="font-label-sm text-label-sm">Inventory</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 w-16 text-on-surface-variant hover:text-secondary active:scale-95 transition-transform" href="#">
+<div class="px-4 py-1 rounded-full"><span class="material-symbols-outlined">sync_alt</span></div>
+<span class="font-label-sm text-label-sm">Requests</span>
+</a>
+<a class="flex flex-col items-center gap-1 p-2 w-16 text-on-surface-variant hover:text-secondary active:scale-95 transition-transform" href="#">
+<div class="px-4 py-1 rounded-full"><span class="material-symbols-outlined">group</span></div>
+<span class="font-label-sm text-label-sm">Members</span>
+</a>
+</nav>
+</body></html>

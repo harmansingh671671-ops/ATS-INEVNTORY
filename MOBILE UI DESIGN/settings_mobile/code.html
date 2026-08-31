@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings - ATS CLUB</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#7c839b",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed-dim": "#bec6e0",
+                        "outline-variant": "#c6c6cd",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-surface": "#191c1e",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-fixed": "#d8e2ff",
+                        "secondary-container": "#2170e4",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "tertiary-container": "#0b1c30",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "primary-container": "#131b2e",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container": "#eceef0",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#fefcff",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#000000",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "on-tertiary-container": "#75859d",
+                        "surface": "#f7f9fb",
+                        "secondary": "#0058be",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f2f4f6",
+                        "primary": "#000000",
+                        "inverse-primary": "#bec6e0",
+                        "background": "#f7f9fb",
+                        "outline": "#76777d",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#001a42",
+                        "on-background": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "on-surface-variant": "#45464d",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-high": "#e6e8ea"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "xl": "48px",
+                        "gutter": "20px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "table-data": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "table-data": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .filled-icon { font-variation-settings: 'FILL' 1; }
+        /* Custom Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #0058be;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #0058be;
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: white;
+        }
+        .toggle-label {
+            width: 3rem;
+            height: 1.5rem;
+            background-color: #e0e3e5;
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .toggle-label:after {
+            content: '';
+            position: absolute;
+            top: 0.125rem;
+            left: 0.125rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.2s ease-in-out;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen pb-24 md:pb-0">
+<!-- Top Navigation Bar (Mobile Header) -->
+<header class="bg-surface-container-lowest shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border-b border-outline-variant sticky top-0 z-50 md:hidden flex justify-between items-center h-16 px-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-xl cursor-pointer" onclick="window.history.back()">arrow_back</span>
+<h1 class="text-display-md font-display-md text-primary ml-2">Settings</h1>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="px-md py-lg max-w-container-max mx-auto space-y-xl md:hidden">
+<!-- General Settings Section -->
+<section class="space-y-md">
+<h2 class="text-body-md font-label-sm text-on-surface-variant uppercase tracking-wider">General Settings</h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] overflow-hidden">
+<!-- Club Profile / Logo -->
+<div class="p-md flex items-center justify-between border-b border-surface-variant">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center border border-outline-variant relative overflow-hidden">
+<img alt="Club Logo" class="object-cover w-full h-full" data-alt="A macro shot of a sleek, modern corporate logo emblem printed on brushed metal. The emblem features minimalist geometric lines representing efficiency and organization. The lighting is crisp studio lighting with soft reflections on the metallic surface, emphasizing a clean, professional, light-mode aesthetic in deep blacks, pristine whites, and subtle silver tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6migCqDamboT1E4ylY5hUZRmww41jOLu-5zLED34aQ0Ng-YntTVTE8vsHdeezBsdwr7WzkOa0SorXf5EuzcG6-lHhCVmrBIEXH5CHdiPF-jeNcmNLtuIRalRT7Ww4fG-uqk8e0TZRzlohPcPSLhs8-drUrJ1jB2_sCwV91xb9g0j5c16ZTbzXMu48HtDFPJ-quHqafQAvbJqUxJdyD8BIsrNyYbPWn72x7kW-9zIIdQ6gih9_ZDPQOA"/>
+</div>
+<div>
+<p class="text-body-md font-body-md text-on-surface">Club Logo</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Update primary emblem</p>
+</div>
+</div>
+<button class="text-secondary font-label-sm text-label-sm">Edit</button>
+</div>
+<!-- Club Name Input -->
+<div class="p-md border-b border-surface-variant">
+<label class="block text-label-sm font-label-sm text-on-surface-variant mb-sm" for="clubName">Club Name</label>
+<input class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm text-body-md font-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors" id="clubName" type="text" value="ATS CLUB"/>
+</div>
+<div class="p-md">
+<label class="block text-label-sm font-label-sm text-on-surface-variant mb-sm" for="systemRole">Default System Role</label>
+<select class="w-full bg-surface border border-outline-variant rounded-lg px-md py-sm text-body-md font-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors appearance-none" id="systemRole">
+<option>Administrator</option>
+<option>Inventory Manager</option>
+<option>Member</option>
+</select>
+</div>
+</div>
+</section>
+<!-- Notification Preferences Section -->
+<section class="space-y-md">
+<h2 class="text-body-md font-label-sm text-on-surface-variant uppercase tracking-wider">Notification Preferences</h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] divide-y divide-surface-variant overflow-hidden">
+<!-- Push Notifications Toggle -->
+<div class="p-md flex items-center justify-between">
+<div>
+<p class="text-body-md font-body-md text-on-surface">Push Notifications</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Receive alerts on device</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 opacity-0" id="pushToggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="pushToggle"></label>
+</div>
+</div>
+<!-- Email Alerts Toggle -->
+<div class="p-md flex items-center justify-between">
+<div>
+<p class="text-body-md font-body-md text-on-surface">Email Summaries</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Daily inventory digest</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 opacity-0" id="emailToggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="emailToggle"></label>
+</div>
+</div>
+<!-- Low Stock Alerts Toggle -->
+<div class="p-md flex items-center justify-between">
+<div>
+<p class="text-body-md font-body-md text-on-surface">Low Stock Alerts</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Notify when items fall below threshold</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 opacity-0" id="stockToggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer" for="stockToggle"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Security Section -->
+<section class="space-y-md">
+<h2 class="text-body-md font-label-sm text-on-surface-variant uppercase tracking-wider">Security &amp; Access</h2>
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_4px_12px_rgba(15,23,42,0.05)] divide-y divide-surface-variant overflow-hidden">
+<!-- Change Password -->
+<div class="p-md flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant">lock</span>
+<p class="text-body-md font-body-md text-on-surface">Change Password</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<!-- Two-Factor Auth -->
+<div class="p-md flex items-center justify-between">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant">verified_user</span>
+<div>
+<p class="text-body-md font-body-md text-on-surface">Two-Factor Authentication</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Currently disabled</p>
+</div>
+</div>
+<button class="text-secondary font-label-sm text-label-sm">Setup</button>
+</div>
+<!-- Active Sessions -->
+<div class="p-md flex items-center justify-between cursor-pointer active:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-on-surface-variant">devices</span>
+<p class="text-body-md font-body-md text-on-surface">Active Sessions</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="space-y-md pt-4">
+<button class="w-full py-md px-lg border border-error text-error rounded-xl font-label-sm text-label-sm uppercase tracking-wider text-center active:bg-error-container transition-colors bg-surface-container-lowest">
+                 Sign Out
+             </button>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<!-- Suppressed on Settings screen per contextual state logic (Settings is a focused task/departure from global nav on mobile) -->
+</body></html>

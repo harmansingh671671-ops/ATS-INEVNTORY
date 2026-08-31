@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Member Management - ATS CLUB</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#7c839b",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed-dim": "#bec6e0",
+                        "outline-variant": "#c6c6cd",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "on-surface": "#191c1e",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-fixed": "#d8e2ff",
+                        "secondary-container": "#2170e4",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "tertiary-container": "#0b1c30",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "primary-container": "#131b2e",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container": "#eceef0",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-container": "#fefcff",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#000000",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#565e74",
+                        "on-tertiary-container": "#75859d",
+                        "surface": "#f7f9fb",
+                        "secondary": "#0058be",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f2f4f6",
+                        "primary": "#000000",
+                        "inverse-primary": "#bec6e0",
+                        "background": "#f7f9fb",
+                        "outline": "#76777d",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#001a42",
+                        "on-background": "#191c1e",
+                        "inverse-surface": "#2d3133",
+                        "on-surface-variant": "#45464d",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-high": "#e6e8ea"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "xl": "48px",
+                        "gutter": "20px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "display-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "table-data": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "table-data": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col pt-16 pb-20">
+<!-- TopNavBar (Mobile Adaptation) -->
+<header class="bg-surface-container-lowest border-b border-outline-variant shadow-[0px_4px_12px_rgba(15,23,42,0.05)] fixed top-0 w-full z-50 flex justify-between items-center h-16 px-md md:hidden">
+<div class="text-display-md font-display-md text-primary font-bold">ATS CLUB</div>
+<div class="flex items-center gap-sm">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden ml-2">
+<img alt="Member Profile" class="w-full h-full object-cover" data-alt="A close-up portrait of a professional individual in a well-lit studio setting. High-key lighting highlights facial features against a clean, minimal white background, reflecting a modern corporate aesthetic suitable for an app avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNNhpRjOJgT9eYVGvAA7s6pFXjlcsB6SrhGVEYLbMVn0bjTfwELRPB4R8TKouGMktVoLtdYKupR1ZnMXRqfBnwymocazyy8fPn_gd7g-0AySbf-fBu2AazFXemIpE9yVda8I9PhBukvyo6RE0epZeBoEImArBIjl0mCRJbaeHB23Qls-YmxKK6TcDBvpsaL_hI79saV1oeKY2fGqhtOrvdqmP8Argbz5du0XYrl_-Xpkvycs-DbuHs2Q"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow px-md py-lg flex flex-col gap-lg md:hidden">
+<!-- Header & Action -->
+<div class="flex flex-col gap-sm">
+<h1 class="font-display-md text-display-md text-on-surface">Members</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage club access and roles.</p>
+</div>
+<!-- Search Bar -->
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-tertiary text-on-surface rounded font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors placeholder:text-on-surface-variant" placeholder="Search members..." type="text"/>
+</div>
+<!-- Member List -->
+<div class="flex flex-col gap-md">
+<!-- Member Card 1 (Admin) -->
+<div class="bg-surface-container-lowest rounded-lg p-md shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-transparent hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all flex flex-col gap-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-1 h-full bg-secondary"></div>
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="Sarah Jenkins" class="w-full h-full object-cover" data-alt="A portrait of a confident team leader looking directly at the camera. Soft, natural lighting accentuates a professional yet approachable demeanor. The background is a blurred office environment, adhering to a high-end corporate modern visual style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRXhbdcfsoWFtfBEexL0U_xp2WtCiVfEciK3awEWJuzJcp55Ryf_wTPsvpU_Eb3M0ILzD0wcmX8nPxCvf8Wrr05DWNrsgifw5c5df2SalZHtj1Wjq9VJcWfIdPpeIN6Ho2eT3ytRBS_Ysl30HLsMOZ-Id-LKc7YqxgxVbmBVOr7Dtx_jCH-XOGzFGhEK17XG_cXqPBCjiOIYvLxsDSyxnbQmNuc60azhRpdnleBZrFsDcF6OxTHW6p-g"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg font-semibold text-on-surface">Sarah Jenkins</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">sarah.j@atsclub.com</span>
+</div>
+</div>
+<button aria-label="More options" class="text-on-surface-variant p-1 -mr-1 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-sm pt-sm border-t border-surface-container-highest">
+<div class="flex gap-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-secondary/10 text-secondary font-label-sm text-label-sm uppercase">Admin</span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-[#059669]/10 text-[#059669] font-label-sm text-label-sm uppercase">Active</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">phone_iphone</span>
+                        +1 (555) 019-2834
+                    </span>
+</div>
+</div>
+<!-- Member Card 2 (Member) -->
+<div class="bg-surface-container-lowest rounded-lg p-md shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-transparent hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all flex flex-col gap-sm">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden flex-shrink-0">
+<img alt="David Chen" class="w-full h-full object-cover" data-alt="A headshot of a young professional wearing glasses, slightly smiling. The lighting is crisp and even, cast against a neutral light grey backdrop to maintain a clean, organized, minimalist interface aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmRG7lgDXNCWrYV8J_TucD6UAqZfe5H3u2Sq17mLtXNYZB0PU_vrlkdXQA0ZjbpuNFiagf1-VCtF4-_ZbU9Qo1FyWUt3EETPsy2kgqxJ-n64coVwd-3DkWajnNYl82EFirzi1cFrKAl3VNg7r7TNmrMAEA2Ym41GU12zzLzH1l6_ylJobmdvSV4IevgBFiVZuMJelsm8bE7j0CjqxSV-1SpP5G8xrnzHztYsnqKLxvcjXHmTYwixCpbg"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg font-semibold text-on-surface">David Chen</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">d.chen@atsclub.com</span>
+</div>
+</div>
+<button aria-label="More options" class="text-on-surface-variant p-1 -mr-1 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-sm pt-sm border-t border-surface-container-highest">
+<div class="flex gap-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm uppercase">Member</span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-[#059669]/10 text-[#059669] font-label-sm text-label-sm uppercase">Active</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">phone_iphone</span>
+                        +1 (555) 012-9843
+                    </span>
+</div>
+</div>
+<!-- Member Card 3 (Pending) -->
+<div class="bg-surface-container-lowest rounded-lg p-md shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-transparent hover:shadow-[0px_8px_24px_rgba(15,23,42,0.08)] transition-all flex flex-col gap-sm opacity-80">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-sm">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant flex-shrink-0">
+<span class="font-body-lg font-semibold">MT</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg font-semibold text-on-surface">Marcus Thorne</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">m.thorne@external.com</span>
+</div>
+</div>
+<button aria-label="More options" class="text-on-surface-variant p-1 -mr-1 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-sm pt-sm border-t border-surface-container-highest">
+<div class="flex gap-2">
+<span class="inline-flex items-center px-2 py-1 rounded bg-surface-container-highest text-on-surface-variant font-label-sm text-label-sm uppercase">Member</span>
+<span class="inline-flex items-center px-2 py-1 rounded bg-[#D97706]/10 text-[#D97706] font-label-sm text-label-sm uppercase">Pending</span>
+</div>
+<button class="text-secondary font-label-sm text-label-sm hover:underline uppercase">Resend</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (Invite Member) -->
+<button aria-label="Invite Member" class="fixed bottom-24 right-md w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-[0px_4px_12px_rgba(15,23,42,0.2)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform z-40 md:hidden">
+<span class="material-symbols-outlined text-[24px]">person_add</span>
+</button>
+<!-- Bottom Navigation Shell (Mobile Only) -->
+<nav class="bg-surface-container-lowest fixed bottom-0 w-full flex justify-around items-center h-20 pb-4 shadow-[0px_-4px_12px_rgba(15,23,42,0.05)] z-50 md:hidden">
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-secondary transition-colors w-16 pt-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="font-label-sm text-[10px]">Dashboard</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-secondary transition-colors w-16 pt-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">inventory_2</span>
+<span class="font-label-sm text-[10px]">Inventory</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-secondary transition-colors w-16 pt-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">reorder</span>
+<span class="font-label-sm text-[10px]">Requests</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-secondary font-bold transition-colors w-16 pt-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-sm text-[10px]">Members</span>
+</button>
+</nav>
+</body></html>

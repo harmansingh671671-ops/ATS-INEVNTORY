@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ATS CLUB - Member Dashboard</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary-fixed": "#001a42",
+                        "primary": "#000000",
+                        "tertiary": "#000000",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-container": "#7c839b",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-container": "#fefcff",
+                        "secondary-fixed": "#d8e2ff",
+                        "outline": "#76777d",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004395",
+                        "surface": "#f7f9fb",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#38485d",
+                        "tertiary-fixed-dim": "#b7c8e1",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary-fixed": "#0b1c30",
+                        "on-background": "#191c1e",
+                        "surface-tint": "#565e74",
+                        "inverse-primary": "#bec6e0",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "secondary": "#0058be",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e6e8ea",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "on-surface": "#191c1e",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#45464d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "tertiary-container": "#0b1c30",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#75859d",
+                        "outline-variant": "#c6c6cd",
+                        "secondary-container": "#2170e4",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-error": "#ffffff",
+                        "primary-container": "#131b2e",
+                        "background": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "20px",
+                        "lg": "24px",
+                        "container-max": "1440px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "xl": "48px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "display-md": ["Inter"],
+                        "table-data": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "display-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "table-data": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased pb-24 md:pb-0">
+<!-- Mobile Top Header (replaces Web Nav on mobile) -->
+<header class="md:hidden fixed top-0 left-0 w-full z-40 bg-surface-container-lowest shadow-[0px_4px_12px_rgba(15,23,42,0.05)] px-md h-16 flex items-center justify-between">
+<h1 class="font-display-md text-display-md text-primary font-bold">ATS CLUB</h1>
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+</header>
+<!-- SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col border-r border-outline-variant p-lg gap-lg fixed left-0 top-0 h-full w-[280px] bg-surface-container-lowest shadow-md z-50">
+<div class="flex items-center gap-sm mb-lg">
+<div class="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+</div>
+<div>
+<h1 class="font-display-md text-display-md font-bold text-primary leading-tight">ATS CLUB</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Inventory System</p>
+</div>
+</div>
+<button class="w-full bg-secondary text-on-secondary font-label-sm text-label-sm py-md rounded-lg flex items-center justify-center gap-sm hover:bg-secondary-container hover:text-on-secondary-container transition-colors shadow-[0px_4px_12px_rgba(15,23,42,0.05)] mb-md">
+<span class="material-symbols-outlined">add</span>
+            Quick Request
+        </button>
+<div class="flex flex-col gap-sm flex-grow">
+<!-- Active: Dashboard -->
+<a class="flex items-center gap-md bg-secondary-container text-on-secondary-container rounded-full px-md py-sm font-bold transition-all duration-200 active:scale-95 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                Dashboard
+            </a>
+<!-- Inactive -->
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-95 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                Inventory
+            </a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-95 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+                Requests
+            </a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-95 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Members
+            </a>
+</div>
+<div class="flex flex-col gap-sm mt-auto border-t border-outline-variant pt-lg">
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-95 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-md text-on-surface-variant hover:bg-surface-container rounded-full px-md py-sm transition-colors duration-200 active:scale-95 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                Support
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="md:ml-[280px] min-h-screen pt-20 md:pt-lg px-3 md:px-lg max-w-container-max mx-auto flex flex-col gap-lg">
+<!-- Welcome & Quick Search (Bento style on md+) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Greeting Card -->
+<div class="md:col-span-2 bg-surface-container-lowest rounded-xl p-lg shadow-[0px_4px_12px_rgba(15,23,42,0.05)] flex flex-col justify-between relative overflow-hidden">
+<div class="relative z-10">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-xs">Welcome back, Member</p>
+<h2 class="font-display-lg text-display-lg text-primary mb-md">Ready for your next project?</h2>
+<!-- Search Input -->
+<div class="relative max-w-md">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface border border-tertiary rounded-lg pl-xl pr-sm py-sm font-body-md text-body-md text-on-surface focus:outline-none focus:border-secondary focus:ring-0 transition-colors placeholder:text-outline-variant" placeholder="Search gear (e.g., Sony A7IV)" type="text"/>
+</div>
+</div>
+<!-- Decorative background element -->
+<div class="absolute right-0 top-0 w-1/2 h-full opacity-10 bg-gradient-to-bl from-secondary to-transparent pointer-events-none"></div>
+</div>
+<!-- Quick Stats/Action -->
+<div class="bg-secondary text-on-secondary rounded-xl p-lg shadow-[0px_4px_12px_rgba(15,23,42,0.05)] flex flex-col justify-center items-center text-center">
+<div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+</div>
+<h3 class="font-display-md text-display-md mb-xs">3 Items</h3>
+<p class="font-label-sm text-label-sm text-inverse-primary mb-md">Currently Borrowed</p>
+<button class="md:hidden w-full bg-surface-container-lowest text-secondary font-label-sm text-label-sm py-sm px-md rounded-lg flex items-center justify-center gap-xs font-bold active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-sm">add</span> Quick Request
+                </button>
+</div>
+</section>
+<!-- Active Borrows Section -->
+<section>
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-display-md text-display-md text-primary">Active Borrows</h3>
+<a class="font-label-sm text-label-sm text-secondary hover:underline" href="#">View All</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Borrow Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-transparent hover:border-outline-variant transition-all hover:-translate-y-1">
+<div class="flex items-start gap-md">
+<div class="w-16 h-16 rounded-lg overflow-hidden bg-surface-variant flex-shrink-0 relative">
+<img class="object-cover w-full h-full absolute inset-0" data-alt="A clean, minimalist product shot of a professional mirrorless camera body, like a Sony A7 series, resting on a stark white surface. Bright, even studio lighting highlights the matte black finish and metallic dials. The aesthetic is modern, organized, and strictly corporate, with no distracting background elements, emphasizing precision equipment management." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWmoU0llw8UT0U5H4gtUK74oIPTsL653buAosy2hGTn95UOtn-lucA8xxQrp6BHxmalIsr2SXeFDkAJ3Mejp0i4pde5YWuILDL_Q8tvM2rPigN5fbm90fVLybmCyHeHrmAuabKGO6X948_UgiolKs-R2vWRC8PVW14C39fLgdBdMn-_e7HzotzBAt70pkjPhkDBlah-4cxR7YxkMZfaVGRs_ryB6gYD1oRFN1v8UA7liaP8DY_eWq-ZA"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-body-lg text-body-lg text-primary font-bold line-clamp-1">Sony A7IV Body</h4>
+<span class="bg-secondary/10 text-secondary font-label-sm text-label-sm px-2 py-1 rounded-sm whitespace-nowrap">Due Today</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-sm">ID: CAM-042</p>
+<div class="flex items-center justify-between mt-sm">
+<button class="text-error font-label-sm text-label-sm border border-tertiary px-sm py-1 rounded hover:bg-error-container transition-colors">Return</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Borrow Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-transparent hover:border-outline-variant transition-all hover:-translate-y-1">
+<div class="flex items-start gap-md">
+<div class="w-16 h-16 rounded-lg overflow-hidden bg-surface-variant flex-shrink-0 relative">
+<img class="object-cover w-full h-full absolute inset-0" data-alt="A sleek, professional product photography shot of a high-end camera lens, such as a 24-70mm G-Master. The lens stands upright against a pristine, light gray backdrop. Studio lighting creates sharp reflections on the glass elements and highlights the textured rubber grips. The mood is clinical, efficient, and aligned with a modern corporate inventory aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuZjDiSoLSVOIfXHyhQh1Jyibr2t32qop5HRlpdYAo4i3h2eTO_ZKYe9Z2jzopDSlne80Gb0yEpy30Sq6GFRjyTgg9RsEes6QbYJE3ZIAuohO41PvPhP0dAJ2JfpNRVb6Xnwbhik8wikRXzbPQ_EGfJ-TPMuXXkQK1z7Uye4yO_xuZAPcKCRxnDNcwQZmKdPXMKUR_CDzqd-0DUBYhcO-w8kdyKt5T2ruNtaMzRGqhJ7l-QCKqsb8UfA"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-body-lg text-body-lg text-primary font-bold line-clamp-1">FE 24-70mm f/2.8</h4>
+<span class="bg-outline/10 text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-sm whitespace-nowrap">Due in 2d</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-sm">ID: LNS-108</p>
+<div class="flex items-center justify-between mt-sm">
+<button class="text-primary font-label-sm text-label-sm border border-tertiary px-sm py-1 rounded hover:bg-surface-container transition-colors">Return</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Borrow Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl p-md shadow-[0px_4px_12px_rgba(15,23,42,0.05)] border border-transparent hover:border-outline-variant transition-all hover:-translate-y-1">
+<div class="flex items-start gap-md">
+<div class="w-16 h-16 rounded-lg overflow-hidden bg-surface-variant flex-shrink-0 relative">
+<img class="object-cover w-full h-full absolute inset-0" data-alt="A close-up, high-key image of a heavy-duty tripod head, neatly arranged on a bright, minimalist surface. The metal components gleam subtly under diffuse, cool-toned white lighting. The composition is highly structured and clean, conveying a sense of organized professional gear storage typical of a modern corporate equipment room." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8sjl9OBG2T8zwX3FU40cRyYp0bXeroAOIPsOEPx-WUOfKlHAawvjeCPMiKACXWHdXWVuX5Xv-pdctYjUszVmrOKGfATkMfbhfCVMVfIOP_kRKu3W9BDz3QP8uWsjxISFRWOqghvvTnuiPRZDzMlaGoWlLw3XBB60V-7_1ctPup0MbHzLq5rL-OcBB3wB2IJNPjv6YwSSeNWrqSefchAxmNQIiJA8X1ybietEwSMlHT5tDX0MbgAtgvQ"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start mb-xs">
+<h4 class="font-body-lg text-body-lg text-primary font-bold line-clamp-1">Manfrotto Tripod</h4>
+<span class="bg-outline/10 text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-sm whitespace-nowrap">Due in 5d</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-sm">ID: SUP-012</p>
+<div class="flex items-center justify-between mt-sm">
+<button class="text-primary font-label-sm text-label-sm border border-tertiary px-sm py-1 rounded hover:bg-surface-container transition-colors">Return</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Mobile Bottom Navigation Shell (Destination Rule) -->
+<!-- Used primarily for mobile navigation between top-level pages -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface-container-lowest shadow-[0px_-4px_12px_rgba(15,23,42,0.05)] flex justify-around items-center h-20 pb-2 px-md">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center w-16 h-full gap-1 text-secondary" href="#">
+<div class="w-12 h-8 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+</div>
+<span class="font-label-sm text-[10px] leading-none font-bold">Dashboard</span>
+</a>
+<!-- Inventory (Inactive) -->
+<a class="flex flex-col items-center justify-center w-16 h-full gap-1 text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<div class="w-12 h-8 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+</div>
+<span class="font-label-sm text-[10px] leading-none">Inventory</span>
+</a>
+<!-- FAB placeholder center if needed, but keeping standard nav for member view -->
+<!-- Requests (Inactive) -->
+<a class="flex flex-col items-center justify-center w-16 h-full gap-1 text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<div class="w-12 h-8 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+</div>
+<span class="font-label-sm text-[10px] leading-none">Requests</span>
+</a>
+<!-- Settings (Inactive) -->
+<a class="flex flex-col items-center justify-center w-16 h-full gap-1 text-on-surface-variant hover:text-secondary transition-colors" href="#">
+<div class="w-12 h-8 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</div>
+<span class="font-label-sm text-[10px] leading-none">Settings</span>
+</a>
+</nav>
+</body></html>

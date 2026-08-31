@@ -74,6 +74,10 @@ function fmtDate(d) {
   return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
+function isMobileLayout() {
+  return window.innerWidth < 768;
+}
+
 function toast(msg, type = 'info') {
   const c = $('#toast-container');
   if (!c) return;
@@ -227,11 +231,19 @@ const App = {
     $('#app-view').classList.remove('hidden');
 
     if (State.profile.role === 'admin') {
-      this.renderAdminWindow();
+      if (isMobileLayout()) {
+        this.renderMobileAdminShell();
+      } else {
+        this.renderAdminWindow();
+      }
       await this.loadAdminData();
       Router.go('admin-dashboard');
     } else {
-      this.renderMemberWindow();
+      if (isMobileLayout()) {
+        this.renderMobileMemberShell();
+      } else {
+        this.renderMemberWindow();
+      }
       await this.loadMemberData();
       Router.go('member-browse');
     }
@@ -341,6 +353,128 @@ const App = {
     `;
   },
 
+  renderMobileAdminShell() {
+    const app = $('#app-view');
+    app.className = 'flex flex-col min-h-screen bg-surface';
+    app.innerHTML = `
+      <div id="mobile-drawer-backdrop" class="fixed inset-0 bg-black/30 z-30 hidden" onclick="App.closeMobileDrawer()"></div>
+
+      <aside id="mobile-drawer" class="fixed inset-y-0 left-0 z-40 w-72 bg-surface-container-lowest border-r border-outline-variant shadow-xl transform -translate-x-full transition-transform duration-200 ease-in-out flex flex-col p-md">
+        <div class="flex items-center gap-sm mb-lg">
+          <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+            <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+          </div>
+          <div>
+            <div class="font-display-md text-display-md text-primary font-bold">ATS CLUB</div>
+            <div class="text-[10px] font-label-sm uppercase bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded-full inline-block">Admin Portal</div>
+          </div>
+        </div>
+
+        <nav class="flex-1 flex flex-col gap-sm mt-md">
+          <button data-nav="admin-dashboard" onclick="App.closeMobileDrawer(); Router.go('admin-dashboard')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+          </button>
+          <button data-nav="admin-inventory" onclick="App.closeMobileDrawer(); Router.go('admin-inventory')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <span>Inventory Mgmt</span>
+          </button>
+          <button data-nav="admin-requests" onclick="App.closeMobileDrawer(); Router.go('admin-requests')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">sync_alt</span>
+            <span>Borrow Requests</span>
+          </button>
+          <button data-nav="admin-members" onclick="App.closeMobileDrawer(); Router.go('admin-members')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">group</span>
+            <span>Members</span>
+          </button>
+        </nav>
+
+        <div class="border-t border-outline-variant pt-md mt-md flex items-center justify-between">
+          <div class="min-w-0">
+            <div class="font-bold text-sm truncate">${h(State.profile?.full_name || State.user?.email)}</div>
+            <div class="text-[11px] text-on-surface-variant truncate">${h(State.user?.email)}</div>
+          </div>
+          <button class="rounded-full p-2 text-error" onclick="Auth.logout()" aria-label="Logout">
+            <span class="material-symbols-outlined">logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <header class="w-full bg-surface-container-lowest border-b border-outline-variant px-md py-sm flex items-center justify-between sticky top-0 z-20">
+        <button class="p-2 rounded-full text-on-surface-variant" onclick="App.toggleMobileDrawer()" aria-label="Open navigation">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <h1 class="font-display-md text-display-md text-primary font-bold">ATS CLUB</h1>
+        <button class="rounded-full p-2 text-on-surface-variant" onclick="Auth.logout()" aria-label="Logout">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </header>
+      <main id="main-content" class="flex-1 pb-24 px-md pt-md"></main>
+    `;
+    App.syncMobileDrawerState();
+  },
+
+  renderMobileMemberShell() {
+    const app = $('#app-view');
+    app.className = 'flex flex-col min-h-screen bg-surface';
+    app.innerHTML = `
+      <div id="mobile-drawer-backdrop" class="fixed inset-0 bg-black/30 z-30 hidden" onclick="App.closeMobileDrawer()"></div>
+
+      <aside id="mobile-drawer" class="fixed inset-y-0 left-0 z-40 w-72 bg-surface-container-lowest border-r border-outline-variant shadow-xl transform -translate-x-full transition-transform duration-200 ease-in-out flex flex-col p-md">
+        <div class="flex items-center gap-sm mb-lg">
+          <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container">
+            <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+          </div>
+          <div>
+            <div class="font-display-md text-display-md text-primary font-bold">ATS CLUB</div>
+            <div class="text-[10px] font-label-sm uppercase bg-surface-container text-on-surface-variant px-2 py-0.5 rounded-full inline-block">Member Portal</div>
+          </div>
+        </div>
+
+        <nav class="flex-1 flex flex-col gap-sm mt-md">
+          <button data-nav="member-dashboard" onclick="App.closeMobileDrawer(); Router.go('member-dashboard')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Dashboard</span>
+          </button>
+          <button data-nav="member-browse" onclick="App.closeMobileDrawer(); Router.go('member-browse')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <span>Browse Inventory</span>
+          </button>
+          <button data-nav="member-support" onclick="App.closeMobileDrawer(); Router.go('member-support')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">help</span>
+            <span>Support</span>
+          </button>
+          <button data-nav="member-profile" onclick="App.closeMobileDrawer(); Router.go('member-profile')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">person</span>
+            <span>Profile</span>
+          </button>
+        </nav>
+
+        <div class="border-t border-outline-variant pt-md mt-md flex items-center justify-between">
+          <div class="min-w-0">
+            <div class="font-bold text-sm truncate">${h(State.profile?.full_name || State.user?.email)}</div>
+            <div class="text-[11px] text-on-surface-variant truncate">${h(State.user?.email)}</div>
+          </div>
+          <button class="rounded-full p-2 text-error" onclick="Auth.logout()" aria-label="Logout">
+            <span class="material-symbols-outlined">logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <header class="w-full bg-surface-container-lowest border-b border-outline-variant px-md py-sm flex items-center justify-between sticky top-0 z-20">
+        <button class="p-2 rounded-full text-on-surface-variant" onclick="App.toggleMobileDrawer()" aria-label="Open navigation">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <h1 class="font-display-md text-display-md text-primary font-bold">ATS CLUB</h1>
+        <button class="rounded-full p-2 text-on-surface-variant" onclick="Auth.logout()" aria-label="Logout">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </header>
+      <main id="main-content" class="flex-1 pb-24 px-md pt-md"></main>
+    `;
+    App.syncMobileDrawerState();
+  },
+
   // --- RENDER MEMBER WINDOW ---
   renderMemberWindow() {
     const app = $('#app-view');
@@ -446,6 +580,39 @@ const App = {
     } catch (err) {
       console.error('loadMemberData exception:', err);
     }
+  },
+
+  toggleMobileDrawer() {
+    const drawer = document.getElementById('mobile-drawer');
+    const backdrop = document.getElementById('mobile-drawer-backdrop');
+    if (!drawer || !backdrop) return;
+
+    const isOpen = drawer.classList.contains('translate-x-0');
+    drawer.classList.toggle('-translate-x-full', isOpen);
+    drawer.classList.toggle('translate-x-0', !isOpen);
+    backdrop.classList.toggle('hidden', isOpen);
+    backdrop.classList.toggle('block', !isOpen);
+  },
+
+  closeMobileDrawer() {
+    const drawer = document.getElementById('mobile-drawer');
+    const backdrop = document.getElementById('mobile-drawer-backdrop');
+    if (!drawer || !backdrop) return;
+    drawer.classList.add('-translate-x-full');
+    drawer.classList.remove('translate-x-0');
+    backdrop.classList.add('hidden');
+    backdrop.classList.remove('block');
+  },
+
+  syncMobileDrawerState() {
+    const drawer = document.getElementById('mobile-drawer');
+    const backdrop = document.getElementById('mobile-drawer-backdrop');
+    if (!drawer || !backdrop) return;
+    const isOpen = drawer.classList.contains('translate-x-0');
+    drawer.classList.toggle('-translate-x-full', !isOpen);
+    drawer.classList.toggle('translate-x-0', isOpen);
+    backdrop.classList.toggle('hidden', !isOpen);
+    backdrop.classList.toggle('block', isOpen);
   }
 };
 
@@ -454,9 +621,14 @@ const Router = {
   go(routeName) {
     State.activeRoute = routeName;
 
-    // Active state highlighting
-    document.querySelectorAll('.nav-item').forEach(el => {
-      if (el.getAttribute('data-nav') === routeName) {
+    const isMobile = isMobileLayout();
+    const currentMain = $('#main-content');
+    if (!currentMain) return;
+
+    const activeNav = document.querySelectorAll('.nav-item');
+    activeNav.forEach(el => {
+      const matches = el.getAttribute('data-nav') === routeName;
+      if (matches) {
         el.classList.add('bg-secondary', 'text-on-secondary', 'font-bold');
         el.classList.remove('text-on-surface-variant', 'hover:bg-surface-container');
       } else {
@@ -465,32 +637,149 @@ const Router = {
       }
     });
 
-    const main = $('#main-content');
-    if (!main) return;
+    if (isMobile) {
+      App.closeMobileDrawer();
+    }
 
     if (routeName.startsWith('admin-edit-item-')) {
       const itemId = routeName.replace('admin-edit-item-', '');
-      main.innerHTML = Views.adminEditItem(itemId);
+      currentMain.innerHTML = Views.adminEditItem(itemId);
+      return;
+    }
+
+    if (isMobile && routeName === 'admin-dashboard') {
+      currentMain.innerHTML = Views.mobileAdminDashboard();
+      return;
+    }
+
+    if (isMobile && routeName === 'member-browse') {
+      currentMain.innerHTML = Views.mobileMemberBrowse();
+      return;
+    }
+
+    if (isMobile && routeName === 'member-dashboard') {
+      currentMain.innerHTML = Views.mobileMemberDashboard();
+      return;
+    }
+
+    if (isMobile && routeName === 'member-support') {
+      currentMain.innerHTML = Views.mobileMemberSupport();
       return;
     }
 
     switch(routeName) {
-      case 'admin-dashboard': main.innerHTML = Views.adminDashboard(); break;
-      case 'admin-inventory': main.innerHTML = Views.adminInventory(); break;
-      case 'admin-requests': main.innerHTML = Views.adminRequests(); break;
-      case 'admin-members': main.innerHTML = Views.adminMembers(); break;
-      case 'admin-profile': main.innerHTML = Views.adminProfile(); break;
-      case 'member-browse': main.innerHTML = Views.memberBrowse(); break;
-      case 'member-dashboard': main.innerHTML = Views.memberDashboard(); break;
-      case 'member-profile': main.innerHTML = Views.memberProfile(); break;
-      case 'member-support': main.innerHTML = Views.memberSupport(); break;
-      default: main.innerHTML = '<div class="p-lg">Page under construction</div>';
+      case 'admin-dashboard': currentMain.innerHTML = Views.adminDashboard(); break;
+      case 'admin-inventory': currentMain.innerHTML = Views.adminInventory(); break;
+      case 'admin-requests': currentMain.innerHTML = Views.adminRequests(); break;
+      case 'admin-members': currentMain.innerHTML = Views.adminMembers(); break;
+      case 'admin-profile': currentMain.innerHTML = Views.adminProfile(); break;
+      case 'member-browse': currentMain.innerHTML = Views.memberBrowse(); break;
+      case 'member-dashboard': currentMain.innerHTML = Views.memberDashboard(); break;
+      case 'member-profile': currentMain.innerHTML = Views.memberProfile(); break;
+      case 'member-support': currentMain.innerHTML = Views.memberSupport(); break;
+      default: currentMain.innerHTML = '<div class="p-lg">Page under construction</div>';
     }
   }
 };
 
 // --- VIEWS ---
 const Views = {
+  mobileAdminDashboard() {
+    const pending = State.requests.filter(r => r.status === 'pending').length;
+    const overdue = State.loans.filter(l => l.status === 'active' && new Date(l.due_date) < new Date()).length;
+    const recent = State.requests.slice(0, 2).map(req => `
+      <div class="flex items-center justify-between bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
+        <div class="flex items-center gap-sm min-w-0">
+          <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined">person</span>
+          </div>
+          <div class="min-w-0">
+            <div class="font-bold text-sm truncate">${h(req.profiles?.full_name || 'Member')}</div>
+            <div class="text-xs text-on-surface-variant">${h(req.items?.name || 'Item')} · ${req.status}</div>
+          </div>
+        </div>
+        <button class="bg-secondary text-on-secondary px-3 py-1.5 rounded-lg text-xs font-bold">Approve</button>
+      </div>
+    `).join('');
+
+    return `
+      <div class="space-y-md">
+        <div>
+          <h1 class="font-display-lg text-display-lg text-primary">Admin Dashboard</h1>
+          <p class="text-on-surface-variant text-sm">Overview of pending tasks and recent activity.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-md">
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
+            <div class="text-xs uppercase text-on-surface-variant mb-2">Pending</div>
+            <div class="text-4xl font-bold text-primary">${pending}</div>
+            <div class="text-xs text-secondary mt-1">+3 since yesterday</div>
+          </div>
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
+            <div class="text-xs uppercase text-on-surface-variant mb-2">Overdue</div>
+            <div class="text-4xl font-bold text-error">${overdue}</div>
+            <div class="text-xs text-on-surface-variant mt-1">Needs attention</div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
+          <div class="flex items-center justify-between mb-sm">
+            <h2 class="font-bold text-lg text-primary">Recent Activity</h2>
+            <button class="text-secondary text-sm" onclick="Router.go('admin-requests')">View All</button>
+          </div>
+          <div class="space-y-md">${recent || '<div class="text-sm text-on-surface-variant">No recent activity.</div>'}</div>
+        </div>
+      </div>
+    `;
+  },
+
+  mobileMemberBrowse() {
+    const items = State.items.slice(0, 4);
+    const cards = items.map((item, idx) => {
+      const avail = item.available_quantity ?? item.total_stock ?? 1;
+      const status = avail > 0 ? 'Available' : 'Unavailable';
+      const statusClass = avail > 0 ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container text-on-surface-variant';
+      return `
+        <article class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+          <div class="relative h-40 bg-surface-container">
+            <div class="absolute top-2 right-2 px-2 py-1 rounded text-[10px] font-bold uppercase ${statusClass}">${status}: ${avail}</div>
+            <div class="w-full h-full flex items-center justify-center text-3xl text-on-surface-variant">${item.icon_name || 'laptop'}</div>
+          </div>
+          <div class="p-md space-y-sm">
+            <h3 class="font-bold text-lg text-primary">${h(item.name)}</h3>
+            <p class="text-sm text-on-surface-variant line-clamp-2">${h(item.description || 'Equipment available for borrowing.')}</p>
+            <div class="flex justify-between items-center pt-sm border-t border-outline-variant">
+              <span class="text-xs text-on-surface-variant">ID: ${h(item.asset_tag || item.id)}</span>
+              <button class="bg-secondary text-on-secondary px-3 py-1.5 rounded-lg text-xs font-bold" onclick="Actions.requestItemModal('${item.id}', '${h(item.name)}')">Request</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    return `
+      <div class="space-y-md">
+        <div class="flex items-center justify-between">
+          <h1 class="font-display-md text-display-md text-primary">Browse Inventory</h1>
+          <button class="rounded-full bg-surface-container p-2 text-on-surface-variant">
+            <span class="material-symbols-outlined">filter_list</span>
+          </button>
+        </div>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+          <input type="text" placeholder="Search equipment..." class="w-full pl-10 pr-3 py-2 rounded-lg border border-outline-variant bg-surface-container-lowest text-sm text-on-surface" />
+        </div>
+        <div class="flex gap-2 overflow-x-auto pb-1">
+          <button class="rounded-full border border-secondary bg-secondary/10 text-secondary px-3 py-1 text-xs font-bold">All</button>
+          <button class="rounded-full border border-outline-variant text-on-surface-variant px-3 py-1 text-xs">Laptops</button>
+          <button class="rounded-full border border-outline-variant text-on-surface-variant px-3 py-1 text-xs">Cameras</button>
+          <button class="rounded-full border border-outline-variant text-on-surface-variant px-3 py-1 text-xs">Audio</button>
+        </div>
+        <div class="space-y-md">${cards || '<div class="text-sm text-on-surface-variant">No items available.</div>'}</div>
+      </div>
+    `;
+  },
+
   // --- ADMIN DASHBOARD ---
   adminDashboard() {
     const totalItems = State.items.reduce((acc, i) => acc + (i.total_quantity || i.total_stock || 1), 0);
@@ -788,37 +1077,44 @@ const Views = {
 
   // --- ADMIN REQUESTS ---
   adminRequests() {
-    const rows = State.requests.map(req => `
-      <tr class="border-b border-surface-variant hover:bg-surface-container-low">
-        <td class="px-md py-sm font-medium">${h(req.items?.name || 'Item')}</td>
-        <td class="px-md py-sm text-on-surface-variant">
-          <div class="font-medium">${h(req.profiles?.full_name || 'Member')}</div>
-          <div class="text-xs text-on-surface-variant opacity-80">${h(req.profiles?.email || '')}</div>
-        </td>
-        <td class="px-md py-sm text-on-surface-variant">${req.quantity || 1}</td>
-        <td class="px-md py-sm text-on-surface-variant">${req.duration_days || 7} Days</td>
-        <td class="px-md py-sm text-on-surface-variant">${h(req.purpose || 'Standard Borrow')}</td>
-        <td class="px-md py-sm">
-          <span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${req.status === 'pending' ? 'bg-amber-100 text-amber-800' : req.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-error-container text-error'}">
-            ${req.status}
-          </span>
-        </td>
-        <td class="px-md py-sm text-right space-x-xs">
-          ${req.status === 'pending' ? `
-            ${req.purpose === 'Return'
-              ? `
-                <button onclick="Actions.confirmReturn('${req.id}')" class="bg-emerald-600 text-white px-xs py-1 rounded text-xs hover:bg-emerald-700">Confirm Return</button>
-                <button onclick="Actions.rejectReturn('${req.id}')" class="bg-error text-white px-xs py-1 rounded text-xs hover:bg-error-container">Reject</button>
-              `
-              : `
-                <button onclick="Actions.approveRequest('${req.id}')" class="bg-emerald-600 text-white px-xs py-1 rounded text-xs hover:bg-emerald-700">Approve</button>
-                <button onclick="Actions.rejectRequest('${req.id}')" class="bg-error text-white px-xs py-1 rounded text-xs hover:bg-error-container">Reject</button>
-              `
-            }
-          ` : '<span class="text-xs text-on-surface-variant">Processed</span>'}
-        </td>
-      </tr>
-    `).join('');
+    const rows = State.requests.map(req => {
+      const statusKey = String(req.status || '').trim().toLowerCase();
+      const isPending = statusKey === 'pending';
+      const isApproved = statusKey === 'approved';
+      const isRejected = statusKey === 'rejected';
+      const actionCell = isPending
+        ? (req.purpose === 'Return'
+            ? `
+              <button onclick="Actions.confirmReturn('${req.id}')" class="bg-emerald-600 text-white px-xs py-1 rounded text-xs hover:bg-emerald-700">Confirm Return</button>
+              <button onclick="Actions.rejectReturn('${req.id}')" class="bg-error text-white px-xs py-1 rounded text-xs hover:bg-error-container">Reject</button>
+            `
+            : `
+              <button onclick="Actions.approveRequest('${req.id}')" class="bg-emerald-600 text-white px-xs py-1 rounded text-xs hover:bg-emerald-700">Approve</button>
+              <button onclick="Actions.rejectRequest('${req.id}')" class="bg-error text-white px-xs py-1 rounded text-xs hover:bg-error-container">Reject</button>
+            `)
+        : `<span class="text-xs text-on-surface-variant">${isApproved ? 'Approved' : isRejected ? 'Rejected' : 'Processed'}</span>`;
+
+      return `
+        <tr class="border-b border-surface-variant hover:bg-surface-container-low">
+          <td class="px-md py-sm font-medium">${h(req.items?.name || 'Item')}</td>
+          <td class="px-md py-sm text-on-surface-variant">
+            <div class="font-medium">${h(req.profiles?.full_name || 'Member')}</div>
+            <div class="text-xs text-on-surface-variant opacity-80">${h(req.profiles?.email || '')}</div>
+          </td>
+          <td class="px-md py-sm text-on-surface-variant">${req.quantity || 1}</td>
+          <td class="px-md py-sm text-on-surface-variant">${req.duration_days || 7} Days</td>
+          <td class="px-md py-sm text-on-surface-variant">${h(req.purpose || 'Standard Borrow')}</td>
+          <td class="px-md py-sm">
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${statusKey === 'pending' ? 'bg-amber-100 text-amber-800' : statusKey === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-error-container text-error'}">
+              ${statusKey || 'pending'}
+            </span>
+          </td>
+          <td class="px-md py-sm text-right space-x-xs">
+            ${actionCell}
+          </td>
+        </tr>
+      `;
+    }).join('');
 
     return `
       <div class="space-y-md">
@@ -828,22 +1124,24 @@ const Views = {
         </div>
 
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-              <tr>
-                <th class="px-md py-sm">Item</th>
-                <th class="px-md py-sm">Member</th>
-                <th class="px-md py-sm">Qty</th>
-                <th class="px-md py-sm">Duration</th>
-                <th class="px-md py-sm">Purpose</th>
-                <th class="px-md py-sm">Status</th>
-                <th class="px-md py-sm text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm">
-              ${rows || '<tr><td colspan="7" class="p-md text-center text-on-surface-variant">No borrow requests.</td></tr>'}
-            </tbody>
-          </table>
+          <div class="overflow-x-auto">
+            <table class="min-w-[820px] w-full text-left border-collapse">
+              <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
+                <tr>
+                  <th class="px-md py-sm whitespace-nowrap">Item</th>
+                  <th class="px-md py-sm whitespace-nowrap">Member</th>
+                  <th class="px-md py-sm whitespace-nowrap">Qty</th>
+                  <th class="px-md py-sm whitespace-nowrap">Duration</th>
+                  <th class="px-md py-sm whitespace-nowrap">Purpose</th>
+                  <th class="px-md py-sm whitespace-nowrap">Status</th>
+                  <th class="px-md py-sm text-right whitespace-nowrap">Action</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm">
+                ${rows || '<tr><td colspan="7" class="p-md text-center text-on-surface-variant">No borrow requests.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     `;
@@ -928,6 +1226,132 @@ const Views = {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-md">
           ${cards || '<div class="col-span-full p-md text-center text-on-surface-variant">No items available to browse.</div>'}
+        </div>
+      </div>
+    `;
+  },
+
+  mobileMemberDashboard() {
+    const activeLoans = State.loans.filter(loan => loan.status === 'active');
+    const cards = activeLoans.slice(0, 3).map(loan => {
+      const due = new Date(loan.due_date);
+      const today = new Date();
+      const overdue = due < today;
+      const tag = overdue ? 'Overdue' : 'Due Soon';
+      const badgeClass = overdue ? 'bg-error-container text-error' : 'bg-secondary/10 text-secondary';
+      return `
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
+          <div class="flex items-center justify-between gap-sm">
+            <div class="flex items-center gap-sm min-w-0">
+              <div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">📷</div>
+              <div class="min-w-0">
+                <div class="font-bold text-base text-primary truncate">${h(loan.items?.name || 'Item')}</div>
+                <div class="text-xs text-on-surface-variant">ID: ${h(loan.items?.asset_tag || loan.item_id || 'N/A')}</div>
+              </div>
+            </div>
+            <span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${badgeClass}">${tag}</span>
+          </div>
+          <div class="mt-md flex justify-between items-center">
+            <button class="border border-outline-variant px-3 py-1.5 rounded-lg text-xs font-bold text-primary">Return</button>
+            <span class="text-xs text-on-surface-variant">Due ${fmtDate(loan.due_date)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="space-y-md">
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
+          <p class="text-sm text-on-surface-variant">Welcome back, Member</p>
+          <h1 class="font-display-lg text-display-lg text-primary mt-1">Ready for your next project?</h1>
+          <div class="relative mt-md">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+            <input type="text" placeholder="Search gear (e.g., Sony A7IV)" class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 pl-10 pr-3 text-sm text-on-surface" />
+          </div>
+        </div>
+
+        <div class="bg-secondary rounded-xl p-md text-on-secondary text-center">
+          <div class="text-4xl font-bold">${activeLoans.length}</div>
+          <div class="text-sm opacity-90">Currently Borrowed</div>
+          <button class="mt-md w-full bg-surface-container-lowest text-secondary rounded-lg py-2 text-sm font-bold">+ Quick Request</button>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-sm">
+            <h2 class="font-display-md text-display-md text-primary">Active Borrows</h2>
+            <button class="text-secondary text-sm" onclick="Router.go('member-browse')">View All</button>
+          </div>
+          <div class="space-y-md">${cards || '<div class="text-sm text-on-surface-variant">No active borrows.</div>'}</div>
+        </div>
+      </div>
+    `;
+  },
+
+  mobileMemberSupport() {
+    return `
+      <div class="space-y-md">
+        <div class="flex items-center gap-sm">
+          <button class="text-on-surface-variant" onclick="Router.go('member-dashboard')">
+            <span class="material-symbols-outlined">arrow_back</span>
+          </button>
+          <h1 class="font-display-md text-display-md text-primary">Support</h1>
+        </div>
+
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+          <input type="text" placeholder="How can we help you?" class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 pl-10 pr-3 text-sm text-on-surface" />
+        </div>
+
+        <div class="space-y-md">
+          <div class="grid grid-cols-2 gap-md">
+            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md text-center">
+              <div class="text-secondary text-2xl mb-2"><span class="material-symbols-outlined">inventory_2</span></div>
+              <div class="font-semibold text-primary">Inventory Setup</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md text-center">
+              <div class="text-secondary text-2xl mb-2"><span class="material-symbols-outlined">sync_problem</span></div>
+              <div class="font-semibold text-primary">Sync Issues</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md text-center">
+              <div class="text-secondary text-2xl mb-2"><span class="material-symbols-outlined">group</span></div>
+              <div class="font-semibold text-primary">Manage Members</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md text-center">
+              <div class="text-secondary text-2xl mb-2"><span class="material-symbols-outlined">description</span></div>
+              <div class="font-semibold text-primary">Billing & Reports</div>
+            </div>
+          </div>
+
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md space-y-md">
+            <div class="flex items-center gap-sm">
+              <span class="material-symbols-outlined text-secondary">support_agent</span>
+              <h2 class="font-display-md text-display-md text-primary">Submit a Ticket</h2>
+            </div>
+            <form class="space-y-md" onsubmit="event.preventDefault(); toast('Ticket submitted!', 'success');">
+              <div>
+                <div class="text-[11px] uppercase text-on-surface-variant mb-1">Issue Type</div>
+                <select class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 px-3 text-sm">
+                  <option>Select category...</option>
+                  <option>Inventory</option>
+                  <option>Equipment</option>
+                  <option>Account</option>
+                </select>
+              </div>
+              <div>
+                <div class="text-[11px] uppercase text-on-surface-variant mb-1">Urgency</div>
+                <select class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 px-3 text-sm">
+                  <option>Low - General Question</option>
+                  <option>Medium</option>
+                  <option>High</option>
+                </select>
+              </div>
+              <div>
+                <div class="text-[11px] uppercase text-on-surface-variant mb-1">Description</div>
+                <textarea rows="4" class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 px-3 text-sm" placeholder="Please describe the issue in detail..."></textarea>
+              </div>
+              <button type="submit" class="w-full bg-secondary text-on-secondary rounded-lg py-3 text-sm font-bold">Submit Request</button>
+            </form>
+          </div>
         </div>
       </div>
     `;
@@ -1112,6 +1536,12 @@ const Actions = {
       const req = State.requests.find(r => r.id === reqId);
       if (!req) throw new Error('Request not found');
 
+      const normalizedStatus = String(req.status || '').trim().toLowerCase();
+      if (normalizedStatus !== 'pending') {
+        toast(`This request was already ${normalizedStatus || 'processed'}.`, 'info');
+        return;
+      }
+
       // Return requests are not borrow approvals. They must go through the confirmation flow.
       if (req.purpose === 'Return') {
         await this.confirmReturn(reqId);
@@ -1157,6 +1587,15 @@ const Actions = {
 
   async rejectRequest(reqId) {
     try {
+      const req = State.requests.find(r => r.id === reqId);
+      if (!req) throw new Error('Request not found');
+
+      const normalizedStatus = String(req.status || '').trim().toLowerCase();
+      if (normalizedStatus !== 'pending') {
+        toast(`This request was already ${normalizedStatus || 'processed'}.`, 'info');
+        return;
+      }
+
       // Directly update the request status to 'rejected' without invoking any RPC that might create a loan
       const { error } = await supabaseClient.from('requests').update({ status: 'rejected' }).eq('id', reqId);
       if (error) throw error;
