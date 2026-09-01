@@ -81,15 +81,15 @@ function isMobileLayout() {
 function toast(msg, type = 'info') {
   const c = $('#toast-container');
   if (!c) return;
-  
+
   // Extract message if msg is an error object
   let displayMsg = msg;
   if (typeof msg === 'object' && msg !== null) {
       displayMsg = msg.message || msg.error || JSON.stringify(msg);
   }
-  
-  const div = document.createElement('div');
+
   const bg = type === 'error' ? 'bg-error text-on-error' : type === 'success' ? 'bg-emerald-600 text-white' : 'bg-primary-container text-on-primary-container';
+  const div = document.createElement('div');
   div.className = `${bg} px-md py-sm rounded-lg shadow-lg text-sm font-medium transition-all duration-300 flex items-center justify-between min-w-[240px]`;
   div.innerHTML = `<span>${h(displayMsg)}</span><button onclick="this.parentElement.remove()" class="ml-sm font-bold">&times;</button>`;
   c.appendChild(div);
@@ -323,11 +323,14 @@ const App = {
               <span class="material-symbols-outlined">dashboard</span> Dashboard
             </button>
             <button onclick="Router.go('admin-inventory')" data-nav="admin-inventory" class="nav-item flex items-center gap-md px-md py-sm rounded-lg font-medium text-on-surface-variant hover:bg-surface-container text-sm">
-              <span class="material-symbols-outlined">inventory_2</span> Inventory Mgmt
+              <span class="material-symbols-outlined">inventory_2</span> Inventory
             </button>
             <button onclick="Router.go('admin-requests')" data-nav="admin-requests" class="nav-item flex items-center gap-md px-md py-sm rounded-lg font-medium text-on-surface-variant hover:bg-surface-container text-sm justify-between">
-              <span class="flex items-center gap-md"><span class="material-symbols-outlined">sync_alt</span> Borrow Requests</span>
+              <span class="flex items-center gap-md"><span class="material-symbols-outlined">sync_alt</span> Requests</span>
               <span id="pending-badge" class="bg-error text-on-error text-[10px] px-2 py-0.5 rounded-full font-bold hidden">0</span>
+            </button>
+            <button onclick="Router.go('admin-loans')" data-nav="admin-loans" class="nav-item flex items-center gap-md px-md py-sm rounded-lg font-medium text-on-surface-variant hover:bg-surface-container text-sm">
+              <span class="material-symbols-outlined">assignment</span> Loans
             </button>
             <button onclick="Router.go('admin-members')" data-nav="admin-members" class="nav-item flex items-center gap-md px-md py-sm rounded-lg font-medium text-on-surface-variant hover:bg-surface-container text-sm">
               <span class="material-symbols-outlined">group</span> Members
@@ -377,11 +380,15 @@ const App = {
           </button>
           <button data-nav="admin-inventory" onclick="App.closeMobileDrawer(); Router.go('admin-inventory')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
             <span class="material-symbols-outlined">inventory_2</span>
-            <span>Inventory Mgmt</span>
+            <span>Inventory</span>
           </button>
           <button data-nav="admin-requests" onclick="App.closeMobileDrawer(); Router.go('admin-requests')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
             <span class="material-symbols-outlined">sync_alt</span>
-            <span>Borrow Requests</span>
+            <span>Requests</span>
+          </button>
+          <button data-nav="admin-loans" onclick="App.closeMobileDrawer(); Router.go('admin-loans')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">assignment</span>
+            <span>Loans</span>
           </button>
           <button data-nav="admin-members" onclick="App.closeMobileDrawer(); Router.go('admin-members')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
             <span class="material-symbols-outlined">group</span>
@@ -432,13 +439,17 @@ const App = {
         </div>
 
         <nav class="flex-1 flex flex-col gap-sm mt-md">
+          <button data-nav="member-browse" onclick="App.closeMobileDrawer(); Router.go('member-browse')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <span>Browse Inventory</span>
+          </button>
           <button data-nav="member-dashboard" onclick="App.closeMobileDrawer(); Router.go('member-dashboard')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
             <span class="material-symbols-outlined">dashboard</span>
             <span>Dashboard</span>
           </button>
-          <button data-nav="member-browse" onclick="App.closeMobileDrawer(); Router.go('member-browse')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
-            <span class="material-symbols-outlined">inventory_2</span>
-            <span>Browse Inventory</span>
+          <button data-nav="member-activities" onclick="App.closeMobileDrawer(); Router.go('member-activities')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
+            <span class="material-symbols-outlined">history</span>
+            <span>Activities</span>
           </button>
           <button data-nav="member-support" onclick="App.closeMobileDrawer(); Router.go('member-support')" class="nav-item flex items-center gap-md px-md py-sm rounded-lg text-left text-on-surface-variant text-base">
             <span class="material-symbols-outlined">help</span>
@@ -501,6 +512,9 @@ const App = {
             </button>
             <button onclick="Router.go('member-dashboard')" data-nav="member-dashboard" class="nav-item flex items-center gap-md px-md py-sm rounded-lg font-medium text-on-surface-variant hover:bg-surface-container text-sm">
               <span class="material-symbols-outlined">dashboard</span> My Dashboard
+            </button>
+            <button onclick="Router.go('member-activities')" data-nav="member-activities" class="nav-item flex items-center gap-md px-md py-sm rounded-lg font-medium text-on-surface-variant hover:bg-surface-container text-sm">
+              <span class="material-symbols-outlined">history</span> Activities
             </button>
             <button onclick="Router.go('member-support')" data-nav="member-support" class="nav-item flex items-center gap-md px-md py-sm rounded-lg font-medium text-on-surface-variant hover:bg-surface-container text-sm">
               <span class="material-symbols-outlined">help_outline</span> Support
@@ -662,6 +676,11 @@ const Router = {
       return;
     }
 
+    if (isMobile && routeName === 'member-activities') {
+      currentMain.innerHTML = Views.memberActivities();
+      return;
+    }
+
     if (isMobile && routeName === 'member-support') {
       currentMain.innerHTML = Views.mobileMemberSupport();
       return;
@@ -671,10 +690,12 @@ const Router = {
       case 'admin-dashboard': currentMain.innerHTML = Views.adminDashboard(); break;
       case 'admin-inventory': currentMain.innerHTML = Views.adminInventory(); break;
       case 'admin-requests': currentMain.innerHTML = Views.adminRequests(); break;
+      case 'admin-loans': currentMain.innerHTML = Views.adminLoans(); break;
       case 'admin-members': currentMain.innerHTML = Views.adminMembers(); break;
       case 'admin-profile': currentMain.innerHTML = Views.adminProfile(); break;
       case 'member-browse': currentMain.innerHTML = Views.memberBrowse(); break;
       case 'member-dashboard': currentMain.innerHTML = Views.memberDashboard(); break;
+      case 'member-activities': currentMain.innerHTML = Views.memberActivities(); break;
       case 'member-profile': currentMain.innerHTML = Views.memberProfile(); break;
       case 'member-support': currentMain.innerHTML = Views.memberSupport(); break;
       default: currentMain.innerHTML = '<div class="p-lg">Page under construction</div>';
@@ -684,51 +705,53 @@ const Router = {
 
 // --- VIEWS ---
 const Views = {
+  adminDashboardData() {
+    const pendingRequests = State.requests.filter(request => String(request.status || '').toLowerCase() === 'pending');
+    const pendingReturns = pendingRequests.filter(request => request.purpose === 'Return');
+    const activeLoans = State.loans.filter(loan => loan.status === 'active');
+    const overdueLoans = activeLoans.filter(loan => new Date(loan.due_date) < new Date());
+    const dueSoonLoans = activeLoans.filter(loan => {
+      const daysUntilDue = (new Date(loan.due_date) - new Date()) / 86400000;
+      return daysUntilDue >= 0 && daysUntilDue <= 7;
+    });
+    const totalUnits = State.items.reduce((total, item) => total + (item.total_quantity ?? item.total_stock ?? 0), 0);
+    const availableUnits = State.items.reduce((total, item) => total + (item.available_quantity ?? 0), 0);
+    const lowStockItems = State.items.filter(item => (item.available_quantity ?? 0) <= 1);
+    const recentActivity = [
+      ...State.inventoryLogs.map(log => ({ date: log.created_at, icon: 'inventory_2', title: log.action || 'Inventory updated', detail: log.notes || 'Inventory activity' })),
+      ...State.requests.map(request => ({ date: request.requested_at, icon: request.purpose === 'Return' ? 'assignment_return' : 'sync_alt', title: `${request.purpose === 'Return' ? 'Return' : 'Borrow'} request`, detail: `${request.items?.name || 'Equipment'} · ${request.status}` })),
+      ...State.loans.map(loan => ({ date: loan.borrowed_at, icon: 'shopping_bag', title: loan.status === 'returned' ? 'Loan returned' : 'Loan started', detail: `${loan.items?.name || 'Equipment'} · ${loan.profiles?.full_name || 'Member'}` }))
+    ].filter(activity => activity.date).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+    return { pendingRequests, pendingReturns, activeLoans, overdueLoans, dueSoonLoans, totalUnits, availableUnits, lowStockItems, recentActivity };
+  },
+
   mobileAdminDashboard() {
-    const pending = State.requests.filter(r => r.status === 'pending').length;
-    const overdue = State.loans.filter(l => l.status === 'active' && new Date(l.due_date) < new Date()).length;
-    const recent = State.requests.slice(0, 2).map(req => `
-      <div class="flex items-center justify-between bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
-        <div class="flex items-center gap-sm min-w-0">
-          <div class="w-10 h-10 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined">person</span>
-          </div>
-          <div class="min-w-0">
-            <div class="font-bold text-sm truncate">${h(req.profiles?.full_name || 'Member')}</div>
-            <div class="text-xs text-on-surface-variant">${h(req.items?.name || 'Item')} · ${req.status}</div>
-          </div>
-        </div>
-        <button class="bg-secondary text-on-secondary px-3 py-1.5 rounded-lg text-xs font-bold">Approve</button>
-      </div>
-    `).join('');
+    const data = this.adminDashboardData();
+    const requestCards = data.pendingRequests.slice(0, 3).map(request => {
+      const isReturnRequest = request.purpose === 'Return';
+      return `<div onclick="Router.go('admin-requests')" class="rounded-lg border border-outline-variant p-sm cursor-pointer hover:bg-surface-container-low"><div class="flex items-start justify-between gap-sm"><div class="min-w-0"><div class="font-bold text-sm truncate">${h(request.items?.name || 'Equipment')}</div><div class="text-xs text-on-surface-variant truncate">${h(request.profiles?.full_name || 'Member')} · ${request.quantity || 1} unit(s)</div></div><span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase shrink-0 ${isReturnRequest ? 'bg-violet-100 text-violet-800' : 'bg-sky-100 text-sky-800'}">${isReturnRequest ? 'Return' : 'Borrow'}</span></div><div class="flex items-center justify-between gap-sm mt-sm"><span class="text-xs text-amber-700 font-bold">Pending review</span><div class="flex gap-xs"><button onclick="event.stopPropagation(); ${isReturnRequest ? `Actions.confirmReturn('${request.id}')` : `Actions.approveRequest('${request.id}')`}" class="bg-emerald-600 text-white px-2 py-1 rounded text-[10px] font-bold">${isReturnRequest ? 'Confirm' : 'Approve'}</button><button onclick="event.stopPropagation(); ${isReturnRequest ? `Actions.rejectReturn('${request.id}')` : `Actions.rejectRequest('${request.id}')`}" class="bg-error text-white px-2 py-1 rounded text-[10px] font-bold">Reject</button></div></div></div>`;
+    }).join('');
+    const borrowCards = data.activeLoans.slice(0, 3).map(loan => {
+      const isOverdue = new Date(loan.due_date) < new Date();
+      return `<div onclick="Router.go('admin-loans')" class="rounded-lg border border-outline-variant p-sm cursor-pointer hover:bg-surface-container-low"><div class="flex items-center justify-between gap-sm"><div class="min-w-0"><div class="font-bold text-sm truncate">${h(loan.items?.name || 'Equipment')}</div><div class="text-xs text-on-surface-variant truncate">${h(loan.profiles?.full_name || 'Member')} · ${loan.quantity || 1} unit(s)</div></div><span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase shrink-0 ${isOverdue ? 'bg-error-container text-error' : 'bg-emerald-100 text-emerald-800'}">${isOverdue ? 'Overdue' : 'Active'}</span></div><div class="flex justify-between items-center mt-sm text-xs text-on-surface-variant"><span>Due ${fmtDate(loan.due_date)}</span><span class="text-secondary font-bold">View details</span></div></div>`;
+    }).join('');
+    const recent = data.recentActivity.slice(0, 4).map(activity => `<div class="flex items-start gap-sm"><span class="material-symbols-outlined text-secondary">${activity.icon}</span><div><div class="font-medium text-sm">${h(activity.title)}</div><div class="text-xs text-on-surface-variant">${h(activity.detail)} · ${fmtDate(activity.date)}</div></div></div>`).join('');
 
     return `
       <div class="space-y-md">
         <div>
           <h1 class="font-display-lg text-display-lg text-primary">Admin Dashboard</h1>
-          <p class="text-on-surface-variant text-sm">Overview of pending tasks and recent activity.</p>
+          <p class="text-on-surface-variant text-sm">Monitor inventory, lending, requests, and members from one place.</p>
         </div>
 
         <div class="grid grid-cols-2 gap-md">
-          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
-            <div class="text-xs uppercase text-on-surface-variant mb-2">Pending</div>
-            <div class="text-4xl font-bold text-primary">${pending}</div>
-            <div class="text-xs text-secondary mt-1">+3 since yesterday</div>
-          </div>
-          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
-            <div class="text-xs uppercase text-on-surface-variant mb-2">Overdue</div>
-            <div class="text-4xl font-bold text-error">${overdue}</div>
-            <div class="text-xs text-on-surface-variant mt-1">Needs attention</div>
-          </div>
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="text-xs uppercase text-on-surface-variant">Available Units</div><div class="text-3xl font-bold text-primary mt-xs">${data.availableUnits}</div><div class="text-xs text-on-surface-variant">of ${data.totalUnits} total</div></div>
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="text-xs uppercase text-on-surface-variant">Active Loans</div><div class="text-3xl font-bold text-secondary mt-xs">${data.activeLoans.length}</div></div>
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="text-xs uppercase text-on-surface-variant">Requests</div><div class="text-3xl font-bold text-amber-600 mt-xs">${data.pendingRequests.length}</div></div>
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="text-xs uppercase text-on-surface-variant">Members</div><div class="text-3xl font-bold text-primary mt-xs">${State.members.length}</div></div>
         </div>
-
-        <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
-          <div class="flex items-center justify-between mb-sm">
-            <h2 class="font-bold text-lg text-primary">Recent Activity</h2>
-            <button class="text-secondary text-sm" onclick="Router.go('admin-requests')">View All</button>
-          </div>
-          <div class="space-y-md">${recent || '<div class="text-sm text-on-surface-variant">No recent activity.</div>'}</div>
-        </div>
+        <div class="grid grid-cols-1 gap-md"><section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="flex items-center justify-between mb-sm"><div><h2 class="font-bold text-lg text-primary">Requests</h2><p class="text-xs text-on-surface-variant">Approve or reject pending requests quickly.</p></div><span class="text-sm font-bold text-amber-600">${data.pendingRequests.length}</span></div><div class="space-y-sm">${requestCards || '<div class="text-sm text-on-surface-variant">No pending requests.</div>'}</div><button onclick="Router.go('admin-requests')" class="w-full mt-md pt-sm border-t border-outline-variant text-secondary text-xs font-bold">See full list</button></section><section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="flex items-center justify-between mb-sm"><div><h2 class="font-bold text-lg text-primary">Active Borrows</h2><p class="text-xs text-on-surface-variant">Monitor equipment currently checked out.</p></div><span class="text-sm font-bold text-secondary">${data.activeLoans.length}</span></div><div class="space-y-sm">${borrowCards || '<div class="text-sm text-on-surface-variant">No active borrows.</div>'}</div><button onclick="Router.go('admin-loans')" class="w-full mt-md pt-sm border-t border-outline-variant text-secondary text-xs font-bold">See full list</button></section></div>
+        <section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="flex items-center justify-between mb-sm"><h2 class="font-bold text-lg text-primary">Recent Activity</h2><button onclick="Router.go('admin-inventory')" class="text-secondary text-xs font-bold">Open Inventory</button></div><div class="space-y-md">${recent || '<div class="text-sm text-on-surface-variant">No recent activity.</div>'}</div></section>
       </div>
     `;
   },
@@ -782,130 +805,34 @@ const Views = {
 
   // --- ADMIN DASHBOARD ---
   adminDashboard() {
-    const totalItems = State.items.reduce((acc, i) => acc + (i.total_quantity || i.total_stock || 1), 0);
-    const activeLoans = State.loans.filter(l => l.status === 'active').length;
-    const pendingList = State.requests.filter(r => r.status === 'pending');
-    const pendingReqs = pendingList.length;
-    const overdueCount = State.loans.filter(l => l.status === 'active' && new Date(l.due_date) < new Date()).length;
-
-    const pendingRows = pendingList.map(req => {
-      const isReturnRequest = req.purpose === 'Return';
-      return `
-      <tr class="border-b border-surface-variant hover:bg-surface-container-low">
-        <td class="px-md py-sm font-medium">${h(req.items?.name || 'Equipment')}</td>
-        <td class="px-md py-sm text-on-surface-variant">
-          <div class="font-medium">${h(req.profiles?.full_name || 'Member')}</div>
-          <div class="text-xs text-on-surface-variant opacity-80">${h(req.profiles?.email || '')}</div>
-        </td>
-        <td class="px-md py-sm text-on-surface-variant text-xs font-bold">${req.quantity || 1}</td>
-        <td class="px-md py-sm text-on-surface-variant text-xs">${req.duration_days || 7} Days</td>
-        <td class="px-md py-sm text-on-surface-variant text-xs">${h(req.purpose || 'Standard Borrow')}</td>
-        <td class="px-md py-sm text-right space-x-xs">
-          ${isReturnRequest ? `
-            <button onclick="Actions.confirmReturn('${req.id}')" class="bg-emerald-700 text-white px-sm py-xs rounded text-xs font-bold hover:bg-emerald-800">Confirm Return</button>
-            <button onclick="Actions.rejectReturn('${req.id}')" class="bg-error text-white px-sm py-xs rounded text-xs font-bold hover:bg-error/80">Reject</button>
-          ` : `
-            <button onclick="Actions.approveRequest('${req.id}')" class="bg-emerald-700 text-white px-sm py-xs rounded text-xs font-bold hover:bg-emerald-800">Approve</button>
-            <button onclick="Actions.rejectRequest('${req.id}')" class="bg-error text-white px-sm py-xs rounded text-xs font-bold hover:bg-error/80">Reject</button>
-          `}
-        </td>
-      </tr>
-    `;
+    const data = this.adminDashboardData();
+    const utilization = data.totalUnits ? Math.round(((data.totalUnits - data.availableUnits) / data.totalUnits) * 100) : 0;
+    const requestCards = data.pendingRequests.slice(0, 4).map(request => {
+      const isReturnRequest = request.purpose === 'Return';
+      return `<div onclick="Router.go('admin-requests')" class="rounded-lg border border-outline-variant p-md cursor-pointer hover:bg-surface-container-low"><div class="flex items-center justify-between gap-md"><div class="min-w-0"><div class="font-bold text-sm truncate">${h(request.items?.name || 'Equipment')}</div><div class="text-xs text-on-surface-variant truncate">${h(request.profiles?.full_name || 'Member')} · ${request.quantity || 1} unit(s) · ${fmtDate(request.requested_at)}</div></div><span class="px-2 py-1 rounded-full text-xs font-bold uppercase shrink-0 ${isReturnRequest ? 'bg-violet-100 text-violet-800' : 'bg-sky-100 text-sky-800'}">${isReturnRequest ? 'Return' : 'Borrow'}</span></div><div class="flex items-center justify-between mt-sm"><span class="text-xs text-amber-700 font-bold">Pending review</span><div class="flex gap-sm"><button onclick="event.stopPropagation(); ${isReturnRequest ? `Actions.confirmReturn('${request.id}')` : `Actions.approveRequest('${request.id}')`}" class="bg-emerald-600 text-white px-sm py-xs rounded text-xs font-bold">${isReturnRequest ? 'Confirm Return' : 'Approve'}</button><button onclick="event.stopPropagation(); ${isReturnRequest ? `Actions.rejectReturn('${request.id}')` : `Actions.rejectRequest('${request.id}')`}" class="bg-error text-white px-sm py-xs rounded text-xs font-bold">Reject</button></div></div></div>`;
     }).join('');
-
-    const alertRows = State.loans.filter(l => l.status === 'active').map(l => {
-      const isOverdue = new Date(l.due_date) < new Date();
-      const statusBadge = isOverdue 
-        ? '<span class="px-2 py-1 bg-error-container text-error rounded-full text-xs font-bold uppercase">Overdue</span>'
-        : '<span class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold uppercase">Active Loan</span>';
-      return `
-        <tr class="border-b border-surface-variant hover:bg-surface-container-low transition-colors">
-          <td class="px-md py-sm font-medium">${h(l.items?.name || 'Item')}</td>
-          <td class="px-md py-sm text-on-surface-variant">${h(l.profiles?.full_name || l.profiles?.email || 'Member')}</td>
-          <td class="px-md py-sm text-on-surface-variant">${fmtDate(l.due_date)}</td>
-          <td class="px-md py-sm">${statusBadge}</td>
-          <td class="px-md py-sm text-right">
-            <button onclick="Actions.returnItem('${l.id}')" class="text-secondary hover:underline text-xs font-bold">Process Return</button>
-          </td>
-        </tr>
-      `;
+    const borrowCards = data.activeLoans.slice(0, 4).map(loan => {
+      const isOverdue = new Date(loan.due_date) < new Date();
+      return `<div onclick="Router.go('admin-loans')" class="rounded-lg border border-outline-variant p-md cursor-pointer hover:bg-surface-container-low"><div class="flex items-center justify-between gap-md"><div class="min-w-0"><div class="font-bold text-sm truncate">${h(loan.items?.name || 'Equipment')}</div><div class="text-xs text-on-surface-variant truncate">${h(loan.profiles?.full_name || 'Member')} · ${loan.quantity || 1} unit(s)</div></div><span class="px-2 py-1 rounded-full text-xs font-bold uppercase shrink-0 ${isOverdue ? 'bg-error-container text-error' : 'bg-emerald-100 text-emerald-800'}">${isOverdue ? 'Overdue' : 'Active'}</span></div><div class="flex justify-between items-center mt-sm text-xs text-on-surface-variant"><span>Due ${fmtDate(loan.due_date)}</span><span class="text-secondary font-bold">View details</span></div></div>`;
     }).join('');
-
+    const activity = data.recentActivity.map(item => `<div class="flex items-start gap-sm"><span class="material-symbols-outlined text-secondary shrink-0">${item.icon}</span><div class="min-w-0"><div class="font-medium text-sm">${h(item.title)}</div><div class="text-xs text-on-surface-variant break-words">${h(item.detail)} · ${fmtDate(item.date)}</div></div></div>`).join('');
     return `
-      <div class="space-y-lg">
-        <div>
+      <div class="space-y-lg max-w-7xl">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+          <div>
           <h1 class="font-display-lg text-display-lg text-primary">Admin Dashboard</h1>
-          <p class="text-on-surface-variant text-sm">System statistics and active item ledger.</p>
+          <p class="text-on-surface-variant text-sm">Monitor inventory health, lending activity, and requests that need review.</p>
+          </div>
+          <div class="text-xs text-on-surface-variant">Live operational overview</div>
         </div>
-
-        <!-- Metric Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-md">
-          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant">
-            <div class="text-on-surface-variant text-xs uppercase font-label-sm">Total Equipment Units</div>
-            <div class="font-display-lg text-display-lg text-primary mt-xs">${totalItems}</div>
-          </div>
-          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant">
-            <div class="text-on-surface-variant text-xs uppercase font-label-sm">Active Borrows</div>
-            <div class="font-display-lg text-display-lg text-secondary mt-xs">${activeLoans}</div>
-          </div>
-          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant">
-            <div class="text-on-surface-variant text-xs uppercase font-label-sm">Pending Requests</div>
-            <div class="font-display-lg text-display-lg text-amber-600 mt-xs">${pendingReqs}</div>
-          </div>
-          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant">
-            <div class="text-on-surface-variant text-xs uppercase font-label-sm">Overdue Items</div>
-            <div class="font-display-lg text-display-lg text-error mt-xs">${overdueCount}</div>
-          </div>
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-md">
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Catalog Items</div><div class="text-3xl font-bold text-primary mt-xs">${State.items.length}</div><div class="text-xs text-on-surface-variant">${data.totalUnits} total units</div></div>
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Available</div><div class="text-3xl font-bold text-secondary mt-xs">${data.availableUnits}</div><div class="text-xs text-on-surface-variant">${utilization}% utilization</div></div>
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Active Loans</div><div class="text-3xl font-bold text-primary mt-xs">${data.activeLoans.length}</div><div class="text-xs text-on-surface-variant">${data.dueSoonLoans.length} due soon</div></div>
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Requests</div><div class="text-3xl font-bold text-amber-600 mt-xs">${data.pendingRequests.length}</div><div class="text-xs text-on-surface-variant">${data.pendingReturns.length} returns</div></div>
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Members</div><div class="text-3xl font-bold text-primary mt-xs">${State.members.length}</div></div>
         </div>
-
-        <!-- Pending Requests Section -->
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-          <div class="p-md border-b border-outline-variant flex items-center justify-between bg-amber-50/50">
-            <h2 class="font-bold text-on-surface text-sm">Pending Borrow Requests (${pendingReqs})</h2>
-            <button onclick="Router.go('admin-requests')" class="text-secondary text-xs hover:underline font-bold">View All Requests</button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-                <tr>
-                  <th class="px-md py-sm">Equipment Item</th>
-                  <th class="px-md py-sm">Requested By</th>
-                  <th class="px-md py-sm">Qty</th>
-                  <th class="px-md py-sm">Duration</th>
-                  <th class="px-md py-sm">Purpose</th>
-                  <th class="px-md py-sm text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody class="text-sm">
-                ${pendingRows || '<tr><td colspan="6" class="p-md text-center text-on-surface-variant">No pending borrow requests at this time.</td></tr>'}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Active Borrows Ledger Table -->
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-          <div class="p-md border-b border-outline-variant flex items-center justify-between">
-            <h2 class="font-bold text-on-surface">Active Borrows Ledger</h2>
-            <button onclick="Router.go('admin-requests')" class="text-secondary text-xs hover:underline font-bold">View Pending Requests</button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-                <tr>
-                  <th class="px-md py-sm">Equipment</th>
-                  <th class="px-md py-sm">Borrowed By</th>
-                  <th class="px-md py-sm">Due Date</th>
-                  <th class="px-md py-sm">Status</th>
-                  <th class="px-md py-sm text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody class="text-sm">
-                ${alertRows || '<tr><td colspan="5" class="p-md text-center text-on-surface-variant">No active loans found.</td></tr>'}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg"><section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg"><div class="flex items-center justify-between mb-sm"><div><h2 class="font-bold text-lg text-primary">Requests</h2><p class="text-xs text-on-surface-variant">Approve or reject pending requests quickly.</p></div><span class="text-sm font-bold text-amber-600">${data.pendingRequests.length}</span></div><div class="space-y-sm">${requestCards || '<div class="text-sm text-on-surface-variant">No pending requests.</div>'}</div><button onclick="Router.go('admin-requests')" class="w-full mt-md pt-sm border-t border-outline-variant text-secondary text-xs font-bold">See full list</button></section><section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg"><div class="flex items-center justify-between mb-sm"><div><h2 class="font-bold text-lg text-primary">Active Borrows</h2><p class="text-xs text-on-surface-variant">Monitor equipment currently checked out.</p></div><span class="text-sm font-bold text-secondary">${data.activeLoans.length}</span></div><div class="space-y-sm">${borrowCards || '<div class="text-sm text-on-surface-variant">No active borrows.</div>'}</div><button onclick="Router.go('admin-loans')" class="w-full mt-md pt-sm border-t border-outline-variant text-secondary text-xs font-bold">See full list</button></section></div>
       </div>
     `;
   },
@@ -972,21 +899,23 @@ const Views = {
         </div>
 
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-xs">
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-              <tr>
-                <th class="px-md py-sm">Item Name</th>
-                <th class="px-md py-sm">Asset Tag</th>
-                <th class="px-md py-sm">Category</th>
-                <th class="px-md py-sm">Stock (Avail / Total)</th>
-                <th class="px-md py-sm">Lended Status</th>
-                <th class="px-md py-sm text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm">
-              ${rows || '<tr><td colspan="6" class="p-md text-center text-on-surface-variant">No inventory items matching criteria.</td></tr>'}
-            </tbody>
-          </table>
+          <div class="overflow-x-auto">
+            <table class="min-w-[820px] w-full text-left border-collapse">
+              <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
+                <tr>
+                  <th class="px-md py-sm">Item Name</th>
+                  <th class="px-md py-sm">Asset Tag</th>
+                  <th class="px-md py-sm">Category</th>
+                  <th class="px-md py-sm">Stock (Avail / Total)</th>
+                  <th class="px-md py-sm">Lended Status</th>
+                  <th class="px-md py-sm text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm">
+                ${rows || '<tr><td colspan="6" class="p-md text-center text-on-surface-variant">No inventory items matching criteria.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     `;
@@ -1082,6 +1011,9 @@ const Views = {
       const isPending = statusKey === 'pending';
       const isApproved = statusKey === 'approved';
       const isRejected = statusKey === 'rejected';
+      const isReturnRequest = req.purpose === 'Return';
+      const requestType = isReturnRequest ? 'Return' : 'Borrow';
+      const requestTypeClass = isReturnRequest ? 'bg-violet-100 text-violet-800' : 'bg-sky-100 text-sky-800';
       const actionCell = isPending
         ? (req.purpose === 'Return'
             ? `
@@ -1103,7 +1035,7 @@ const Views = {
           </td>
           <td class="px-md py-sm text-on-surface-variant">${req.quantity || 1}</td>
           <td class="px-md py-sm text-on-surface-variant">${req.duration_days || 7} Days</td>
-          <td class="px-md py-sm text-on-surface-variant">${h(req.purpose || 'Standard Borrow')}</td>
+          <td class="px-md py-sm text-on-surface-variant"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${requestTypeClass}">${requestType}</span><span class="block text-xs mt-1">${h(req.purpose || 'Standard Borrow')}</span></td>
           <td class="px-md py-sm">
             <span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${statusKey === 'pending' ? 'bg-amber-100 text-amber-800' : statusKey === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-error-container text-error'}">
               ${statusKey || 'pending'}
@@ -1119,8 +1051,8 @@ const Views = {
     return `
       <div class="space-y-md">
         <div>
-          <h1 class="font-display-lg text-display-lg text-primary">Borrow Requests</h1>
-          <p class="text-on-surface-variant text-sm">Review member borrowing applications.</p>
+          <h1 class="font-display-lg text-display-lg text-primary">Requests</h1>
+          <p class="text-on-surface-variant text-sm">Review borrow and return requests from members.</p>
         </div>
 
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
@@ -1145,6 +1077,18 @@ const Views = {
         </div>
       </div>
     `;
+  },
+
+  // --- ADMIN LOANS ---
+  adminLoans() {
+    const rows = State.loans.map(loan => {
+      const isOverdue = loan.status === 'active' && new Date(loan.due_date) < new Date();
+      const statusLabel = loan.status === 'returned' ? 'Returned' : isOverdue ? 'Overdue' : 'Active';
+      const statusClass = loan.status === 'returned' ? 'bg-surface-container text-on-surface-variant' : isOverdue ? 'bg-error-container text-error' : 'bg-emerald-100 text-emerald-800';
+      return `<tr class="border-b border-surface-variant hover:bg-surface-container-low"><td class="px-md py-sm font-medium">${h(loan.items?.name || 'Item')}</td><td class="px-md py-sm text-on-surface-variant">${h(loan.profiles?.full_name || loan.profiles?.email || 'Member')}</td><td class="px-md py-sm">${loan.quantity || 1}</td><td class="px-md py-sm text-on-surface-variant">${fmtDate(loan.borrowed_at)}</td><td class="px-md py-sm text-on-surface-variant">${fmtDate(loan.due_date)}</td><td class="px-md py-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${statusClass}">${statusLabel}</span></td><td class="px-md py-sm text-right">${loan.status === 'active' ? `<button onclick="Actions.returnItem('${loan.id}')" class="text-secondary text-xs font-bold hover:underline">Process Return</button>` : '<span class="text-xs text-on-surface-variant">Completed</span>'}</td></tr>`;
+    }).join('');
+
+    return `<div class="space-y-md"><div><h1 class="font-display-lg text-display-lg text-primary">Loans</h1><p class="text-on-surface-variant text-sm">Monitor every active and completed equipment loan.</p></div><div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden"><div class="overflow-x-auto"><table class="min-w-[900px] w-full text-left border-collapse"><thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant"><tr><th class="px-md py-sm">Item</th><th class="px-md py-sm">Borrowed By</th><th class="px-md py-sm">Qty</th><th class="px-md py-sm">Borrowed</th><th class="px-md py-sm">Due Date</th><th class="px-md py-sm">Status</th><th class="px-md py-sm text-right">Action</th></tr></thead><tbody class="text-sm">${rows || '<tr><td colspan="7" class="p-md text-center text-on-surface-variant">No loans found.</td></tr>'}</tbody></table></div></div></div>`;
   },
 
   // --- ADMIN MEMBERS ---
@@ -1174,19 +1118,21 @@ const Views = {
         </div>
 
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-              <tr>
-                <th class="px-md py-sm">Full Name</th>
-                <th class="px-md py-sm">Email</th>
-                <th class="px-md py-sm">Role</th>
-                <th class="px-md py-sm text-right">Toggle Role</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm">
-              ${rows || '<tr><td colspan="4" class="p-md text-center text-on-surface-variant">No members found.</td></tr>'}
-            </tbody>
-          </table>
+          <div class="overflow-x-auto">
+            <table class="min-w-[720px] w-full text-left border-collapse">
+              <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
+                <tr>
+                  <th class="px-md py-sm">Full Name</th>
+                  <th class="px-md py-sm">Email</th>
+                  <th class="px-md py-sm">Role</th>
+                  <th class="px-md py-sm text-right">Toggle Role</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm">
+                ${rows || '<tr><td colspan="4" class="p-md text-center text-on-surface-variant">No members found.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     `;
@@ -1233,56 +1179,30 @@ const Views = {
 
   mobileMemberDashboard() {
     const activeLoans = State.loans.filter(loan => loan.status === 'active');
-    const cards = activeLoans.slice(0, 3).map(loan => {
-      const due = new Date(loan.due_date);
-      const today = new Date();
-      const overdue = due < today;
-      const tag = overdue ? 'Overdue' : 'Due Soon';
-      const badgeClass = overdue ? 'bg-error-container text-error' : 'bg-secondary/10 text-secondary';
-      return `
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
-          <div class="flex items-center justify-between gap-sm">
-            <div class="flex items-center gap-sm min-w-0">
-              <div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">📷</div>
-              <div class="min-w-0">
-                <div class="font-bold text-base text-primary truncate">${h(loan.items?.name || 'Item')}</div>
-                <div class="text-xs text-on-surface-variant">ID: ${h(loan.items?.asset_tag || loan.item_id || 'N/A')}</div>
-              </div>
-            </div>
-            <span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${badgeClass}">${tag}</span>
-          </div>
-          <div class="mt-md flex justify-between items-center">
-            <button class="border border-outline-variant px-3 py-1.5 rounded-lg text-xs font-bold text-primary">Return</button>
-            <span class="text-xs text-on-surface-variant">Due ${fmtDate(loan.due_date)}</span>
-          </div>
-        </div>
-      `;
-    }).join('');
+    const pendingRequests = State.requests.filter(request => request.status === 'pending');
+    const loanCards = activeLoans.slice(0, 2).map(loan => `
+      <div class="flex items-center justify-between gap-sm border-b border-outline-variant pb-sm last:border-0 last:pb-0">
+        <div class="min-w-0"><div class="font-bold text-sm truncate">${h(loan.items?.name || 'Item')}</div><div class="text-xs text-on-surface-variant">Due ${fmtDate(loan.due_date)}</div></div>
+        <span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${new Date(loan.due_date) < new Date() ? 'bg-error-container text-error' : 'bg-secondary/10 text-secondary'}">${new Date(loan.due_date) < new Date() ? 'Overdue' : 'Active'}</span>
+      </div>
+    `).join('');
+    const requestCards = pendingRequests.slice(0, 2).map(request => `
+      <div class="flex items-center justify-between gap-sm border-b border-outline-variant pb-sm last:border-0 last:pb-0">
+        <div class="min-w-0"><div class="font-bold text-sm truncate">${h(request.items?.name || 'Item')}</div><div class="text-xs text-on-surface-variant">${request.quantity || 1} unit(s) requested</div></div>
+        <span class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-amber-100 text-amber-800">Pending</span>
+      </div>
+    `).join('');
 
     return `
       <div class="space-y-md">
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
-          <p class="text-sm text-on-surface-variant">Welcome back, Member</p>
-          <h1 class="font-display-lg text-display-lg text-primary mt-1">Ready for your next project?</h1>
-          <div class="relative mt-md">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-            <input type="text" placeholder="Search gear (e.g., Sony A7IV)" class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 pl-10 pr-3 text-sm text-on-surface" />
-          </div>
+        <div><h1 class="font-display-md text-display-md text-primary">My Dashboard</h1><p class="text-sm text-on-surface-variant">A quick view of what you have borrowed and what is awaiting approval.</p></div>
+        <div class="grid grid-cols-2 gap-sm">
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="text-xs uppercase text-on-surface-variant">Active Borrows</div><div class="text-3xl font-bold text-primary mt-xs">${activeLoans.length}</div></div>
+          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="text-xs uppercase text-on-surface-variant">Requests</div><div class="text-3xl font-bold text-secondary mt-xs">${pendingRequests.length}</div></div>
         </div>
-
-        <div class="bg-secondary rounded-xl p-md text-on-secondary text-center">
-          <div class="text-4xl font-bold">${activeLoans.length}</div>
-          <div class="text-sm opacity-90">Currently Borrowed</div>
-          <button class="mt-md w-full bg-surface-container-lowest text-secondary rounded-lg py-2 text-sm font-bold">+ Quick Request</button>
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-sm">
-            <h2 class="font-display-md text-display-md text-primary">Active Borrows</h2>
-            <button class="text-secondary text-sm" onclick="Router.go('member-browse')">View All</button>
-          </div>
-          <div class="space-y-md">${cards || '<div class="text-sm text-on-surface-variant">No active borrows.</div>'}</div>
-        </div>
+        <section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="flex items-center justify-between mb-md"><div><h2 class="font-bold text-lg text-primary">Requests</h2><p class="text-xs text-on-surface-variant">Items waiting for a decision.</p></div><button onclick="Router.go('member-activities')" class="text-secondary text-xs font-bold">View history</button></div><div class="space-y-sm">${requestCards || '<div class="text-sm text-on-surface-variant">No pending requests.</div>'}</div></section>
+        <section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md"><div class="flex items-center justify-between mb-md"><div><h2 class="font-bold text-lg text-primary">Active Borrows</h2><p class="text-xs text-on-surface-variant">Your equipment currently checked out.</p></div><button onclick="Router.go('member-activities')" class="text-secondary text-xs font-bold">View details</button></div><div class="space-y-sm">${loanCards || '<div class="text-sm text-on-surface-variant">No active borrows.</div>'}</div></section>
+        <button onclick="Router.go('member-browse')" class="w-full bg-secondary text-on-secondary rounded-lg py-2 text-sm font-bold">Request Equipment</button>
       </div>
     `;
   },
@@ -1359,149 +1279,101 @@ const Views = {
 
   // --- MEMBER DASHBOARD ---
   memberDashboard() {
-    const loanRows = State.loans.map(loan => `
-      <tr class="border-b border-surface-variant hover:bg-surface-container-low">
-        <td class="px-md py-sm font-medium">${h(loan.items?.name || 'Item')}</td>
-        <td class="px-md py-sm text-on-surface-variant">${fmtDate(loan.borrowed_at)}</td>
-        <td class="px-md py-sm text-on-surface-variant">${fmtDate(loan.due_date)}</td>
-        <td class="px-md py-sm">
-          <span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${loan.status === 'returned' ? 'bg-surface-container text-on-surface-variant' : new Date(loan.due_date) < new Date() ? 'bg-error-container text-error' : 'bg-emerald-100 text-emerald-800'}">
-            ${loan.status === 'returned' ? 'Returned' : new Date(loan.due_date) < new Date() ? 'Overdue' : 'Active'}
-          </span>
-        </td>
-        <td class="px-md py-sm text-right">
-          ${loan.status === 'active' ? `
-            <button onclick="Actions.requestReturn('${loan.id}')" class="text-secondary font-bold text-xs hover:underline">Return Item</button>
-          ` : '<span class="text-xs text-on-surface-variant">Returned</span>'}
-        </td>
-      </tr>
-    `).join('');
-
-    const reqRows = State.requests.map(req => `
-      <tr class="border-b border-surface-variant hover:bg-surface-container-low">
-        <td class="px-md py-sm font-medium">${h(req.items?.name || 'Item')}</td>
-        <td class="px-md py-sm text-on-surface-variant">${fmtDate(req.requested_at)}</td>
-        <td class="px-md py-sm">
-          <span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${req.status === 'pending' ? 'bg-amber-100 text-amber-800' : req.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-error-container text-error'}">
-            ${req.status}
-          </span>
-        </td>
-      </tr>
-    `).join('');
+    const activeLoans = State.loans.filter(loan => loan.status === 'active');
+    const overdueLoans = activeLoans.filter(loan => new Date(loan.due_date) < new Date());
+    const pendingRequests = State.requests.filter(request => request.status === 'pending');
+    const nextDue = [...activeLoans].sort((a, b) => new Date(a.due_date) - new Date(b.due_date))[0];
+    const requestItems = State.requests.slice(0, 4).map(request => `<div class="flex items-center justify-between gap-md border-b border-outline-variant py-sm last:border-0"><div><div class="font-medium text-sm">${h(request.items?.name || 'Item')}</div><div class="text-xs text-on-surface-variant">${fmtDate(request.requested_at)} · ${request.quantity || 1} unit(s)</div></div><span class="px-2 py-1 rounded-full text-xs font-bold uppercase ${request.status === 'pending' ? 'bg-amber-100 text-amber-800' : request.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-error-container text-error'}">${h(request.status)}</span></div>`).join('');
+    const loanItems = activeLoans.slice(0, 4).map(loan => `<div class="flex items-center justify-between gap-md border-b border-outline-variant py-sm last:border-0"><div><div class="font-medium text-sm">${h(loan.items?.name || 'Item')}</div><div class="text-xs text-on-surface-variant">Due ${fmtDate(loan.due_date)}</div></div><span class="px-2 py-1 rounded-full text-xs font-bold uppercase ${new Date(loan.due_date) < new Date() ? 'bg-error-container text-error' : 'bg-emerald-100 text-emerald-800'}">${new Date(loan.due_date) < new Date() ? 'Overdue' : 'Active'}</span></div>`).join('');
 
     return `
-      <div class="space-y-lg">
-        <div>
-          <h1 class="font-display-lg text-display-lg text-primary">My Dashboard</h1>
-          <p class="text-on-surface-variant text-sm">View your active borrowed items and status of your requests.</p>
-        </div>
-
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-          <div class="p-md border-b border-outline-variant font-bold text-on-surface">My Active & Past Loans</div>
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-              <tr>
-                <th class="px-md py-sm">Item</th>
-                <th class="px-md py-sm">Borrowed On</th>
-                <th class="px-md py-sm">Due Date</th>
-                <th class="px-md py-sm">Status</th>
-                <th class="px-md py-sm text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm">
-              ${loanRows || '<tr><td colspan="5" class="p-md text-center text-on-surface-variant">You have no active or past loans.</td></tr>'}
-            </tbody>
-          </table>
-        </div>
-
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-          <div class="p-md border-b border-outline-variant font-bold text-on-surface">My Borrow Requests</div>
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-              <tr>
-                <th class="px-md py-sm">Item</th>
-                <th class="px-md py-sm">Requested Date</th>
-                <th class="px-md py-sm">Status</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm">
-              ${reqRows || '<tr><td colspan="3" class="p-md text-center text-on-surface-variant">No requests submitted.</td></tr>'}
-            </tbody>
-          </table>
-        </div>
+      <div class="space-y-lg max-w-6xl"><div class="flex flex-col md:flex-row md:items-end justify-between gap-md"><div><h1 class="font-display-lg text-display-lg text-primary">My Dashboard</h1><p class="text-on-surface-variant text-sm">Monitor your requests and current equipment without leaving the overview.</p></div><button onclick="Router.go('member-browse')" class="bg-secondary text-on-secondary px-md py-sm rounded-lg font-bold text-sm">Request Equipment</button></div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-md"><div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Active Borrows</div><div class="text-3xl font-bold text-secondary mt-xs">${activeLoans.length}</div></div><div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Pending Requests</div><div class="text-3xl font-bold text-amber-600 mt-xs">${pendingRequests.length}</div></div><div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Overdue</div><div class="text-3xl font-bold text-error mt-xs">${overdueLoans.length}</div></div><div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Next Due</div><div class="text-lg font-bold text-primary mt-sm">${nextDue ? fmtDate(nextDue.due_date) : 'None'}</div></div></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg"><section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg"><div class="flex items-center justify-between mb-sm"><div><h2 class="font-bold text-lg text-primary">Requests</h2><p class="text-xs text-on-surface-variant">Recent request status at a glance.</p></div><button onclick="Router.go('member-activities')" class="text-secondary text-xs font-bold">View all</button></div><div>${requestItems || '<div class="py-md text-sm text-on-surface-variant">No requests submitted.</div>'}</div></section><section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg"><div class="flex items-center justify-between mb-sm"><div><h2 class="font-bold text-lg text-primary">Active Borrows</h2><p class="text-xs text-on-surface-variant">Current loans and due-date status.</p></div><button onclick="Router.go('member-activities')" class="text-secondary text-xs font-bold">View all</button></div><div>${loanItems || '<div class="py-md text-sm text-on-surface-variant">No active borrows.</div>'}</div></section></div>
       </div>
     `;
   },
 
   // --- PROFILE VIEW ---
   memberProfile() {
-    const myLoans = State.loans.filter(l => l.user_id === State.user.id);
-    const loanRows = myLoans.map(l => `
+    return `
+      <div class="space-y-lg max-w-3xl">
+        <div>
+          <h1 class="font-display-lg text-display-lg text-primary">My Profile</h1>
+          <p class="text-on-surface-variant text-sm">View your account details and access your complete activity history.</p>
+        </div>
+        <div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant space-y-md">
+          <h2 class="font-bold text-lg text-on-surface flex items-center gap-sm"><span class="material-symbols-outlined text-secondary">person</span> Account Profile</h2>
+          <div class="space-y-md">
+            <div>
+              <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Full Name</label>
+              <input type="text" disabled value="${h(State.profile?.full_name || '')}" class="w-full border border-outline-variant rounded px-md py-sm text-sm bg-surface-container text-on-surface-variant opacity-75">
+            </div>
+            <div>
+              <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Email Address</label>
+              <input type="email" disabled value="${h(State.user?.email || '')}" class="w-full border border-outline-variant rounded px-md py-sm text-sm bg-surface-container text-on-surface-variant opacity-75">
+            </div>
+            <div>
+              <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Role</label>
+              <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold uppercase inline-block">${h(State.profile?.role || 'member')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+
+  // --- MEMBER ACTIVITIES ---
+  memberActivities() {
+    const activeLoans = State.loans.filter(l => l.status === 'active');
+    const overdueLoans = activeLoans.filter(l => new Date(l.due_date) < new Date());
+    const pendingRequests = State.requests.filter(r => r.status === 'pending');
+    const returnedLoans = State.loans.filter(l => l.status === 'returned');
+    const loanRows = State.loans.map(l => `
       <tr class="border-b border-surface-variant hover:bg-surface-container-low">
         <td class="px-md py-sm font-medium">${h(l.items?.name || 'Item')}</td>
         <td class="px-md py-sm text-on-surface-variant">${fmtDate(l.borrowed_at)}</td>
         <td class="px-md py-sm text-on-surface-variant">${fmtDate(l.due_date)}</td>
         <td class="px-md py-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${l.status === 'returned' ? 'bg-surface-container text-on-surface-variant' : new Date(l.due_date) < new Date() ? 'bg-error-container text-error' : 'bg-emerald-100 text-emerald-800'}">${l.status === 'returned' ? 'Returned' : new Date(l.due_date) < new Date() ? 'Overdue' : 'Active'}</span></td>
-        <td class="px-md py-sm text-right">${l.status === 'active' ? `<button onclick="Actions.requestReturn('${l.id}')" class="text-secondary font-bold text-xs hover:underline">Return</button>` : '<span class="text-xs text-on-surface-variant">Returned</span>'}</td>
+        <td class="px-md py-sm text-right">${l.status === 'active' ? `<button onclick="Actions.requestReturn('${l.id}')" class="text-secondary font-bold text-xs hover:underline">Return Item</button>` : '<span class="text-xs text-on-surface-variant">Completed</span>'}</td>
       </tr>
     `).join('');
-
-    const myRequests = State.requests.filter(r => r.user_id === State.user.id);
-    const reqRows = myRequests.map(r => `
+    const reqRows = State.requests.map(r => `
       <tr class="border-b border-surface-variant hover:bg-surface-container-low">
         <td class="px-md py-sm font-medium">${h(r.items?.name || 'Item')}</td>
         <td class="px-md py-sm text-on-surface-variant">${fmtDate(r.requested_at)}</td>
         <td class="px-md py-sm text-on-surface-variant">${r.duration_days || 7} Days</td>
-        <td class="px-md py-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${r.status === 'pending' ? 'bg-amber-100 text-amber-800' : r.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-error-container text-error'}">${r.status}</span></td>
+        <td class="px-md py-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${r.status === 'pending' ? 'bg-amber-100 text-amber-800' : r.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-error-container text-error'}">${h(r.status)}</span></td>
       </tr>
+    `).join('');
+    const recent = [
+      ...State.requests.map(r => ({ date: r.requested_at, icon: 'send', title: `Request for ${r.items?.name || 'equipment'}`, detail: `${r.quantity || 1} unit(s) · ${r.status}` })),
+      ...State.loans.map(l => ({ date: l.borrowed_at, icon: l.status === 'returned' ? 'assignment_return' : 'shopping_bag', title: `${l.status === 'returned' ? 'Returned' : 'Borrowed'} ${l.items?.name || 'equipment'}`, detail: l.status === 'returned' ? 'Loan completed' : `Due ${fmtDate(l.due_date)}` }))
+    ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map(activity => `
+      <div class="flex items-start gap-sm">
+        <div class="w-9 h-9 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[18px]">${activity.icon}</span></div>
+        <div class="min-w-0"><div class="font-bold text-sm text-on-surface">${h(activity.title)}</div><div class="text-xs text-on-surface-variant">${h(activity.detail)} · ${fmtDate(activity.date)}</div></div>
+      </div>
     `).join('');
 
     return `
-      <div class="space-y-lg max-w-5xl">
-        <div>
-          <h1 class="font-display-lg text-display-lg text-primary">My Profile & Lending History</h1>
-          <p class="text-on-surface-variant text-sm">Manage profile details and view borrowing history.</p>
+      <div class="space-y-lg max-w-6xl">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+          <div><h1 class="font-display-lg text-display-lg text-primary">My Activities</h1><p class="text-on-surface-variant text-sm">Track your equipment requests, active loans, and completed returns in one place.</p></div>
+          <button onclick="Router.go('member-browse')" class="bg-secondary text-on-secondary px-md py-sm rounded-lg font-bold text-sm flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">add</span> Request Equipment</button>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-          <div class="md:col-span-1 bg-surface-container-lowest p-lg rounded-xl border border-outline-variant space-y-md h-fit">
-            <h2 class="font-bold text-lg text-on-surface flex items-center gap-sm"><span class="material-symbols-outlined text-secondary">person</span> Account Profile</h2>
-            <form onsubmit="Actions.updateProfile(event)" class="space-y-md">
-              <div>
-                <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Full Name</label>
-                <input id="profile-name-input" type="text" required value="${h(State.profile?.full_name || '')}" class="w-full border border-outline-variant rounded px-md py-sm text-sm">
-              </div>
-              <div>
-                <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Email Address</label>
-                <input type="email" disabled value="${h(State.user?.email || '')}" class="w-full border border-outline-variant rounded px-md py-sm text-sm bg-surface-container text-on-surface-variant opacity-75">
-              </div>
-              <div>
-                <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Role</label>
-                <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold uppercase inline-block">${h(State.profile?.role || 'member')}</span>
-              </div>
-              <button type="submit" class="w-full bg-secondary text-on-secondary py-sm rounded-lg text-xs font-label-sm hover:bg-on-secondary-fixed-variant transition-colors flex items-center justify-center gap-xs"><span class="material-symbols-outlined text-[16px]">save</span> Save Profile</button>
-            </form>
-          </div>
-          <div class="md:col-span-2 space-y-lg">
-            <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-              <div class="p-md border-b border-outline-variant font-bold text-on-surface text-sm">Borrowing & Loan History</div>
-              <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-                  <tr><th class="px-md py-sm">Item</th><th class="px-md py-sm">Borrowed</th><th class="px-md py-sm">Due Date</th><th class="px-md py-sm">Status</th><th class="px-md py-sm text-right">Action</th></tr>
-                </thead>
-                <tbody class="text-sm">${loanRows || '<tr><td colspan="5" class="p-md text-center text-on-surface-variant">No borrowing history found.</td></tr>'}</tbody>
-              </table>
-            </div>
-            <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-              <div class="p-md border-b border-outline-variant font-bold text-on-surface text-sm">Request History</div>
-              <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-                  <tr><th class="px-md py-sm">Item</th><th class="px-md py-sm">Date</th><th class="px-md py-sm">Duration</th><th class="px-md py-sm">Status</th></tr>
-                </thead>
-                <tbody class="text-sm">${reqRows || '<tr><td colspan="4" class="p-md text-center text-on-surface-variant">No requests submitted.</td></tr>'}</tbody>
-              </table>
-            </div>
-          </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-md">
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Active Loans</div><div class="text-3xl font-bold text-secondary mt-xs">${activeLoans.length}</div><div class="text-xs text-on-surface-variant mt-1">Currently borrowed</div></div>
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Pending Requests</div><div class="text-3xl font-bold text-amber-600 mt-xs">${pendingRequests.length}</div><div class="text-xs text-on-surface-variant mt-1">Awaiting review</div></div>
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Due Attention</div><div class="text-3xl font-bold text-error mt-xs">${overdueLoans.length}</div><div class="text-xs text-on-surface-variant mt-1">Overdue items</div></div>
+          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Completed Loans</div><div class="text-3xl font-bold text-primary mt-xs">${returnedLoans.length}</div><div class="text-xs text-on-surface-variant mt-1">Returned items</div></div>
         </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+          <div class="lg:col-span-1 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg"><div class="flex items-center gap-sm mb-md text-primary"><span class="material-symbols-outlined text-secondary">timeline</span><h2 class="font-bold text-lg">Recent Activity</h2></div><div class="space-y-md">${recent || '<div class="text-sm text-on-surface-variant">No activity yet. Browse inventory to get started.</div>'}</div></div>
+          <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl border border-outline-variant p-lg"><div class="flex items-center justify-between mb-md"><div><h2 class="font-bold text-lg text-primary">Your Lending Snapshot</h2><p class="text-xs text-on-surface-variant mt-1">Keep an eye on due dates and open requests.</p></div><span class="material-symbols-outlined text-secondary">insights</span></div><div class="space-y-sm"><div class="flex justify-between text-sm"><span>Loans currently active</span><strong>${activeLoans.length}</strong></div><div class="h-2 bg-surface-container rounded-full overflow-hidden"><div class="h-full bg-secondary rounded-full" style="width: ${activeLoans.length ? '100' : '0'}%"></div></div><div class="flex justify-between text-sm pt-sm"><span>Requests awaiting approval</span><strong>${pendingRequests.length}</strong></div><div class="h-2 bg-surface-container rounded-full overflow-hidden"><div class="h-full bg-amber-500 rounded-full" style="width: ${pendingRequests.length ? '100' : '0'}%"></div></div></div></div>
+        </div>
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden"><div class="p-md border-b border-outline-variant"><h2 class="font-bold text-on-surface">Borrowing & Loan History</h2><p class="text-xs text-on-surface-variant mt-1">All active and completed equipment loans.</p></div><div class="overflow-x-auto"><table class="min-w-[700px] w-full text-left border-collapse"><thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant"><tr><th class="px-md py-sm">Item</th><th class="px-md py-sm">Borrowed</th><th class="px-md py-sm">Due Date</th><th class="px-md py-sm">Status</th><th class="px-md py-sm text-right">Action</th></tr></thead><tbody class="text-sm">${loanRows || '<tr><td colspan="5" class="p-md text-center text-on-surface-variant">No borrowing history found.</td></tr>'}</tbody></table></div></div>
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden"><div class="p-md border-b border-outline-variant"><h2 class="font-bold text-on-surface">Request History</h2><p class="text-xs text-on-surface-variant mt-1">Every equipment request and its current status.</p></div><div class="overflow-x-auto"><table class="min-w-[620px] w-full text-left border-collapse"><thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant"><tr><th class="px-md py-sm">Item</th><th class="px-md py-sm">Requested</th><th class="px-md py-sm">Duration</th><th class="px-md py-sm">Status</th></tr></thead><tbody class="text-sm">${reqRows || '<tr><td colspan="4" class="p-md text-center text-on-surface-variant">No requests submitted.</td></tr>'}</tbody></table></div></div>
       </div>
     `;
   },
@@ -1898,6 +1770,7 @@ const Actions = {
 
       toast('Return request submitted for admin approval', 'success');
       await App.loadMemberData();
+      Router.go('member-activities');
     } catch (err) {
       toast(err.message || 'Error creating return request', 'error');
     }
