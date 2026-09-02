@@ -795,7 +795,7 @@ const Views = {
   },
 
   mobileMemberBrowse() {
-    const items = State.items.slice(0, 4);
+    const items = State.items;
     const cards = items.map((item, idx) => {
       const avail = item.available_quantity ?? item.total_stock ?? 1;
       const status = avail > 0 ? 'Available' : 'Unavailable';
