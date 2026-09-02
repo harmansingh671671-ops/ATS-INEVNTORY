@@ -1533,4 +1533,8 @@ const Views = {
             <div class="space-y-sm text-sm text-on-surface-variant">
               <div class="rounded-lg bg-surface-container px-md py-sm">ATS Club Operations</div>
               <div class="rounded-lg bg-surface-container px-md py-sm">support@atsclub.example</div>
-              <div class="rounded-lg bg-surface-container px-md py-sm">Mon–Fri · 9:00 AM – 5:00
+              <div class="rounded-lg bg-surface-container px-md py-sm">Mon–Fri · 9:00 AM – 5:00 PM</div>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-outline-variant bg-surface-container-
