@@ -1,0 +1,19 @@
+{
+  "name": "ATS CLUB Inventory Management",
+  "short_name": "ATS CLUB",
+  "description": "Equipment and inventory management for ATS CLUB.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0058be",
+  "background_color": "#f7f9fb",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

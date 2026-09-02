@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ATS CLUB — Inventory Management</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0058be">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ATS CLUB">
+  <link rel="apple-touch-icon" href="/favicon.svg">
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,6 +108,23 @@
 
   <!-- APP VIEW (rendered by app.js - replaces innerHTML) -->
   <div id="app-view" class="hidden min-h-screen flex flex-col"></div>
+
+  <!-- Install prompt for supported mobile browsers -->
+  <div id="install-banner" class="hidden fixed bottom-4 left-4 right-4 z-[150] rounded-xl border border-secondary/20 bg-surface-container-lowest p-md shadow-[0_12px_40px_rgba(0,0,0,0.18)]">
+    <div class="flex items-start gap-sm">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-on-secondary">
+        <span class="material-symbols-outlined">install_mobile</span>
+      </div>
+      <div class="min-w-0 flex-1">
+        <div class="font-bold text-primary">Install ATS CLUB</div>
+        <p id="install-banner-message" class="mt-1 text-xs text-on-surface-variant">Install the app for quicker access from your phone.</p>
+      </div>
+      <button type="button" onclick="App.dismissInstallBanner()" class="shrink-0 p-1 text-on-surface-variant" aria-label="Dismiss install prompt">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+    </div>
+    <button id="install-banner-action" type="button" onclick="App.installApp()" class="mt-sm w-full rounded-lg bg-secondary px-md py-sm text-sm font-bold text-on-secondary">Install App</button>
+  </div>
 
   <!-- Toast container -->
   <div id="toast-container" class="fixed bottom-lg right-lg z-[100] flex flex-col gap-sm"></div>

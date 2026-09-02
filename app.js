@@ -51,6 +51,7 @@ async function loadEnvConfig() {
 }
 
 let supabaseClient = null;
+let deferredInstallPrompt = null;
 
 const State = {
   user: null,
@@ -223,6 +224,66 @@ const App = {
   refreshTimer: null,
   realtimeChannel: null,
 
+  initInstallPrompt() {
+    window.addEventListener('beforeinstallprompt', event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      this.updateInstallBanner();
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredInstallPrompt = null;
+      this.dismissInstallBanner(true);
+    });
+
+    this.updateInstallBanner();
+  },
+
+  isRunningStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  },
+
+  isIosBrowser() {
+    return /iphone|ipad|ipod/i.test(window.navigator.userAgent) && !this.isRunningStandalone();
+  },
+
+  updateInstallBanner() {
+    const banner = $('#install-banner');
+    if (!banner || !State.user || !isMobileLayout() || this.isRunningStandalone()) return;
+    if (localStorage.getItem('ats-install-banner-dismissed') === 'true') return;
+
+    const message = $('#install-banner-message');
+    const action = $('#install-banner-action');
+    if (this.isIosBrowser()) {
+      message.textContent = 'Tap Share, then Add to Home Screen to install the app.';
+      action.textContent = 'Got it';
+      action.onclick = () => this.dismissInstallBanner();
+      banner.classList.remove('hidden');
+      return;
+    }
+
+    if (deferredInstallPrompt) {
+      message.textContent = 'Install the app for quicker access from your phone.';
+      action.textContent = 'Install App';
+      action.onclick = () => this.installApp();
+      banner.classList.remove('hidden');
+    }
+  },
+
+  async installApp() {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    this.dismissInstallBanner(true);
+  },
+
+  dismissInstallBanner(installed = false) {
+    const banner = $('#install-banner');
+    if (banner) banner.classList.add('hidden');
+    if (!installed) localStorage.setItem('ats-install-banner-dismissed', 'true');
+  },
+
   async init() {
     await loadEnvConfig();
     Auth.switchTab('login');
@@ -267,6 +328,7 @@ const App = {
     $('#auth-view').classList.add('hidden');
     $('#auth-view').classList.remove('flex');
     $('#app-view').classList.remove('hidden');
+    this.updateInstallBanner();
 
     if (State.profile.role === 'admin') {
       if (isMobileLayout()) {
@@ -2034,4 +2096,10 @@ const Actions = {
 };
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', () => App.init());
+document.addEventListener('DOMContentLoaded', () => {
+  App.initInstallPrompt();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(error => console.error('Service worker registration failed:', error));
+  }
+  App.init();
+});
