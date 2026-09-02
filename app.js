@@ -300,8 +300,14 @@ const App = {
       return;
     }
 
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
+    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+    if (sessionError || !session) {
+      // Clear corrupted auth state if there's an error
+      if (sessionError) {
+        console.warn('Session error, clearing auth state:', sessionError);
+        await supabaseClient.auth.signOut();
+        localStorage.clear();
+      }
       $('#app-view').classList.add('hidden');
       $('#auth-view').classList.remove('hidden');
       $('#auth-view').classList.add('flex');
@@ -650,9 +656,6 @@ const App = {
         supabaseClient.from('inventory_log').select('*, profiles!admin_id(full_name, email)').order('created_at', { ascending: false })
       ]);
 
-      console.log('loadAdminData - items:', State.items.length);
-      console.log('loadAdminData - requests:', State.requests.length);
-
       if (reqsRes.error) console.error('Error fetching requests:', reqsRes.error);
       if (loansRes.error) console.error('Error fetching loans:', loansRes.error);
       if (itemsRes.error) console.error('Error fetching items:', itemsRes.error);
@@ -663,6 +666,9 @@ const App = {
       State.loans = loansRes.data || [];
       State.members = memsRes.data || [];
       State.inventoryLogs = logsRes.data || [];
+
+      console.log('loadAdminData - items:', State.items.length);
+      console.log('loadAdminData - requests:', State.requests.length);
 
       const pBadge = $('#pending-badge');
       const pCount = State.requests.filter(r => r.status === 'pending').length;
@@ -1400,141 +1406,137 @@ const Views = {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg"><section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg"><div class="flex items-center justify-between mb-sm"><div><h2 class="font-bold text-lg text-primary">Requests</h2><p class="text-xs text-on-surface-variant">Recent request status at a glance.</p></div><button onclick="Router.go('member-activities')" class="text-secondary text-xs font-bold">View all</button></div><div>${requestItems || '<div class="py-md text-sm text-on-surface-variant">No requests submitted.</div>'}</div></section><section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg"><div class="flex items-center justify-between mb-sm"><div><h2 class="font-bold text-lg text-primary">Active Borrows</h2><p class="text-xs text-on-surface-variant">Current loans and due-date status.</p></div><button onclick="Router.go('member-activities')" class="text-secondary text-xs font-bold">View all</button></div><div>${loanItems || '<div class="py-md text-sm text-on-surface-variant">No active borrows.</div>'}</div></section></div>
       </div>
     `;
+  }
+};
+
+// --- ACTIONS ---
+const Actions = {
+  async approveRequest(reqId) {
+    try {
+      const { error } = await supabaseClient.from('requests').update({ status: 'approved' }).eq('id', reqId);
+      if (error) throw error;
+      toast('Request approved!', 'success');
+      await App.refreshCurrentView();
+    } catch (err) {
+      toast(err.message || 'Failed to approve request', 'error');
+    }
   },
 
-  // --- PROFILE VIEW ---
-  memberProfile() {
-    return `
-      <div class="space-y-lg max-w-3xl">
+  async rejectRequest(reqId) {
+    try {
+      const { error } = await supabaseClient.from('requests').update({ status: 'rejected' }).eq('id', reqId);
+      if (error) throw error;
+      toast('Request rejected', 'info');
+      await App.refreshCurrentView();
+    } catch (err) {
+      toast(err.message || 'Failed to reject request', 'error');
+    }
+  },
+
+  async confirmReturn(reqId) {
+    try {
+      const { error } = await supabaseClient.from('requests').update({ status: 'approved' }).eq('id', reqId);
+      if (error) throw error;
+      toast('Return confirmed!', 'success');
+      await App.refreshCurrentView();
+    } catch (err) {
+      toast(err.message || 'Failed to confirm return', 'error');
+    }
+  },
+
+  async rejectReturn(reqId) {
+    try {
+      const { error } = await supabaseClient.from('requests').update({ status: 'rejected' }).eq('id', reqId);
+      if (error) throw error;
+      toast('Return rejected', 'info');
+      await App.refreshCurrentView();
+    } catch (err) {
+      toast(err.message || 'Failed to reject return', 'error');
+    }
+  },
+
+  async deleteItem(itemId) {
+    if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) return;
+    try {
+      const { error } = await supabaseClient.from('items').delete().eq('id', itemId);
+      if (error) throw error;
+      toast('Item deleted successfully', 'success');
+      Router.go('admin-inventory');
+      await App.refreshCurrentView();
+    } catch (err) {
+      toast(err.message || 'Failed to delete item', 'error');
+    }
+  },
+
+  async updateInventoryQuantity(event, itemId) {
+    event.preventDefault();
+    const change = parseInt($('#qty-change').value);
+    const reason = $('#qty-reason').value.trim();
+    if (!change || !reason) {
+      toast('Please provide quantity change and reason', 'error');
+      return;
+    }
+    try {
+      const item = State.items.find(i => i.id === itemId);
+      if (!item) throw new Error('Item not found');
+      const newQty = (item.total_quantity || 0) + change;
+      const newAvail = (item.available_quantity || 0) + change;
+      if (newQty < 0 || newAvail < 0) {
+        toast('Quantity cannot be negative', 'error');
+        return;
+      }
+      const { error } = await supabaseClient.from('items').update({ total_quantity: newQty, available_quantity: newAvail }).eq('id', itemId);
+      if (error) throw error;
+      await supabaseClient.from('inventory_log').insert([{ item_id: itemId, admin_id: State.user.id, action: change > 0 ? 'Added Stock' : 'Removed Stock', change, notes: reason }]);
+      toast('Inventory updated!', 'success');
+      await App.refreshCurrentView();
+      Router.go(`admin-edit-item-${itemId}`);
+    } catch (err) {
+      toast(err.message || 'Failed to update inventory', 'error');
+    }
+  },
+
+  requestItemModal(itemId, itemName) {
+    openModal(`
+      <h2 class="font-bold text-lg text-primary mb-md">Request Equipment</h2>
+      <p class="text-sm text-on-surface-variant mb-md">Submit a borrow request for <strong>${h(itemName)}</strong>.</p>
+      <form id="request-form" class="space-y-md" onsubmit="Actions.submitRequest(event, '${itemId}')">
         <div>
-          <h1 class="font-display-lg text-display-lg text-primary">My Profile</h1>
-          <p class="text-on-surface-variant text-sm">View your account details and access your complete activity history.</p>
+          <label class="block text-xs uppercase font-label-sm mb-xs text-on-surface-variant">Quantity</label>
+          <input type="number" id="req-qty" min="1" value="1" required class="w-full border border-outline-variant rounded px-md py-sm text-sm">
         </div>
-        <div class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant space-y-md">
-          <h2 class="font-bold text-lg text-on-surface flex items-center gap-sm"><span class="material-symbols-outlined text-secondary">person</span> Account Profile</h2>
-          <div class="space-y-md">
-            <div>
-              <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Full Name</label>
-              <input type="text" disabled value="${h(State.profile?.full_name || '')}" class="w-full border border-outline-variant rounded px-md py-sm text-sm bg-surface-container text-on-surface-variant opacity-75">
-            </div>
-            <div>
-              <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Email Address</label>
-              <input type="email" disabled value="${h(State.user?.email || '')}" class="w-full border border-outline-variant rounded px-md py-sm text-sm bg-surface-container text-on-surface-variant opacity-75">
-            </div>
-            <div>
-              <label class="block text-xs font-label-sm uppercase text-on-surface-variant mb-xs">Role</label>
-              <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold uppercase inline-block">${h(State.profile?.role || 'member')}</span>
-            </div>
-          </div>
+        <div>
+          <label class="block text-xs uppercase font-label-sm mb-xs text-on-surface-variant">Days Needed</label>
+          <input type="number" id="req-days" min="1" value="7" required class="w-full border border-outline-variant rounded px-md py-sm text-sm">
         </div>
-      </div>
-    `;
+        <div>
+          <label class="block text-xs uppercase font-label-sm mb-xs text-on-surface-variant">Purpose</label>
+          <select id="req-purpose" class="w-full border border-outline-variant rounded px-md py-sm text-sm">
+            <option value="Borrow">Borrow</option>
+            <option value="Return">Return</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full bg-secondary text-on-secondary px-md py-sm rounded-lg font-bold text-sm">Submit Request</button>
+      </form>
+    `);
   },
 
-  // --- MEMBER ACTIVITIES ---
-  memberActivities() {
-    const activeLoans = State.loans.filter(l => l.status === 'active');
-    const overdueLoans = activeLoans.filter(l => new Date(l.due_date) < new Date());
-    const pendingRequests = State.requests.filter(r => r.status === 'pending');
-    const returnedLoans = State.loans.filter(l => l.status === 'returned');
-    const loanRows = State.loans.map(l => `
-      <tr class="border-b border-surface-variant hover:bg-surface-container-low">
-        <td class="px-md py-sm font-medium">${h(l.items?.name || 'Item')}</td>
-        <td class="px-md py-sm text-on-surface-variant">${fmtDate(l.borrowed_at)}</td>
-        <td class="px-md py-sm text-on-surface-variant">${fmtDate(l.due_date)}</td>
-        <td class="px-md py-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${l.status === 'returned' ? 'bg-surface-container text-on-surface-variant' : new Date(l.due_date) < new Date() ? 'bg-error-container text-error' : 'bg-emerald-100 text-emerald-800'}">${l.status === 'returned' ? 'Returned' : new Date(l.due_date) < new Date() ? 'Overdue' : 'Active'}</span></td>
-        <td class="px-md py-sm text-right">${l.status === 'active' ? `<button onclick="Actions.requestReturn('${l.id}')" class="text-secondary font-bold text-xs hover:underline">Return Item</button>` : '<span class="text-xs text-on-surface-variant">Completed</span>'}</td>
-      </tr>
-    `).join('');
-    const reqRows = State.requests.map(r => `
-      <tr class="border-b border-surface-variant hover:bg-surface-container-low">
-        <td class="px-md py-sm font-medium">${h(r.items?.name || 'Item')}</td>
-        <td class="px-md py-sm text-on-surface-variant">${fmtDate(r.requested_at)}</td>
-        <td class="px-md py-sm text-on-surface-variant">${r.duration_days || 7} Days</td>
-        <td class="px-md py-sm"><span class="px-2 py-0.5 rounded-full text-xs font-bold uppercase ${r.status === 'pending' ? 'bg-amber-100 text-amber-800' : r.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-error-container text-error'}">${h(r.status)}</span></td>
-      </tr>
-    `).join('');
-    const recent = [
-      ...State.requests.map(r => ({ date: r.requested_at, icon: 'send', title: `Request for ${r.items?.name || 'equipment'}`, detail: `${r.quantity || 1} unit(s) · ${r.status}` })),
-      ...State.loans.map(l => ({ date: l.borrowed_at, icon: l.status === 'returned' ? 'assignment_return' : 'shopping_bag', title: `${l.status === 'returned' ? 'Returned' : 'Borrowed'} ${l.items?.name || 'equipment'}`, detail: l.status === 'returned' ? 'Loan completed' : `Due ${fmtDate(l.due_date)}` }))
-    ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5).map(activity => `
-      <div class="flex items-start gap-sm">
-        <div class="w-9 h-9 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[18px]">${activity.icon}</span></div>
-        <div class="min-w-0"><div class="font-bold text-sm text-on-surface">${h(activity.title)}</div><div class="text-xs text-on-surface-variant">${h(activity.detail)} · ${fmtDate(activity.date)}</div></div>
-      </div>
-    `).join('');
+  async submitRequest(event, itemId) {
+    event.preventDefault();
+    const qty = parseInt($('#req-qty').value);
+    const days = parseInt($('#req-days').value);
+    const purpose = $('#req-purpose').value;
+    closeModal();
+    try {
+      const { error } = await supabaseClient.from('requests').insert([{ user_id: State.user.id, item_id: itemId, quantity: qty, days_needed: days, purpose, status: 'pending' }]);
+      if (error) throw error;
+      toast('Request submitted successfully!', 'success');
+      await App.refreshCurrentView();
+    } catch (err) {
+      toast(err.message || 'Error submitting request', 'error');
+    }
+  }
+};
 
-    return `
-      <div class="space-y-lg max-w-6xl">
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
-          <div><h1 class="font-display-lg text-display-lg text-primary">My Activities</h1><p class="text-on-surface-variant text-sm">Track your equipment requests, active loans, and completed returns in one place.</p></div>
-          <button onclick="Router.go('member-browse')" class="bg-secondary text-on-secondary px-md py-sm rounded-lg font-bold text-sm flex items-center gap-xs"><span class="material-symbols-outlined text-[18px]">add</span> Request Equipment</button>
-        </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-md">
-          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Active Loans</div><div class="text-3xl font-bold text-secondary mt-xs">${activeLoans.length}</div><div class="text-xs text-on-surface-variant mt-1">Currently borrowed</div></div>
-          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Pending Requests</div><div class="text-3xl font-bold text-amber-600 mt-xs">${pendingRequests.length}</div><div class="text-xs text-on-surface-variant mt-1">Awaiting review</div></div>
-          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Due Attention</div><div class="text-3xl font-bold text-error mt-xs">${overdueLoans.length}</div><div class="text-xs text-on-surface-variant mt-1">Overdue items</div></div>
-          <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant"><div class="text-xs uppercase text-on-surface-variant">Completed Loans</div><div class="text-3xl font-bold text-primary mt-xs">${returnedLoans.length}</div><div class="text-xs text-on-surface-variant mt-1">Returned items</div></div>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-          <div class="lg:col-span-1 bg-surface-container-lowest border border-outline-variant rounded-xl p-lg"><div class="flex items-center gap-sm mb-md text-primary"><span class="material-symbols-outlined text-secondary">timeline</span><h2 class="font-bold text-lg">Recent Activity</h2></div><div class="space-y-md">${recent || '<div class="text-sm text-on-surface-variant">No activity yet. Browse inventory to get started.</div>'}</div></div>
-          <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl border border-outline-variant p-lg"><div class="flex items-center justify-between mb-md"><div><h2 class="font-bold text-lg text-primary">Your Lending Snapshot</h2><p class="text-xs text-on-surface-variant mt-1">Keep an eye on due dates and open requests.</p></div><span class="material-symbols-outlined text-secondary">insights</span></div><div class="space-y-sm"><div class="flex justify-between text-sm"><span>Loans currently active</span><strong>${activeLoans.length}</strong></div><div class="h-2 bg-surface-container rounded-full overflow-hidden"><div class="h-full bg-secondary rounded-full" style="width: ${activeLoans.length ? '100' : '0'}%"></div></div><div class="flex justify-between text-sm pt-sm"><span>Requests awaiting approval</span><strong>${pendingRequests.length}</strong></div><div class="h-2 bg-surface-container rounded-full overflow-hidden"><div class="h-full bg-amber-500 rounded-full" style="width: ${pendingRequests.length ? '100' : '0'}%"></div></div></div></div>
-        </div>
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden"><div class="p-md border-b border-outline-variant"><h2 class="font-bold text-on-surface">Borrowing & Loan History</h2><p class="text-xs text-on-surface-variant mt-1">All active and completed equipment loans.</p></div><div class="overflow-x-auto"><table class="min-w-[700px] w-full text-left border-collapse"><thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant"><tr><th class="px-md py-sm">Item</th><th class="px-md py-sm">Borrowed</th><th class="px-md py-sm">Due Date</th><th class="px-md py-sm">Status</th><th class="px-md py-sm text-right">Action</th></tr></thead><tbody class="text-sm">${loanRows || '<tr><td colspan="5" class="p-md text-center text-on-surface-variant">No borrowing history found.</td></tr>'}</tbody></table></div></div>
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden"><div class="p-md border-b border-outline-variant"><h2 class="font-bold text-on-surface">Request History</h2><p class="text-xs text-on-surface-variant mt-1">Every equipment request and its current status.</p></div><div class="overflow-x-auto"><table class="min-w-[620px] w-full text-left border-collapse"><thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant"><tr><th class="px-md py-sm">Item</th><th class="px-md py-sm">Requested</th><th class="px-md py-sm">Duration</th><th class="px-md py-sm">Status</th></tr></thead><tbody class="text-sm">${reqRows || '<tr><td colspan="4" class="p-md text-center text-on-surface-variant">No requests submitted.</td></tr>'}</tbody></table></div></div>
-      </div>
-    `;
-  },
-  adminProfile() { return this.memberProfile(); },
-
-  // --- MEMBER SUPPORT ---
-  memberSupport() {
-    return `
-      <div class="max-w-5xl space-y-lg">
-        <div class="rounded-2xl bg-gradient-to-r from-secondary/10 via-primary/5 to-transparent border border-secondary/20 p-lg">
-          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-md">
-            <div>
-              <p class="text-xs uppercase tracking-[0.12em] text-on-surface-variant">Support centre</p>
-              <h1 class="font-display-lg text-display-lg text-primary mt-xs">Support & Help</h1>
-            </div>
-            <div class="rounded-full bg-white/70 px-md py-xs text-xs font-bold uppercase tracking-[0.08em] text-secondary ring-1 ring-secondary/20">Response within 24h</div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
-          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
-            <div class="mb-sm text-secondary"><span class="material-symbols-outlined text-[28px]">inventory_2</span></div>
-            <div class="font-bold text-primary">Inventory</div>
-            <div class="text-xs text-on-surface-variant mt-1">Stock and equipment queries</div>
-          </div>
-          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
-            <div class="mb-sm text-secondary"><span class="material-symbols-outlined text-[28px]">sync_problem</span></div>
-            <div class="font-bold text-primary">Sync</div>
-            <div class="text-xs text-on-surface-variant mt-1">Access and data issues</div>
-          </div>
-          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
-            <div class="mb-sm text-secondary"><span class="material-symbols-outlined text-[28px]">group</span></div>
-            <div class="font-bold text-primary">Members</div>
-            <div class="text-xs text-on-surface-variant mt-1">Account and permissions</div>
-          </div>
-          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
-            <div class="mb-sm text-secondary"><span class="material-symbols-outlined text-[28px]">help_center</span></div>
-            <div class="font-bold text-primary">General</div>
-            <div class="text-xs text-on-surface-variant mt-1">Booking and system help</div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-lg">
-          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg space-y-md">
-            <div class="flex items-center gap-sm">
-              <span class="material-symbols-outlined text-secondary">support_agent</span>
-              <h2 class="font-bold text-lg text-primary">Quick contact</h2>
-            </div>
-            <div class="space-y-sm text-sm text-on-surface-variant">
-              <div class="rounded-lg bg-surface-container px-md py-sm">ATS Club Operations</div>
-              <div class="rounded-lg bg-surface-container px-md py-sm">support@atsclub.example</div>
-              <div class="rounded-lg bg-surface-container px-md py-sm">Mon–Fri · 9:00 AM – 5:00 PM</div>
-            </div>
-          </div>
-
-          <div class="rounded-xl border border-outline-variant bg-surface-container-
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', () => App.init());
