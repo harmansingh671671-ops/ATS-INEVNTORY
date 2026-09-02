@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ATS CLUB — Inventory Management</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,34 +63,34 @@
 <body class="bg-surface text-on-surface font-body-md min-h-screen">
 
   <!-- AUTH VIEW (not signed in) -->
-  <div id="auth-view" class="fixed inset-0 z-50 bg-surface hidden items-center justify-center p-md">
-    <div class="w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 p-lg flex flex-col gap-md">
+  <div id="auth-view" class="fixed inset-0 z-50 hidden items-center justify-center bg-[radial-gradient(circle_at_top,_#ecf3ff_0%,_#f7f9fb_35%,_#eef2f6_100%)] p-md">
+    <div class="w-full max-w-md rounded-3xl border border-primary/10 bg-surface-container-lowest p-lg shadow-[0_20px_60px_rgba(0,0,0,0.12)] ring-1 ring-secondary/5 flex flex-col gap-md">
       <div class="flex flex-col items-center gap-sm pb-sm">
-        <div class="w-14 h-14 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+        <div class="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-secondary/90 to-primary text-white shadow-lg shadow-secondary/20">
           <span class="material-symbols-outlined text-[28px]">inventory_2</span>
         </div>
         <h1 class="font-display-lg text-display-lg text-primary">ATS CLUB</h1>
-        <p class="text-on-surface-variant text-sm -mt-sm">Equipment &amp; Inventory Management</p>
+        <p class="-mt-sm text-sm text-on-surface-variant">Equipment &amp; Inventory Management</p>
       </div>
-      <div id="auth-alert" class="hidden text-sm px-md py-sm rounded-lg bg-error-container text-on-error-container"></div>
-      <div class="flex bg-surface-container rounded-full p-xs">
-        <button id="auth-tab-login" onclick="Auth.switchTab('login')" class="flex-1 py-sm rounded-full font-label-sm transition-all">Sign In</button>
-        <button id="auth-tab-signup" onclick="Auth.switchTab('signup')" class="flex-1 py-sm rounded-full font-label-sm transition-all">Sign Up</button>
+      <div id="auth-alert" class="hidden rounded-lg bg-error-container px-md py-sm text-sm text-on-error-container"></div>
+      <div class="flex rounded-full bg-surface-container p-xs">
+        <button id="auth-tab-login" onclick="Auth.switchTab('login')" class="flex-1 rounded-full py-sm font-label-sm transition-all">Sign In</button>
+        <button id="auth-tab-signup" onclick="Auth.switchTab('signup')" class="flex-1 rounded-full py-sm font-label-sm transition-all">Sign Up</button>
       </div>
       <form id="auth-form" class="flex flex-col gap-md" onsubmit="Auth.handleSubmit(event)">
         <div id="auth-name-field" class="hidden">
-          <label class="font-label-sm text-label-sm text-on-surface-variant mb-xs block">Full Name</label>
-          <input id="auth-name" type="text" class="w-full bg-surface-bright border border-outline-variant rounded-lg px-md py-sm focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20" placeholder="Alex Morgan">
+          <label class="mb-xs block font-label-sm text-label-sm text-on-surface-variant">Full Name</label>
+          <input id="auth-name" type="text" class="w-full rounded-lg border border-outline-variant bg-surface-bright px-md py-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20" placeholder="Alex Morgan">
         </div>
         <div>
-          <label class="font-label-sm text-label-sm text-on-surface-variant mb-xs block">Email Address</label>
-          <input id="auth-email" type="email" required class="w-full bg-surface-bright border border-outline-variant rounded-lg px-md py-sm focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20" placeholder="member@atsclub.com">
+          <label class="mb-xs block font-label-sm text-label-sm text-on-surface-variant">Email Address</label>
+          <input id="auth-email" type="email" required class="w-full rounded-lg border border-outline-variant bg-surface-bright px-md py-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20" placeholder="member@atsclub.com">
         </div>
         <div>
-          <label class="font-label-sm text-label-sm text-on-surface-variant mb-xs block">Password</label>
-          <input id="auth-password" type="password" required minlength="6" class="w-full bg-surface-bright border border-outline-variant rounded-lg px-md py-sm focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20" placeholder="••••••••">
+          <label class="mb-xs block font-label-sm text-label-sm text-on-surface-variant">Password</label>
+          <input id="auth-password" type="password" required minlength="6" class="w-full rounded-lg border border-outline-variant bg-surface-bright px-md py-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20" placeholder="••••••••">
         </div>
-        <button id="auth-submit-btn" type="submit" class="w-full bg-secondary text-on-secondary py-sm rounded-lg font-label-sm hover:bg-on-secondary-fixed-variant transition-colors flex items-center justify-center gap-sm">
+        <button id="auth-submit-btn" type="submit" class="flex w-full items-center justify-center gap-sm rounded-lg bg-gradient-to-r from-secondary to-primary py-sm font-label-sm text-on-secondary shadow-md shadow-secondary/20 transition hover:brightness-105">
           <span class="material-symbols-outlined text-[18px]">login</span>
           <span>Sign In</span>
         </button>

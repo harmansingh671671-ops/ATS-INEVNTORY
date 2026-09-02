@@ -74,6 +74,43 @@ function fmtDate(d) {
   return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
+const INVENTORY_IMAGE_BUCKET = 'inventory-images';
+const INVENTORY_IMAGE_MAX_BYTES = 5 * 1024 * 1024;
+const INVENTORY_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+function inventoryImage(item, className = 'w-full h-full object-cover') {
+  const fallbackIcon = h(item.icon_name || 'inventory_2');
+  if (!item.image_url) {
+    return `<div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-3xl">${fallbackIcon}</span></div>`;
+  }
+  return `<img src="${h(item.image_url)}" alt="${h(item.name)}" class="${className}" loading="lazy" onerror="this.onerror=null; this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');"><div class="hidden w-full h-full items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-3xl">${fallbackIcon}</span></div>`;
+}
+
+async function uploadInventoryImage(file) {
+  if (!file) return { publicUrl: null, storagePath: null };
+  if (!INVENTORY_IMAGE_TYPES.includes(file.type)) {
+    throw new Error('Images must be JPEG, PNG, or WebP files.');
+  }
+  if (file.size > INVENTORY_IMAGE_MAX_BYTES) {
+    throw new Error('Images must be 5 MB or smaller.');
+  }
+  if (!supabaseClient || !State.user) throw new Error('You must be signed in to upload an image.');
+
+  const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]/g, '-');
+  const storagePath = `${State.user.id}/${crypto.randomUUID()}-${safeName}`;
+  const { error: uploadError } = await supabaseClient.storage
+    .from(INVENTORY_IMAGE_BUCKET)
+    .upload(storagePath, file, { contentType: file.type, cacheControl: '3600', upsert: false });
+  if (uploadError) throw uploadError;
+
+  const { data } = supabaseClient.storage.from(INVENTORY_IMAGE_BUCKET).getPublicUrl(storagePath);
+  if (!data?.publicUrl) {
+    await supabaseClient.storage.from(INVENTORY_IMAGE_BUCKET).remove([storagePath]);
+    throw new Error('The image URL could not be generated.');
+  }
+  return { publicUrl: data.publicUrl, storagePath };
+}
+
 function isMobileLayout() {
   return window.innerWidth < 768;
 }
@@ -176,6 +213,7 @@ const Auth = {
     State.profile = null;
     $('#app-view').classList.add('hidden');
     $('#auth-view').classList.remove('hidden');
+    $('#auth-view').classList.add('flex');
     toast('Logged out', 'info');
   }
 };
@@ -761,19 +799,24 @@ const Views = {
     const cards = items.map((item, idx) => {
       const avail = item.available_quantity ?? item.total_stock ?? 1;
       const status = avail > 0 ? 'Available' : 'Unavailable';
-      const statusClass = avail > 0 ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container text-on-surface-variant';
+      const statusClass = avail > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-surface-container text-on-surface-variant';
+      const description = item.description ? h(item.description) : 'No description added yet.';
       return `
-        <article class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
-          <div class="relative h-40 bg-surface-container">
-            <div class="absolute top-2 right-2 px-2 py-1 rounded text-[10px] font-bold uppercase ${statusClass}">${status}: ${avail}</div>
-            <div class="w-full h-full flex items-center justify-center text-3xl text-on-surface-variant">${item.icon_name || 'laptop'}</div>
+        <article class="overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-sm transition-all hover:shadow-md">
+          <div class="relative h-44 bg-surface-container">
+            <div class="absolute left-2 top-2 z-10 rounded-full bg-black/55 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white">${h(item.category || 'Equipment')}</div>
+            <div class="absolute right-2 top-2 z-10 rounded-full ${statusClass} px-2 py-1 text-[10px] font-bold uppercase">${status}: ${avail}</div>
+            <div class="h-full w-full">${inventoryImage(item, 'h-full w-full object-cover')}</div>
           </div>
-          <div class="p-md space-y-sm">
-            <h3 class="font-bold text-lg text-primary">${h(item.name)}</h3>
-            <p class="text-sm text-on-surface-variant line-clamp-2">${h(item.description || 'Equipment available for borrowing.')}</p>
-            <div class="flex justify-between items-center pt-sm border-t border-outline-variant">
-              <span class="text-xs text-on-surface-variant">ID: ${h(item.asset_tag || item.id)}</span>
-              <button class="bg-secondary text-on-secondary px-3 py-1.5 rounded-lg text-xs font-bold" onclick="Actions.requestItemModal('${item.id}', '${h(item.name)}')">Request</button>
+          <div class="space-y-sm p-md">
+            <h3 class="text-lg font-bold text-primary">${h(item.name)}</h3>
+            <p class="text-sm text-on-surface-variant line-clamp-2">${description}</p>
+            <div class="flex items-center justify-between border-t border-outline-variant pt-sm">
+              <span class="inline-flex items-center gap-1 rounded-full bg-surface-container px-2 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-on-surface-variant">
+                <span class="material-symbols-outlined text-[12px]">tag</span>
+                ${h(item.asset_tag || `Item ${String(item.id).slice(0, 6)}`)}
+              </span>
+              <button class="rounded-lg bg-secondary px-3 py-1.5 text-xs font-bold text-on-secondary" onclick="Actions.requestItemModal('${item.id}', '${h(item.name)}')">Request</button>
             </div>
           </div>
         </article>
@@ -1142,24 +1185,29 @@ const Views = {
   memberBrowse() {
     const cards = State.items.map(item => {
       const avail = item.available_quantity ?? item.total_stock ?? 1;
+      const category = h(item.category || 'Equipment');
+      const description = item.description ? h(item.description) : 'No description added yet.';
       return `
-        <div class="bg-surface-container-lowest p-md rounded-xl border border-outline-variant flex flex-col justify-between space-y-md hover:shadow-md transition-shadow">
-          <div class="space-y-xs">
-            <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface mb-sm">
-              <span class="material-symbols-outlined">${h(item.icon_name || 'inventory_2')}</span>
+        <article class="overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-lowest shadow-sm transition-all hover:shadow-md">
+          <div class="relative h-52 bg-surface-container">
+            <div class="absolute left-2 top-2 z-10 rounded-full bg-black/55 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-white">${category}</div>
+            <div class="absolute right-2 top-2 z-10 rounded-full ${avail > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-surface-container text-on-surface-variant'} px-2 py-1 text-[10px] font-bold uppercase">${avail > 0 ? `${avail} Available` : 'Out of Stock'}</div>
+            <div class="h-full w-full">${inventoryImage(item, 'h-full w-full object-cover')}</div>
+          </div>
+          <div class="space-y-sm p-md">
+            <h3 class="text-xl font-bold text-primary">${h(item.name)}</h3>
+            <p class="text-sm text-on-surface-variant line-clamp-2">${description}</p>
+            <div class="flex items-center justify-between border-t border-outline-variant pt-sm">
+              <span class="inline-flex items-center gap-1 rounded-full bg-surface-container px-2 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-on-surface-variant">
+                <span class="material-symbols-outlined text-[12px]">tag</span>
+                ${h(item.asset_tag || `Item ${String(item.id).slice(0, 6)}`)}
+              </span>
+              <button onclick="Actions.requestItemModal('${item.id}', '${h(item.name)}')" ${avail <= 0 ? 'disabled' : ''} class="rounded-lg bg-secondary px-md py-xs text-xs font-bold text-on-secondary hover:bg-on-secondary-fixed-variant disabled:opacity-50">
+                Request Borrow
+              </button>
             </div>
-            <h3 class="font-bold text-on-surface text-base">${h(item.name)}</h3>
-            <p class="text-xs text-on-surface-variant line-clamp-2">${h(item.description || 'Club equipment available for borrowing.')}</p>
           </div>
-          <div class="flex items-center justify-between pt-sm border-t border-outline-variant">
-            <span class="text-xs font-label-sm ${avail > 0 ? 'text-emerald-700 font-bold' : 'text-error font-bold'}">
-              ${avail > 0 ? `${avail} Available` : 'Out of Stock'}
-            </span>
-            <button onclick="Actions.requestItemModal('${item.id}', '${h(item.name)}')" ${avail <= 0 ? 'disabled' : ''} class="bg-secondary text-on-secondary px-md py-xs rounded-lg text-xs font-label-sm hover:bg-on-secondary-fixed-variant disabled:opacity-50">
-              Request Borrow
-            </button>
-          </div>
-        </div>
+        </article>
       `;
     }).join('');
 
@@ -1217,61 +1265,59 @@ const Views = {
           <h1 class="font-display-md text-display-md text-primary">Support</h1>
         </div>
 
-        <div class="relative">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-          <input type="text" placeholder="How can we help you?" class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 pl-10 pr-3 text-sm text-on-surface" />
+        <div class="rounded-2xl bg-gradient-to-r from-secondary/10 to-primary/10 p-md border border-secondary/20">
+          <div class="text-xs uppercase tracking-[0.12em] text-on-surface-variant">Need help?</div>
+          <div class="mt-1 font-bold text-primary">Ask the club support team</div>
         </div>
 
-        <div class="space-y-md">
-          <div class="grid grid-cols-2 gap-md">
-            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md text-center">
-              <div class="text-secondary text-2xl mb-2"><span class="material-symbols-outlined">inventory_2</span></div>
-              <div class="font-semibold text-primary">Inventory Setup</div>
-            </div>
-            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md text-center">
-              <div class="text-secondary text-2xl mb-2"><span class="material-symbols-outlined">sync_problem</span></div>
-              <div class="font-semibold text-primary">Sync Issues</div>
-            </div>
-            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md text-center">
-              <div class="text-secondary text-2xl mb-2"><span class="material-symbols-outlined">group</span></div>
-              <div class="font-semibold text-primary">Manage Members</div>
-            </div>
-            <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-md text-center">
-              <div class="text-secondary text-2xl mb-2"><span class="material-symbols-outlined">description</span></div>
-              <div class="font-semibold text-primary">Billing & Reports</div>
-            </div>
+        <div class="grid grid-cols-2 gap-md">
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md text-center">
+            <div class="mb-2 text-secondary"><span class="material-symbols-outlined text-[28px]">inventory_2</span></div>
+            <div class="text-sm font-bold text-primary">Inventory</div>
           </div>
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md text-center">
+            <div class="mb-2 text-secondary"><span class="material-symbols-outlined text-[28px]">sync_problem</span></div>
+            <div class="text-sm font-bold text-primary">Sync</div>
+          </div>
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md text-center">
+            <div class="mb-2 text-secondary"><span class="material-symbols-outlined text-[28px]">group</span></div>
+            <div class="text-sm font-bold text-primary">Members</div>
+          </div>
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md text-center">
+            <div class="mb-2 text-secondary"><span class="material-symbols-outlined text-[28px]">help_center</span></div>
+            <div class="text-sm font-bold text-primary">General</div>
+          </div>
+        </div>
 
-          <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md space-y-md">
-            <div class="flex items-center gap-sm">
-              <span class="material-symbols-outlined text-secondary">support_agent</span>
-              <h2 class="font-display-md text-display-md text-primary">Submit a Ticket</h2>
-            </div>
-            <form class="space-y-md" onsubmit="event.preventDefault(); toast('Ticket submitted!', 'success');">
-              <div>
-                <div class="text-[11px] uppercase text-on-surface-variant mb-1">Issue Type</div>
-                <select class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 px-3 text-sm">
-                  <option>Select category...</option>
-                  <option>Inventory</option>
-                  <option>Equipment</option>
-                  <option>Account</option>
-                </select>
-              </div>
-              <div>
-                <div class="text-[11px] uppercase text-on-surface-variant mb-1">Urgency</div>
-                <select class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 px-3 text-sm">
-                  <option>Low - General Question</option>
-                  <option>Medium</option>
-                  <option>High</option>
-                </select>
-              </div>
-              <div>
-                <div class="text-[11px] uppercase text-on-surface-variant mb-1">Description</div>
-                <textarea rows="4" class="w-full border border-outline-variant rounded-lg bg-surface-container-lowest py-2 px-3 text-sm" placeholder="Please describe the issue in detail..."></textarea>
-              </div>
-              <button type="submit" class="w-full bg-secondary text-on-secondary rounded-lg py-3 text-sm font-bold">Submit Request</button>
-            </form>
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md space-y-md">
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-secondary">support_agent</span>
+            <h2 class="font-display-md text-display-md text-primary">Submit a Ticket</h2>
           </div>
+          <form class="space-y-md" onsubmit="event.preventDefault(); toast('Ticket submitted!', 'success');">
+            <div>
+              <label class="block text-[11px] uppercase tracking-[0.08em] text-on-surface-variant mb-1">Issue Type</label>
+              <select class="w-full border border-outline-variant rounded-lg bg-surface-container py-2 px-3 text-sm text-on-surface focus:border-secondary focus:outline-none">
+                <option>Select category...</option>
+                <option>Inventory</option>
+                <option>Equipment</option>
+                <option>Account</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] uppercase tracking-[0.08em] text-on-surface-variant mb-1">Priority</label>
+              <select class="w-full border border-outline-variant rounded-lg bg-surface-container py-2 px-3 text-sm text-on-surface focus:border-secondary focus:outline-none">
+                <option>Low - General Question</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] uppercase tracking-[0.08em] text-on-surface-variant mb-1">Description</label>
+              <textarea rows="4" class="w-full border border-outline-variant rounded-lg bg-surface-container py-2 px-3 text-sm text-on-surface focus:border-secondary focus:outline-none" placeholder="Please describe the issue in detail..."></textarea>
+            </div>
+            <button type="submit" class="w-full bg-secondary text-on-secondary rounded-lg py-3 text-sm font-bold">Submit Request</button>
+          </form>
         </div>
       </div>
     `;
@@ -1382,20 +1428,77 @@ const Views = {
   // --- MEMBER SUPPORT ---
   memberSupport() {
     return `
-      <div class="max-w-md bg-surface-container-lowest p-lg rounded-xl border border-outline-variant space-y-md">
-        <h1 class="font-display-md text-display-md text-primary">Support & Help</h1>
-        <p class="text-sm text-on-surface-variant">Need assistance with equipment? Contact ATS Club management.</p>
-        <form onsubmit="event.preventDefault(); toast('Ticket submitted!', 'success');" class="space-y-md">
-          <div>
-            <label class="block text-xs uppercase font-label-sm mb-xs">Issue Subject</label>
-            <input required type="text" class="w-full border border-outline-variant rounded p-sm text-sm" placeholder="Damaged cables, missing kit...">
+      <div class="max-w-5xl space-y-lg">
+        <div class="rounded-2xl bg-gradient-to-r from-secondary/10 via-primary/5 to-transparent border border-secondary/20 p-lg">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-md">
+            <div>
+              <p class="text-xs uppercase tracking-[0.12em] text-on-surface-variant">Support centre</p>
+              <h1 class="font-display-lg text-display-lg text-primary mt-xs">Support & Help</h1>
+            </div>
+            <div class="rounded-full bg-white/70 px-md py-xs text-xs font-bold uppercase tracking-[0.08em] text-secondary ring-1 ring-secondary/20">Response within 24h</div>
           </div>
-          <div>
-            <label class="block text-xs uppercase font-label-sm mb-xs">Description</label>
-            <textarea required class="w-full border border-outline-variant rounded p-sm text-sm" rows="3" placeholder="Provide details..."></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
+            <div class="mb-sm text-secondary"><span class="material-symbols-outlined text-[28px]">inventory_2</span></div>
+            <div class="font-bold text-primary">Inventory</div>
+            <div class="text-xs text-on-surface-variant mt-1">Stock and equipment queries</div>
           </div>
-          <button type="submit" class="bg-secondary text-on-secondary px-md py-sm rounded text-xs font-label-sm">Submit Ticket</button>
-        </form>
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
+            <div class="mb-sm text-secondary"><span class="material-symbols-outlined text-[28px]">sync_problem</span></div>
+            <div class="font-bold text-primary">Sync</div>
+            <div class="text-xs text-on-surface-variant mt-1">Access and data issues</div>
+          </div>
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
+            <div class="mb-sm text-secondary"><span class="material-symbols-outlined text-[28px]">group</span></div>
+            <div class="font-bold text-primary">Members</div>
+            <div class="text-xs text-on-surface-variant mt-1">Account and permissions</div>
+          </div>
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
+            <div class="mb-sm text-secondary"><span class="material-symbols-outlined text-[28px]">help_center</span></div>
+            <div class="font-bold text-primary">General</div>
+            <div class="text-xs text-on-surface-variant mt-1">Booking and system help</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-lg">
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg space-y-md">
+            <div class="flex items-center gap-sm">
+              <span class="material-symbols-outlined text-secondary">support_agent</span>
+              <h2 class="font-bold text-lg text-primary">Quick contact</h2>
+            </div>
+            <div class="space-y-sm text-sm text-on-surface-variant">
+              <div class="rounded-lg bg-surface-container px-md py-sm">ATS Club Operations</div>
+              <div class="rounded-lg bg-surface-container px-md py-sm">support@atsclub.example</div>
+              <div class="rounded-lg bg-surface-container px-md py-sm">Mon–Fri · 9:00 AM – 5:00 PM</div>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg">
+            <h2 class="font-bold text-lg text-primary mb-md">Submit a ticket</h2>
+            <form onsubmit="event.preventDefault(); toast('Ticket submitted!', 'success');" class="space-y-md">
+              <div>
+                <label class="block text-xs uppercase tracking-[0.08em] text-on-surface-variant mb-xs">Issue Subject</label>
+                <input required type="text" class="w-full border border-outline-variant rounded-lg bg-surface-container py-sm px-md text-sm text-on-surface focus:border-secondary focus:outline-none" placeholder="Damaged cables, missing kit..."><!-- Keep subject concise -->
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-[0.08em] text-on-surface-variant mb-xs">Issue Type</label>
+                <select class="w-full border border-outline-variant rounded-lg bg-surface-container py-sm px-md text-sm text-on-surface focus:border-secondary focus:outline-none">
+                  <option>Select category...</option>
+                  <option>Inventory</option>
+                  <option>Equipment</option>
+                  <option>Account</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs uppercase tracking-[0.08em] text-on-surface-variant mb-xs">Description</label>
+                <textarea required class="w-full border border-outline-variant rounded-lg bg-surface-container py-sm px-md text-sm text-on-surface focus:border-secondary focus:outline-none" rows="4" placeholder="Please describe the issue in detail..."></textarea>
+              </div>
+              <button type="submit" class="bg-secondary text-on-secondary px-md py-sm rounded-lg text-xs font-bold uppercase tracking-[0.08em]">Submit Ticket</button>
+            </form>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -1631,43 +1734,108 @@ const Actions = {
   showAddItemModal() {
     const content = `
       <h2 class="font-display-md text-display-md text-primary mb-sm">Add New Equipment</h2>
-      <form onsubmit="event.preventDefault(); 
-        const name = this.name.value.trim();
-        const tag = this.tag.value.trim();
-        const cat = this.cat.value.trim();
-        const stock = parseInt(this.stock.value,10);
-        if (!name||!tag||!cat||isNaN(stock)||stock<1){ toast('Please fill all fields correctly', 'error'); return; }
-        Actions.addItem({ name, asset_tag: tag, category: cat, total_quantity: stock, available_quantity: stock });
-        closeModal();">
+      <form onsubmit="Actions.addItemFromForm(event)">
         <div class="mb-sm">
           <label class="block text-xs uppercase font-label-sm mb-xs">Item Name</label>
-          <input type="text" name="name" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+          <input type="text" name="name" class="w-full rounded-lg border border-outline-variant bg-surface-container px-md py-sm text-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20" required>
         </div>
         <div class="mb-sm">
           <label class="block text-xs uppercase font-label-sm mb-xs">Asset Tag</label>
-          <input type="text" name="tag" placeholder="AST-1001" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+          <input type="text" name="tag" placeholder="AST-1001" class="w-full rounded-lg border border-outline-variant bg-surface-container px-md py-sm text-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20" required>
         </div>
         <div class="mb-sm">
           <label class="block text-xs uppercase font-label-sm mb-xs">Category</label>
-          <input type="text" name="cat" placeholder="Electronics" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+          <input type="text" name="cat" placeholder="Electronics" class="w-full rounded-lg border border-outline-variant bg-surface-container px-md py-sm text-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20" required>
+        </div>
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Description</label>
+          <textarea name="description" rows="3" maxlength="300" oninput="Actions.updateDescriptionCounter(this)" class="w-full rounded-lg border border-outline-variant bg-surface-container px-md py-sm text-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20" placeholder="Describe the equipment, condition, key features, and intended use." required></textarea>
+          <div class="mt-xs flex items-center justify-between text-[10px] text-on-surface-variant">
+            <span>Required</span>
+            <span id="item-description-count">0 / 60 words</span>
+          </div>
         </div>
         <div class="mb-sm">
           <label class="block text-xs uppercase font-label-sm mb-xs">Total Quantity</label>
-          <input type="number" name="stock" min="1" value="1" class="w-full border border-outline-variant rounded px-md py-sm text-sm" required>
+          <input type="number" name="stock" min="1" value="1" class="w-full rounded-lg border border-outline-variant bg-surface-container px-md py-sm text-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20" required>
+        </div>
+        <div class="mb-sm">
+          <label class="block text-xs uppercase font-label-sm mb-xs">Equipment Image (optional, max 5 MB)</label>
+          <input type="file" name="image" accept="image/jpeg,image/png,image/webp" onchange="Actions.previewImage(event)" class="w-full rounded-lg border border-outline-variant bg-surface-container px-md py-sm text-sm shadow-sm transition focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/20">
+          <img id="item-image-preview" class="hidden mt-sm w-full h-32 object-cover rounded-lg border border-outline-variant" alt="Selected equipment preview">
+          <div id="item-image-status" class="text-xs text-on-surface-variant mt-xs" aria-live="polite"></div>
         </div>
         <div class="flex justify-end space-x-sm">
           <button type="button" onclick="closeModal()" class="px-md py-sm bg-surface-container text-on-surface rounded">Cancel</button>
-          <button type="submit" class="px-md py-sm bg-secondary text-on-secondary rounded">Add Item</button>
+          <button id="add-item-submit" type="submit" class="px-md py-sm bg-secondary text-on-secondary rounded">Add Item</button>
         </div>
       </form>
     `;
     openModal(content);
   },
 
-  async addItem(itemData) {
+  updateDescriptionCounter(textarea) {
+    const countEl = $('#item-description-count');
+    if (!textarea || !countEl) return;
+    const words = textarea.value.trim().split(/\s+/).filter(Boolean).length;
+    countEl.textContent = `${words} / 60 words`;
+  },
+
+  previewImage(event) {
+    const file = event.target.files?.[0];
+    const preview = $('#item-image-preview');
+    const status = $('#item-image-status');
+    if (!file || !preview || !status) return;
+    if (!INVENTORY_IMAGE_TYPES.includes(file.type) || file.size > INVENTORY_IMAGE_MAX_BYTES) {
+      event.target.value = '';
+      preview.classList.add('hidden');
+      status.textContent = 'Choose a JPEG, PNG, or WebP image up to 5 MB.';
+      status.className = 'text-xs text-error mt-xs';
+      return;
+    }
+    preview.src = URL.createObjectURL(file);
+    preview.onload = () => URL.revokeObjectURL(preview.src);
+    preview.classList.remove('hidden');
+    status.textContent = `${file.name} selected`;
+    status.className = 'text-xs text-on-surface-variant mt-xs';
+  },
+
+  async addItemFromForm(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const name = form.name.value.trim();
+    const tag = form.tag.value.trim();
+    const cat = form.cat.value.trim();
+    const description = form.description.value.trim();
+    const stock = parseInt(form.stock.value, 10);
+    const wordCount = description ? description.split(/\s+/).filter(Boolean).length : 0;
+    if (!name || !tag || !cat || !description || isNaN(stock) || stock < 1) {
+      toast('Please fill all required fields and add a description', 'error');
+      return;
+    }
+    if (wordCount > 60) {
+      toast('Description must be 60 words or fewer', 'error');
+      return;
+    }
+    const submit = $('#add-item-submit');
+    if (submit) { submit.disabled = true; submit.textContent = 'Uploading...'; }
     try {
-      const { data, error } = await supabaseClient.from('items').insert([itemData]).select().single();
+      await this.addItem({ name, sku: tag, asset_tag: tag, category: cat, description, total_quantity: stock, available_quantity: stock, quantity: stock }, form.image.files?.[0] || null);
+      closeModal();
+    } finally {
+      if (submit) { submit.disabled = false; submit.textContent = 'Add Item'; }
+    }
+  },
+
+  async addItem(itemData, imageFile = null) {
+    let storagePath = null;
+    let itemInserted = false;
+    try {
+      const uploaded = await uploadInventoryImage(imageFile);
+      storagePath = uploaded.storagePath;
+      const { data, error } = await supabaseClient.from('items').insert([{ ...itemData, image_url: uploaded.publicUrl }]).select().single();
       if (error) throw error;
+      itemInserted = true;
 
       if (data && data.id) {
         const adminName = State.profile?.full_name || State.user?.email || 'Admin';
@@ -1684,6 +1852,10 @@ const Actions = {
       await App.loadAdminData();
       Router.go('admin-inventory');
     } catch (err) {
+      if (storagePath && !itemInserted) {
+        const { error: cleanupError } = await supabaseClient.storage.from(INVENTORY_IMAGE_BUCKET).remove([storagePath]);
+        if (cleanupError) console.error('Failed to clean up orphaned inventory image:', cleanupError);
+      }
       toast(err.message || 'Error adding item', 'error');
     }
   },
