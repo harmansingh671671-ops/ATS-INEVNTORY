@@ -1099,21 +1099,25 @@ const Views = {
           <div class="space-y-lg">
             <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
               <div class="p-md border-b border-outline-variant font-bold text-on-surface text-sm">Active Loans</div>
-              <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-                  <tr><th class="px-md py-sm">Borrower</th><th class="px-md py-sm">Qty</th><th class="px-md py-sm">Due Date</th></tr>
-                </thead>
-                <tbody class="text-sm">${loanRows || '<tr><td colspan="3" class="p-md text-center text-on-surface-variant">No active loans for this item.</td></tr>'}</tbody>
-              </table>
+              <div class="overflow-x-auto">
+                <table class="min-w-[820px] w-full text-left border-collapse">
+                  <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
+                    <tr><th class="px-md py-sm">Borrower</th><th class="px-md py-sm">Qty</th><th class="px-md py-sm">Due Date</th></tr>
+                  </thead>
+                  <tbody class="text-sm">${loanRows || '<tr><td colspan="3" class="p-md text-center text-on-surface-variant">No active loans for this item.</td></tr>'}</tbody>
+                </table>
+              </div>
             </div>
             <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
               <div class="p-md border-b border-outline-variant font-bold text-on-surface text-sm">Inventory Log Book</div>
-              <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
-                  <tr><th class="px-md py-sm">Date</th><th class="px-md py-sm">Action</th><th class="px-md py-sm">Change</th><th class="px-md py-sm">Notes</th></tr>
-                </thead>
-                <tbody class="text-sm">${logRows || '<tr><td colspan="4" class="p-md text-center text-on-surface-variant">No inventory logs recorded.</td></tr>'}</tbody>
-              </table>
+              <div class="overflow-x-auto">
+                <table class="min-w-[820px] w-full text-left border-collapse">
+                  <thead class="bg-surface-container-low text-xs font-label-sm uppercase text-on-surface-variant">
+                    <tr><th class="px-md py-sm">Date</th><th class="px-md py-sm">Action</th><th class="px-md py-sm">Change</th><th class="px-md py-sm">Notes</th></tr>
+                  </thead>
+                  <tbody class="text-sm">${logRows || '<tr><td colspan="4" class="p-md text-center text-on-surface-variant">No inventory logs recorded.</td></tr>'}</tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
